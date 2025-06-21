@@ -41,3 +41,4 @@ yarn-error.log*
 # Prisma
 prisma/migrations/
 prisma/sql/
+!/.github/
