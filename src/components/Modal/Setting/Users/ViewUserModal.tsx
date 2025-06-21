@@ -1,11 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import Image from 'next/image';
+import { useEffect, useState } from 'react';
 
-import type { UserQueryWithDetails } from '@/types/settings/Users/UsersInterface';
-import type { EditModalPropsAlt } from '@/types/settings/Generic/InterfaceGeneric';
 import { getUserById } from '@/actions/Settings/Users';
+import type { EditModalPropsAlt } from '@/types/settings/Generic/InterfaceGeneric';
+import type { UserQueryWithDetails } from '@/types/settings/Users/UsersInterface';
 
 import {
     Dialog,
@@ -19,7 +19,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
-export default function ViewUserModal({ id, open, onClose }: EditModalPropsAlt) {
+export default function ViewUserModal({ id, open, onCloseAction }: EditModalPropsAlt) {
     const [imagePreview, setImagePreview] = useState('/shadcn.jpg');
     const [userData, setUserData] = useState<UserQueryWithDetails | null>(null);
 
@@ -44,7 +44,7 @@ export default function ViewUserModal({ id, open, onClose }: EditModalPropsAlt) 
     }, [id]);
 
     return (
-        <Dialog open={open} onOpenChange={onClose}>
+        <Dialog open={open} onOpenChange={onCloseAction}>
             <DialogContent className="overflow-hidden sm:max-w-[800px]">
                 <DialogHeader>
                     <DialogTitle>Información del Usuario</DialogTitle>

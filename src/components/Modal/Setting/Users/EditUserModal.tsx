@@ -1,13 +1,13 @@
 'use client';
 
-import Form from 'next/form';
-import { useState, useEffect, useTransition } from 'react';
-import Image from 'next/image';
 import { FilePenLine } from 'lucide-react';
+import Form from 'next/form';
+import Image from 'next/image';
+import { useEffect, useState, useTransition } from 'react';
 import { useFormStatus } from 'react-dom';
 
-import type { UserQueryWithDetails } from '@/types/settings/Users/UsersInterface';
 import type { EditModalPropsAlt } from '@/types/settings/Generic/InterfaceGeneric';
+import type { UserQueryWithDetails } from '@/types/settings/Users/UsersInterface';
 
 import { getUserById, updateUser } from '@/actions/Settings/Users';
 
@@ -20,8 +20,8 @@ import {
     DialogTitle,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import { toast } from 'sonner';
 import { Label } from '@/components/ui/label';
+import { toast } from 'sonner';
 
 function SubmitButton() {
     const { pending } = useFormStatus();
@@ -32,7 +32,12 @@ function SubmitButton() {
     );
 }
 
-export default function EditUserModal({ id, refreshAction, open, onClose }: EditModalPropsAlt) {
+export default function EditUserModal({
+    id,
+    refreshAction,
+    open,
+    onCloseAction,
+}: EditModalPropsAlt) {
     const [error, setError] = useState('');
     const [imagePreview, setImagePreview] = useState('/shadcn.jpg');
     const [userData, setUserData] = useState<UserQueryWithDetails | null>(null);
@@ -77,7 +82,7 @@ export default function EditUserModal({ id, refreshAction, open, onClose }: Edit
                 setError(result.error);
             } else {
                 refreshAction?.();
-                onClose(false);
+                onCloseAction(false);
                 toast.success('Editado Successful', {
                     description: 'El usuario se ha editado correctamente.',
                 });
@@ -86,7 +91,7 @@ export default function EditUserModal({ id, refreshAction, open, onClose }: Edit
     };
 
     return (
-        <Dialog open={open} onOpenChange={onClose}>
+        <Dialog open={open} onOpenChange={onCloseAction}>
             <DialogContent className="overflow-hidden sm:max-w-[800px]">
                 <DialogHeader>
                     <DialogTitle>Editar Usuario</DialogTitle>

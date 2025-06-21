@@ -66,7 +66,6 @@ export function DataTable<TData, TValue>({
         // Obtenemos todos los valores visibles de la fila (sin any)
         const rowValues = Object.values(row.original as Record<string, unknown>).map((value) => {
             if (isRoleArray(value)) {
-                // Caso especial para roles: extraemos los nombres de los roles
                 return value
                     .map((item) => item.role.name)
                     .join(' ')
@@ -108,7 +107,7 @@ export function DataTable<TData, TValue>({
                 filterPlaceholder={filterPlaceholder}
                 data={data}
                 globalFilter={globalFilter}
-                setGlobalFilter={setGlobalFilter}
+                setGlobalFilterAction={setGlobalFilter}
                 columnVisibility={columnVisibility}
                 setColumnVisibility={setColumnVisibility}
             />

@@ -48,7 +48,7 @@ export default function ChangePasswordModal({
     id,
     refresh,
     open,
-    onClose,
+    onCloseAction,
     signOut,
     successMessage,
     shouldSignOut = false,
@@ -81,7 +81,7 @@ export default function ChangePasswordModal({
             refresh?.();
             reset();
             setError('');
-            onClose(false);
+            onCloseAction(false);
             toast.success('Change Password Successful', {
                 description: successMessage,
             });
@@ -100,7 +100,7 @@ export default function ChangePasswordModal({
     };
 
     return (
-        <Dialog open={open} onOpenChange={onClose}>
+        <Dialog open={open} onOpenChange={onCloseAction}>
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>Cambiar Contraseña</DialogTitle>

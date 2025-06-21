@@ -2,8 +2,8 @@
 
 import { getAllRoles } from '@/actions/Settings/Roles';
 import { getUserRoles, updateUserRoles } from '@/actions/Settings/UserRoles';
-import type { RoleQuery, UserRoleQuery } from '@/types/settings/Roles/RolesInterface';
 import type { EditModalPropsAlt } from '@/types/settings/Generic/InterfaceGeneric';
+import type { RoleQuery, UserRoleQuery } from '@/types/settings/Roles/RolesInterface';
 
 import Form from 'next/form';
 import { useEffect, useState } from 'react';
@@ -33,7 +33,7 @@ function SubmitButton({ disabled }: { disabled: boolean }) {
 export default function AssignRoleUserModal({
     id,
     open,
-    onClose,
+    onCloseAction,
     refreshAction,
 }: EditModalPropsAlt) {
     const [roleData, setRoleData] = useState<RoleQuery[]>([]);
@@ -92,7 +92,7 @@ export default function AssignRoleUserModal({
             const result = await updateUserRoles(id, roles);
             if (result.success) {
                 refreshAction?.();
-                onClose(false);
+                onCloseAction(false);
                 toast.success('Asignado Successful', {
                     description: 'Nuevo Rol Asignado Correctamente.',
                 });
@@ -110,7 +110,7 @@ export default function AssignRoleUserModal({
     };
 
     return (
-        <Dialog open={open} onOpenChange={onClose}>
+        <Dialog open={open} onOpenChange={onCloseAction}>
             <DialogContent className="sm:max-w-[400px]">
                 <DialogHeader>
                     <DialogTitle>Asignar Permisos y Roles</DialogTitle>

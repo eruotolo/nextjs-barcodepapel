@@ -1,12 +1,12 @@
 'use client';
 
+import {
+    BtnConfigCell,
+    BtnDeleteCell,
+    BtnEditCell,
+} from '@/components/BtnActionCell/BtnActionCell';
 import dynamic from 'next/dynamic';
 import { useState } from 'react';
-import {
-    BtnEditCell,
-    BtnDeleteCell,
-    BtnConfigCell,
-} from '@/components/BtnActionCell/BtnActionCell';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -118,9 +118,9 @@ function ActionCell({ row }: ActionCellProps) {
             {openEditRole && (
                 <DynamicEditRoleModal
                     id={roleId}
-                    refresh={refreshAll}
+                    refreshAction={refreshAll}
                     open={openEditRole}
-                    onClose={handleEditRoleCloseModal}
+                    onCloseAction={handleEditRoleCloseModal}
                 />
             )}
             {openAssignPermission && (
@@ -128,7 +128,7 @@ function ActionCell({ row }: ActionCellProps) {
                     id={roleId}
                     refreshAction={refreshAll}
                     open={openAssignPermission}
-                    onClose={handleAssignPermissionCloseModal}
+                    onCloseAction={handleAssignPermissionCloseModal}
                 />
             )}
         </>

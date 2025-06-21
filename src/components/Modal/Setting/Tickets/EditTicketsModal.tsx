@@ -1,15 +1,15 @@
 'use client';
 
+import { Button } from '@/components/ui/button';
 import Form from 'next/form';
-import { useState, useEffect, useTransition } from 'react';
 import Image from 'next/image';
+import { useEffect, useState, useTransition } from 'react';
 import { useFormStatus } from 'react-dom';
 import { useForm } from 'react-hook-form';
-import { Button } from '@/components/ui/button';
 
 import type { EditModalPropsAlt } from '@/types/settings/Generic/InterfaceGeneric';
 import type { GetTicketQuery } from '@/types/settings/Tickets/TicketInterface';
-import { TicketStatus, TicketPriority } from '@prisma/client';
+import { TicketPriority, TicketStatus } from '@prisma/client';
 
 import { getTicketById, updateTicket } from '@/actions/Settings/Tickets';
 
@@ -23,7 +23,6 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { toast } from 'sonner';
 import {
     Select,
     SelectContent,
@@ -32,9 +31,10 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { toast } from 'sonner';
 
-import RichTextDisplay from '@/components/RichTextDisplay/RichTextDisplay';
 import TicketComments from '@/components/Modal/Setting/Tickets/TicketComments';
+import RichTextDisplay from '@/components/RichTextDisplay/RichTextDisplay';
 
 function SubmitButton() {
     const { pending } = useFormStatus();
@@ -59,7 +59,12 @@ const PRIORITY_LABELS = {
     [TicketPriority.URGENT]: 'Urgente',
 };
 
-export default function EditTicketsModal({ id, refreshAction, open, onClose }: EditModalPropsAlt) {
+export default function EditTicketsModal({
+    id,
+    refreshAction,
+    open,
+    onCloseAction,
+}: EditModalPropsAlt) {
     const {
         register,
         formState: { errors },
@@ -122,7 +127,7 @@ export default function EditTicketsModal({ id, refreshAction, open, onClose }: E
                 setError(result.error);
             } else {
                 refreshAction?.();
-                onClose(false);
+                onCloseAction(false);
                 toast.success('Editado Successful', {
                     description: 'El ticket se ha editado correctamente.',
                 });
@@ -131,7 +136,7 @@ export default function EditTicketsModal({ id, refreshAction, open, onClose }: E
     };
 
     return (
-        <Dialog open={open} onOpenChange={onClose}>
+        <Dialog open={open} onOpenChange={onCloseAction}>
             <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-[800px]">
                 <DialogHeader>
                     <DialogTitle>Ticket #{ticketData?.code}</DialogTitle>

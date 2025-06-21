@@ -1,14 +1,14 @@
 'use client';
 
-import dynamic from 'next/dynamic';
-import { useState } from 'react';
 import {
-    BtnViewCell,
-    BtnEditCell,
     BtnChangePasswordCell,
     BtnConfigCell,
     BtnDeleteCell,
+    BtnEditCell,
+    BtnViewCell,
 } from '@/components/BtnActionCell/BtnActionCell';
+import dynamic from 'next/dynamic';
+import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -146,7 +146,7 @@ function ActionCell({ row, refreshTable }: ActionCellProps) {
                     id={userId}
                     refresh={refreshTable}
                     open={openChangePass}
-                    onClose={handleChangePassCloseModal}
+                    onCloseAction={handleChangePassCloseModal}
                     successMessage="El password se ha cambiado correctamente."
                 />
             )}
@@ -155,7 +155,7 @@ function ActionCell({ row, refreshTable }: ActionCellProps) {
                     id={userId}
                     refreshAction={refreshTable}
                     open={openAssignRoles}
-                    onClose={handleAssignRolesCloseModal}
+                    onCloseAction={handleAssignRolesCloseModal}
                 />
             )}
             {openEditUser && (
@@ -163,14 +163,14 @@ function ActionCell({ row, refreshTable }: ActionCellProps) {
                     id={userId}
                     refreshAction={refreshTable}
                     open={openEditUser}
-                    onClose={handleEditUserCloseModal}
+                    onCloseAction={handleEditUserCloseModal}
                 />
             )}
             {openPreviewUser && (
                 <DynamicPreviewUserModal
                     id={userId}
                     open={openPreviewUser}
-                    onClose={handlePreviewUserCloseModal}
+                    onCloseAction={handlePreviewUserCloseModal}
                 />
             )}
         </>

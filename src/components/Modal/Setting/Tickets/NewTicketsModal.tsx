@@ -7,12 +7,12 @@ import { useForm } from 'react-hook-form';
 
 import { createTicket } from '@/actions/Settings/Tickets';
 import BtnActionNew from '@/components/BtnActionNew/BtnActionNew';
-import type { SimpleTicketQuery } from '@/types/settings/Tickets/TicketInterface';
 import type { UpdateData } from '@/types/settings/Generic/InterfaceGeneric';
+import type { SimpleTicketQuery } from '@/types/settings/Tickets/TicketInterface';
 
-import { TicketStatus, TicketPriority } from '@prisma/client';
-import useAuthStore from '@/store/authStore';
 import RichTextEditor from '@/components/ui/rich-text-editor';
+import useAuthStore from '@/store/authStore';
+import { TicketPriority, TicketStatus } from '@prisma/client';
 
 import {
     Dialog,
@@ -210,7 +210,7 @@ export default function NewTicketsModal({ refreshAction }: UpdateData) {
                                 <div className="mb-[15px]">
                                     <RichTextEditor
                                         content={description}
-                                        onChange={(content) => {
+                                        onChangeAction={(content) => {
                                             setDescription(content);
                                             setValue('description', content, {
                                                 shouldValidate: true,
