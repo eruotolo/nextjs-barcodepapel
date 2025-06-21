@@ -164,8 +164,8 @@ model Blog {
     id                String         @id @default(uuid())
     name              String
     image             String?
-    primaryCategoryId String?
-    primaryCategory   Category?      @relation(fields: [primaryCategoryId], references: [id], onDelete: Cascade)
+    primaryCategoryId String
+    primaryCategory   Category       @relation(fields: [primaryCategoryId], references: [id], onDelete: Cascade)
     author            String
     description       String
     createdAt         DateTime       @default(now())
@@ -213,5 +213,36 @@ model EventeCalendar {
 }
 
 model PrintedMaterial {
-    id String @id @default(uuid())
+    id            String    @id @default(uuid())
+    numberVersion String
+    name          String
+    description   String
+    link          String
+    createdAt     DateTime  @default(now())
+    updatedAt     DateTime? @updatedAt
+
+    @@index([name])
+    @@index([numberVersion])
+}
+
+model Teams {
+    id          String    @id @default(uuid())
+    name        String
+    image       String?
+    description String
+    createdAt   DateTime  @default(now())
+    updatedAt   DateTime? @updatedAt
+
+    @@index([name])
+}
+
+model Sponsors {
+    id        String    @id @default(uuid())
+    name      String
+    image     String?
+    link      String?
+    createdAt DateTime  @default(now())
+    updatedAt DateTime? @updatedAt
+
+    @@index([name])
 }

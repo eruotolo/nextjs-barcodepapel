@@ -8,8 +8,8 @@ export interface BlogInterface {
     name: string;
     image: string | null;
     author: string;
-    primaryCategoryId?: string | null;
-    primaryCategory?: CategoryInterface | null;
+    primaryCategoryId: string;
+    primaryCategory: CategoryInterface;
     BlogCategory: BlogCategoryInterface[];
     createdAt: string;
 }
@@ -17,9 +17,9 @@ export interface BlogInterface {
 export interface BlogUniqueInterface {
     id: string;
     name: string;
-    image: string | null;
-    primaryCategoryId?: string | null;
-    primaryCategory?: CategoryInterface | null;
+    image?: string | null;
+    primaryCategoryId: string;
+    primaryCategory: CategoryInterface;
     author: string;
     description: string;
 }

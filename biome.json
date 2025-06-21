@@ -20,7 +20,8 @@
                     }
                 },
                 "noExplicitAny": "warn",
-                "noImplicitAnyLet": "warn"
+                "noImplicitAnyLet": "warn",
+                "noDuplicateCase": "off"
             },
             "style": {
                 "useConst": "error",

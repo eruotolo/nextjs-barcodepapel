@@ -41,8 +41,8 @@ export async function createPost(formData: FormData) {
                 image: imageUrl,
             },
             include: {
-                primaryCategory: true
-            }
+                primaryCategory: true,
+            },
         });
 
         const session = await getServerSession(authOptions);
@@ -69,22 +69,22 @@ export async function createPost(formData: FormData) {
     }
 }
 
-export async function deletePost(id: string){
-    try{
-        if(!id){
-            return {error: 'Post ID is requeried'}
+export async function deletePost(id: string) {
+    try {
+        if (!id) {
+            return { error: 'Post ID is requeried' };
         }
 
         const blogToDelete = await prisma.blog.findUnique({
-            where: {id}
-        })
+            where: { id },
+        });
 
-        if(!blogToDelete){
-            return {error: 'Post does not exist'}
+        if (!blogToDelete) {
+            return { error: 'Post does not exist' };
         }
 
         const response = await prisma.blog.delete({
-            where: {id}
+            where: { id },
         });
 
         const session = await getServerSession(authOptions);
@@ -105,9 +105,9 @@ export async function deletePost(id: string){
 
         revalidatePath('/admin/administration/blog');
         return response;
-    }catch (error){
+    } catch (error) {
         console.error('Error deleting Post', error);
-        return {error: 'Error deleting Post'}
+        return { error: 'Error deleting Post' };
     }
 }
 
@@ -118,7 +118,7 @@ export async function updatePost(id: string, formData: FormData) {
         }
 
         const currentPost = await prisma.blog.findUnique({
-            where: { id }
+            where: { id },
         });
 
         if (!currentPost) {
@@ -126,12 +126,19 @@ export async function updatePost(id: string, formData: FormData) {
         }
 
         const name = (formData.get('name') as string) || currentPost.name;
-        const imageFile = formData.get('image') as File | null;
-        const primaryCategoryId = (formData.get('primaryCategoryId') as string) || currentPost.primaryCategoryId || '';
+        const primaryCategoryId =
+            (formData.get('primaryCategoryId') as string) || currentPost.primaryCategoryId;
         const author = (formData.get('author') as string) || currentPost.author;
         const description = (formData.get('description') as string) || currentPost.description;
+        const imageFile = formData.get('image') as File | null;
 
-        const data = { name, author, description, primaryCategoryId };
+        const updateData: {
+            name: string;
+            primaryCategoryId: string;
+            author: string;
+            description: string;
+            image?: string;
+        } = { name, primaryCategoryId, author, description };
 
         // Manejar la subida de imagen si existe
         if (imageFile && imageFile.size > 0) {
@@ -141,15 +148,15 @@ export async function updatePost(id: string, formData: FormData) {
                 access: 'public',
                 token: process.env.BLOB_READ_WRITE_TOKEN,
             });
-            data.image = blob.url;
+            updateData.image = blob.url;
         }
 
         const response = await prisma.blog.update({
             where: { id },
-            data: data,
+            data: updateData,
             include: {
-                primaryCategory: true
-            }
+                primaryCategory: true,
+            },
         });
 
         // Agregar registro de auditoría
@@ -171,7 +178,7 @@ export async function updatePost(id: string, formData: FormData) {
                         name !== currentPost.name
                             ? { from: currentPost.name, to: name }
                             : undefined,
-                }
+                },
             },
             userId: session?.user?.id,
             userName: session?.user?.name

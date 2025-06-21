@@ -12,6 +12,12 @@ export async function getAllPost(): Promise<BlogInterface[]> {
                 image: true,
                 author: true,
                 primaryCategoryId: true,
+                primaryCategory: {
+                    select: {
+                        id: true,
+                        name: true,
+                    },
+                },
                 BlogCategory: {
                     select: {
                         id: true,
