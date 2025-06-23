@@ -1,7 +1,6 @@
 'use server';
 
 import prisma from '@/lib/db/db';
-import { pages } from 'next/dist/build/templates/app-page';
 
 export interface Page {
     id: string;
