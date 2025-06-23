@@ -1,4 +1,6 @@
 // Definimos un objeto con todas las acciones posibles
+import { createTeam } from '@/actions/Administration/Teams/mutations';
+
 export const AUDIT_ACTIONS = {
     LOGIN: {
         SUCCESS: 'loginSuccess',
@@ -41,6 +43,11 @@ export const AUDIT_ACTIONS = {
         UPDATE: 'updateCategory',
         DELETE: 'deleteCategory',
     },
+    TEAMS: {
+        CREATE: 'createTeam',
+        UPDATE: 'updateTeam',
+        DELETE: 'deleteTeam',
+    },
 } as const;
 
 // Definimos un objeto con todas las entidades
@@ -53,6 +60,7 @@ export const AUDIT_ENTITIES = {
     SYSTEM: 'System',
     BLOG: 'Blog',
     CATEGORY: 'Category',
+    TEAMS: 'Teams',
 } as const;
 
 // Tipos derivados de los objetos

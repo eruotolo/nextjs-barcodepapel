@@ -1,12 +1,4 @@
-import {
-    Frame,
-    LayoutDashboard,
-    LifeBuoy,
-    Newspaper,
-    PieChart,
-    Settings2,
-    Shield,
-} from 'lucide-react';
+import { LayoutDashboard, LifeBuoy, Newspaper, Settings2, Shield, Users } from 'lucide-react';
 
 export const navData = {
     navMain: [
@@ -20,6 +12,12 @@ export const navData = {
             title: 'Noticas',
             url: '/admin/administration/blog',
             icon: Newspaper,
+            roles: [],
+        },
+        {
+            title: 'Equipo',
+            url: '/admin/administration/teams',
+            icon: Users,
             roles: [],
         },
     ],

@@ -78,8 +78,8 @@ export async function deleteCategory(id: string) {
         revalidatePath('/admin/administration/blog');
         return response;
     } catch (error) {
-        console.error('Error creating category', error);
-        return { error: 'Error creating category' };
+        console.error('Error delete category', error);
+        return { error: 'Error delete category' };
     }
 }
 
