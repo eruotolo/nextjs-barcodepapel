@@ -9,12 +9,10 @@ const AuthAdapter = () => {
         }
 
         try {
-            const updatedUser = await prisma.user.update({
+            return await prisma.user.update({
                 where: { id: userId },
                 data: userData,
             });
-
-            return updatedUser;
         } catch (error) {
             if (error instanceof Prisma.PrismaClientKnownRequestError) {
                 throw new Error(`Error de base de datos: ${error.message}`);
