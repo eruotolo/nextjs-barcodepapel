@@ -3,6 +3,13 @@
 import prisma from '@/lib/db/db';
 import type { BlogInterface, BlogUniqueInterface } from '@/types/Administration/Blog/BlogInterface';
 
+// Crear el formateador de fechas como constante para reutilización
+const DATE_FORMATTER = new Intl.DateTimeFormat('es-ES', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+});
+
 export async function getAllPost(): Promise<BlogInterface[]> {
     try {
         const response = await prisma.blog.findMany({
@@ -38,19 +45,10 @@ export async function getAllPost(): Promise<BlogInterface[]> {
             },
         });
 
-        // Crear una única instancia del formateador de fechas
-        const dateFormatter = new Intl.DateTimeFormat('es-ES', {
-            day: 'numeric',
-            month: 'long',
-            year: 'numeric',
-        });
-
-        // Mapear y formatear las fechas
+        // Mapear y formatear las fechas usando el formateador reutilizable
         return response.map((blog) => ({
             ...blog,
-            createdAt: dateFormatter.format(
-                blog.createdAt instanceof Date ? blog.createdAt : new Date(blog.createdAt),
-            ),
+            createdAt: DATE_FORMATTER.format(blog.createdAt),
         }));
     } catch (error) {
         console.error('Error fetching blog', error);
@@ -60,7 +58,7 @@ export async function getAllPost(): Promise<BlogInterface[]> {
 
 export async function getPostById(id: string): Promise<BlogUniqueInterface | null> {
     try {
-        const response = await prisma.blog.findUnique({
+        return await prisma.blog.findUnique({
             where: { id },
             select: {
                 id: true,
@@ -77,14 +75,8 @@ export async function getPostById(id: string): Promise<BlogUniqueInterface | nul
                 },
             },
         });
-
-        if (!response) {
-            throw new Error(`Error fetching blog with id ${id} not found`);
-        }
-
-        return response;
     } catch (error) {
-        console.error('Error fetching blog by ID', error);
+        console.error(`Error fetching blog post with ID ${id}:`, error);
         throw error;
     }
 }

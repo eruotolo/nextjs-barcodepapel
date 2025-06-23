@@ -37,7 +37,7 @@ export async function createCategory(formData: FormData) {
         return response;
     } catch (error) {
         console.error('Error creating category', error);
-        return { error: 'Error creating category' };
+        throw error;
     }
 }
 
@@ -79,7 +79,7 @@ export async function deleteCategory(id: string) {
         return response;
     } catch (error) {
         console.error('Error delete category', error);
-        return { error: 'Error delete category' };
+        throw error;
     }
 }
 
@@ -137,6 +137,6 @@ export async function updateCategory(id: string, formData: FormData) {
         return response;
     } catch (error) {
         console.error('Error updating category', error);
-        return { error: 'Error updating category' };
+        throw error;
     }
 }

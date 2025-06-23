@@ -65,7 +65,7 @@ export async function createPost(formData: FormData) {
         return response;
     } catch (error) {
         console.error('Error creating Post', error);
-        return { error: 'Error creating Post' };
+        throw error;
     }
 }
 
@@ -107,7 +107,7 @@ export async function deletePost(id: string) {
         return response;
     } catch (error) {
         console.error('Error deleting Post', error);
-        return { error: 'Error deleting Post' };
+        throw error;
     }
 }
 
@@ -190,6 +190,6 @@ export async function updatePost(id: string, formData: FormData) {
         return response;
     } catch (error) {
         console.error('Error updating post', error);
-        return { error: 'Error updating post' };
+        throw error;
     }
 }

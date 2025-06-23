@@ -1,6 +1,7 @@
 'use server';
 
 import prisma from '@/lib/db/db';
+import { pages } from 'next/dist/build/templates/app-page';
 
 export interface Page {
     id: string;
@@ -17,7 +18,7 @@ export interface Page {
 
 export async function getPages() {
     try {
-        const pages = await prisma.page.findMany({
+        return await prisma.page.findMany({
             where: {
                 state: 1,
             },
@@ -34,11 +35,9 @@ export async function getPages() {
                 },
             },
         });
-
-        return pages;
     } catch (error) {
         console.error('Error fetching pages:', error);
-        throw new Error('Failed to fetch pages');
+        throw error;
     }
 }
 
@@ -81,6 +80,6 @@ export async function checkPageAccess(path: string, roles: string[]) {
         return { hasAccess };
     } catch (error) {
         console.error('Error checking page access:', error);
-        throw new Error('Failed to check page access');
+        throw error;
     }
 }
