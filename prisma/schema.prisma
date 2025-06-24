@@ -197,12 +197,24 @@ model BlogCategory {
     @@unique([blogId, categoryId])
 }
 
+model Teams {
+    id          String    @id @default(uuid())
+    name        String
+    image       String?
+    description String
+    createdAt   DateTime  @default(now())
+    updatedAt   DateTime? @updatedAt
+
+    @@index([name])
+}
+
 model EventeCalendar {
     id           String    @id @default(uuid())
     name         String
     image        String?
-    venue        String?
     date         DateTime
+    description  String?
+    venue        String?
     showTime     String?   @db.VarChar(5)
     audienceType String?
     price        Decimal?  @db.Decimal(10, 2)
@@ -214,24 +226,13 @@ model EventeCalendar {
 
 model PrintedMaterial {
     id            String    @id @default(uuid())
-    numberVersion String
+    image         String?
+    numberVersion Int
     name          String
     description   String
     link          String
     createdAt     DateTime  @default(now())
     updatedAt     DateTime? @updatedAt
-
-    @@index([name])
-    @@index([numberVersion])
-}
-
-model Teams {
-    id          String    @id @default(uuid())
-    name        String
-    image       String?
-    description String
-    createdAt   DateTime  @default(now())
-    updatedAt   DateTime? @updatedAt
 
     @@index([name])
 }

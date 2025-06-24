@@ -1,7 +1,7 @@
 'use server';
 
+import { deleteFile, uploadFile } from '@/lib/blob/uploadFile';
 import prisma from '@/lib/db/db';
-import { put } from '@vercel/blob';
 import { revalidatePath } from 'next/cache';
 
 import { logAuditEvent } from '@/lib/audit/auditLogger';
@@ -21,15 +21,19 @@ export async function createPost(formData: FormData) {
             return { error: 'Required fields are missing' };
         }
 
-        let imageUrl: string | undefined;
+        let imageUrl: string | null = null;
         if (imageFile && imageFile.size > 0) {
-            const fileExtension = imageFile.name.split('.').pop() || 'jpg';
-            const fileName = `blog/${name.replace('@', '-at-')}-${Date.now()}.${fileExtension}`;
-            const blob = await put(fileName, imageFile, {
-                access: 'public',
-                token: process.env.BLOB_READ_WRITE_TOKEN,
-            });
-            imageUrl = blob.url;
+            try {
+                imageUrl = await uploadFile({
+                    file: imageFile,
+                    folder: 'blog',
+                    prefix: 'post-',
+                });
+            } catch (error) {
+                if (error instanceof Error) {
+                    return { error: error.message };
+                }
+            }
         }
 
         const response = await prisma.blog.create({
@@ -50,10 +54,16 @@ export async function createPost(formData: FormData) {
             action: AUDIT_ACTIONS.BLOG.CREATE,
             entity: AUDIT_ENTITIES.BLOG,
             entityId: response.id,
-            description: `City "${name}" created`,
+            description: `Post "${name}" created`,
             metadata: {
                 blogId: response.id,
-                name,
+                data: {
+                    name,
+                    primaryCategoryId,
+                    author,
+                    description,
+                    image: imageUrl,
+                },
             },
             userId: session?.user?.id,
             userName: session?.user?.name
@@ -81,6 +91,11 @@ export async function deletePost(id: string) {
 
         if (!blogToDelete) {
             return { error: 'Post does not exist' };
+        }
+
+        // Eliminar la imagen si existe
+        if (blogToDelete.image) {
+            await deleteFile(blogToDelete.image);
         }
 
         const response = await prisma.blog.delete({
@@ -137,18 +152,31 @@ export async function updatePost(id: string, formData: FormData) {
             primaryCategoryId: string;
             author: string;
             description: string;
-            image?: string;
+            image?: string | null;
         } = { name, primaryCategoryId, author, description };
 
+        let newImageUrl: string | null = null;
         // Manejar la subida de imagen si existe
         if (imageFile && imageFile.size > 0) {
-            const fileExtension = imageFile.name.split('.').pop() || 'jpg';
-            const fileName = `blog/${id}-${Date.now()}.${fileExtension}`;
-            const blob = await put(fileName, imageFile, {
-                access: 'public',
-                token: process.env.BLOB_READ_WRITE_TOKEN,
-            });
-            updateData.image = blob.url;
+            try {
+                // Primero subimos la nueva imagen
+                newImageUrl = await uploadFile({
+                    file: imageFile,
+                    folder: 'blog',
+                    prefix: 'post-',
+                });
+
+                // Si la subida fue exitosa y existe una imagen anterior, la eliminamos
+                if (newImageUrl && currentPost.image) {
+                    await deleteFile(currentPost.image);
+                }
+
+                updateData.image = newImageUrl;
+            } catch (error) {
+                if (error instanceof Error) {
+                    return { error: error.message };
+                }
+            }
         }
 
         const response = await prisma.blog.update({
@@ -159,7 +187,6 @@ export async function updatePost(id: string, formData: FormData) {
             },
         });
 
-        // Agregar registro de auditoría
         const session = await getServerSession(authOptions);
         await logAuditEvent({
             action: AUDIT_ACTIONS.BLOG.UPDATE,
@@ -169,14 +196,35 @@ export async function updatePost(id: string, formData: FormData) {
             metadata: {
                 before: {
                     name: currentPost.name,
+                    image: currentPost.image,
+                    primaryCategoryId: currentPost.primaryCategoryId,
+                    author: currentPost.author,
+                    description: currentPost.description,
                 },
                 after: {
                     name: response.name,
+                    image: response.image,
+                    primaryCategoryId: response.primaryCategoryId,
+                    author: response.author,
+                    description: response.description,
                 },
                 changes: {
                     name:
                         name !== currentPost.name
                             ? { from: currentPost.name, to: name }
+                            : undefined,
+                    image: newImageUrl ? { from: currentPost.image, to: newImageUrl } : undefined,
+                    primaryCategoryId:
+                        primaryCategoryId !== currentPost.primaryCategoryId
+                            ? { from: currentPost.primaryCategoryId, to: primaryCategoryId }
+                            : undefined,
+                    author:
+                        author !== currentPost.author
+                            ? { from: currentPost.author, to: author }
+                            : undefined,
+                    description:
+                        description !== currentPost.description
+                            ? { from: currentPost.description, to: description }
                             : undefined,
                 },
             },

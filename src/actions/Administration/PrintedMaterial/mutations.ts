@@ -9,11 +9,13 @@ import { AUDIT_ACTIONS, AUDIT_ENTITIES } from '@/lib/audit/auditType';
 import { authOptions } from '@/lib/auth/authOptions';
 import { getServerSession } from 'next-auth';
 
-export async function createTeam(formData: FormData) {
+export async function createMaterial(formData: FormData) {
     try {
+        const imageFile = formData.get('image') as File | null;
+        const numberVersion = Number(formData.get('numberVersion'));
         const name = formData.get('name') as string;
         const description = formData.get('description') as string;
-        const imageFile = formData.get('image') as File | null;
+        const link = formData.get('link') as string;
 
         if (!name) {
             return { error: 'Teams name required' };
@@ -24,8 +26,8 @@ export async function createTeam(formData: FormData) {
             try {
                 imageUrl = await uploadFile({
                     file: imageFile,
-                    folder: 'teams',
-                    prefix: 'team-',
+                    folder: 'material',
+                    prefix: 'material-',
                 });
             } catch (error) {
                 if (error instanceof Error) {
@@ -34,22 +36,24 @@ export async function createTeam(formData: FormData) {
             }
         }
 
-        const response = await prisma.teams.create({
+        const response = await prisma.printedMaterial.create({
             data: {
+                image: imageUrl,
+                numberVersion,
                 name,
                 description,
-                image: imageUrl,
+                link,
             },
         });
 
         const session = await getServerSession(authOptions);
         await logAuditEvent({
-            action: AUDIT_ACTIONS.TEAMS.CREATE,
-            entity: AUDIT_ENTITIES.TEAMS,
+            action: AUDIT_ACTIONS.MATERIALS.CREATE,
+            entity: AUDIT_ENTITIES.MATERIALS,
             entityId: response.id,
-            description: `Team "${name}" created`,
+            description: `Material "${name}" created`,
             metadata: {
-                teamId: response.id,
+                materialId: response.id,
                 name,
             },
             userId: session?.user?.id,
@@ -58,46 +62,46 @@ export async function createTeam(formData: FormData) {
                 : undefined,
         });
 
-        revalidatePath('/admin/administration/teams');
+        revalidatePath('/admin/administration/material');
         return response;
     } catch (error) {
-        console.error('Error creating team', error);
+        console.error('Error creating material', error);
         throw error;
     }
 }
 
-export async function deleteTeam(id: string) {
+export async function deleteMaterial(id: string) {
     try {
         if (!id) {
-            return { error: 'Team not found' };
+            return { error: 'Material not found' };
         }
 
-        const teamToDelete = await prisma.teams.findUnique({
+        const materialToDelete = await prisma.printedMaterial.findUnique({
             where: { id },
+            select: { image: true },
         });
 
-        if (!teamToDelete) {
-            return { error: 'Team does not exist' };
+        if (!materialToDelete) {
+            return { error: 'Material does not exist' };
         }
 
-        // Eliminar la imagen si existe
-        if (teamToDelete.image) {
-            await deleteFile(teamToDelete.image);
+        if (materialToDelete.image) {
+            await deleteFile(materialToDelete.image);
         }
 
-        const response = await prisma.teams.deleteMany({
+        const response = await prisma.printedMaterial.delete({
             where: { id },
         });
 
         const session = await getServerSession(authOptions);
         await logAuditEvent({
-            action: AUDIT_ACTIONS.TEAMS.DELETE,
-            entity: AUDIT_ENTITIES.TEAMS,
-            entityId: id,
-            description: `Team "${teamToDelete.name}" deleted`,
+            action: AUDIT_ACTIONS.MATERIALS.DELETE,
+            entity: AUDIT_ENTITIES.MATERIALS,
+            entityId: response.id,
+            description: `Material "${response.name}" deleted`,
             metadata: {
-                teamId: id,
-                name: teamToDelete.name,
+                materialId: response.id,
+                name: response.name,
             },
             userId: session?.user?.id,
             userName: session?.user?.name
@@ -105,53 +109,47 @@ export async function deleteTeam(id: string) {
                 : undefined,
         });
 
-        revalidatePath('/admin/administration/teams');
+        revalidatePath('/admin/administration/material');
         return response;
     } catch (error) {
-        console.error('Error delete team', error);
+        console.error('Error delete material', error);
         throw error;
     }
 }
 
-export async function updateTeam(id: string, formData: FormData) {
+export async function updateMaterial(id: string, formData: FormData) {
     try {
         if (!id) {
-            return { error: 'Team ID is required' };
+            return { error: 'Material ID is required' };
         }
 
-        const currentTeam = await prisma.teams.findUnique({
+        const currentTeam = await prisma.printedMaterial.findUnique({
             where: { id },
         });
 
         if (!currentTeam) {
-            return { error: 'Team does not exist' };
+            return { error: 'Material does not exist' };
         }
 
-        const name = (formData.get('name') as string) || currentTeam.name;
-        const description = (formData.get('description') as string) || currentTeam.description;
         const imageFile = formData.get('image') as File | null;
-
-        const updateData: { name: string; description: string; image?: string | null } = {
-            name,
-            description,
-        };
+        const numberVersion = Number(formData.get('numberVersion'));
+        const name = formData.get('name') as string;
+        const description = formData.get('description') as string;
+        const link = formData.get('link') as string;
 
         let newImageUrl: string | null = null;
         if (imageFile && imageFile.size > 0) {
             try {
-                // Primero subimos la nueva imagen
                 newImageUrl = await uploadFile({
                     file: imageFile,
-                    folder: 'teams',
-                    prefix: 'team-',
+                    folder: 'material',
+                    prefix: 'material-',
                 });
 
                 // Si la subida fue exitosa y existe una imagen anterior, la eliminamos
                 if (newImageUrl && currentTeam.image) {
                     await deleteFile(currentTeam.image);
                 }
-
-                updateData.image = newImageUrl;
             } catch (error) {
                 if (error instanceof Error) {
                     return { error: error.message };
@@ -159,30 +157,26 @@ export async function updateTeam(id: string, formData: FormData) {
             }
         }
 
-        const response = await prisma.teams.update({
+        const response = await prisma.printedMaterial.update({
             where: { id },
-            data: updateData,
+            data: {
+                image: newImageUrl,
+                numberVersion,
+                name,
+                description,
+                link,
+            },
         });
 
         const session = await getServerSession(authOptions);
         await logAuditEvent({
-            action: AUDIT_ACTIONS.BLOG.UPDATE,
-            entity: AUDIT_ENTITIES.BLOG,
-            entityId: id,
-            description: `Team "${name}" updated`,
+            action: AUDIT_ACTIONS.MATERIALS.UPDATE,
+            entity: AUDIT_ENTITIES.MATERIALS,
+            entityId: response.id,
+            description: `Material "${name}" updated`,
             metadata: {
-                before: {
-                    name: currentTeam.name,
-                },
-                after: {
-                    name: response.name,
-                },
-                changes: {
-                    name:
-                        name !== currentTeam.name
-                            ? { from: currentTeam.name, to: name }
-                            : undefined,
-                },
+                materialId: response.id,
+                name,
             },
             userId: session?.user?.id,
             userName: session?.user?.name
@@ -190,10 +184,10 @@ export async function updateTeam(id: string, formData: FormData) {
                 : undefined,
         });
 
-        revalidatePath('/admin/administration/teams');
+        revalidatePath('/admin/administration/material');
         return response;
     } catch (error) {
-        console.error('Error updating team', error);
+        console.error('Error updating material', error);
         throw error;
     }
 }

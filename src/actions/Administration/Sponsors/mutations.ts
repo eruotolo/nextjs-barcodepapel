@@ -9,14 +9,14 @@ import { AUDIT_ACTIONS, AUDIT_ENTITIES } from '@/lib/audit/auditType';
 import { authOptions } from '@/lib/auth/authOptions';
 import { getServerSession } from 'next-auth';
 
-export async function createTeam(formData: FormData) {
+export async function createSponsor(formData: FormData) {
     try {
         const name = formData.get('name') as string;
-        const description = formData.get('description') as string;
         const imageFile = formData.get('image') as File | null;
+        const link = formData.get('link') as string;
 
         if (!name) {
-            return { error: 'Teams name required' };
+            return { error: 'Sponsor name is required' };
         }
 
         let imageUrl: string | null = null;
@@ -24,8 +24,8 @@ export async function createTeam(formData: FormData) {
             try {
                 imageUrl = await uploadFile({
                     file: imageFile,
-                    folder: 'teams',
-                    prefix: 'team-',
+                    folder: 'sponsors',
+                    prefix: 'sponsor-',
                 });
             } catch (error) {
                 if (error instanceof Error) {
@@ -34,22 +34,22 @@ export async function createTeam(formData: FormData) {
             }
         }
 
-        const response = await prisma.teams.create({
+        const response = await prisma.sponsors.create({
             data: {
                 name,
-                description,
                 image: imageUrl,
+                link,
             },
         });
 
         const session = await getServerSession(authOptions);
         await logAuditEvent({
-            action: AUDIT_ACTIONS.TEAMS.CREATE,
-            entity: AUDIT_ENTITIES.TEAMS,
+            action: AUDIT_ACTIONS.SPONSORS.CREATE,
+            entity: AUDIT_ENTITIES.SPONSORS,
             entityId: response.id,
-            description: `Team "${name}" created`,
+            description: `Sponsor "${name}" created`,
             metadata: {
-                teamId: response.id,
+                sponsorId: response.id,
                 name,
             },
             userId: session?.user?.id,
@@ -58,46 +58,45 @@ export async function createTeam(formData: FormData) {
                 : undefined,
         });
 
-        revalidatePath('/admin/administration/teams');
+        revalidatePath('/admin/administration/sponsors');
         return response;
     } catch (error) {
-        console.error('Error creating team', error);
+        console.error('Error creating sponsor', error);
         throw error;
     }
 }
 
-export async function deleteTeam(id: string) {
+export async function deleteSponsor(id: string) {
     try {
         if (!id) {
-            return { error: 'Team not found' };
+            return { error: 'Sponsor ID is required' };
         }
 
-        const teamToDelete = await prisma.teams.findUnique({
+        const sponsorToDelete = await prisma.sponsors.findUnique({
             where: { id },
         });
 
-        if (!teamToDelete) {
-            return { error: 'Team does not exist' };
+        if (!sponsorToDelete) {
+            return { error: 'Sponsor not found' };
         }
 
-        // Eliminar la imagen si existe
-        if (teamToDelete.image) {
-            await deleteFile(teamToDelete.image);
+        if (sponsorToDelete.image) {
+            await deleteFile(sponsorToDelete.image);
         }
 
-        const response = await prisma.teams.deleteMany({
+        const response = await prisma.sponsors.delete({
             where: { id },
         });
 
         const session = await getServerSession(authOptions);
         await logAuditEvent({
-            action: AUDIT_ACTIONS.TEAMS.DELETE,
-            entity: AUDIT_ENTITIES.TEAMS,
-            entityId: id,
-            description: `Team "${teamToDelete.name}" deleted`,
+            action: AUDIT_ACTIONS.SPONSORS.DELETE,
+            entity: AUDIT_ENTITIES.SPONSORS,
+            entityId: response.id,
+            description: `Sponsor "${response.name}" deleted`,
             metadata: {
-                teamId: id,
-                name: teamToDelete.name,
+                sponsorId: response.id,
+                name: response.name,
             },
             userId: session?.user?.id,
             userName: session?.user?.name
@@ -105,53 +104,45 @@ export async function deleteTeam(id: string) {
                 : undefined,
         });
 
-        revalidatePath('/admin/administration/teams');
+        revalidatePath('/admin/administration/sponsors');
         return response;
     } catch (error) {
-        console.error('Error delete team', error);
+        console.error('Error deleting sponsor', error);
         throw error;
     }
 }
 
-export async function updateTeam(id: string, formData: FormData) {
+export async function updateSponsor(id: string, formData: FormData) {
     try {
         if (!id) {
-            return { error: 'Team ID is required' };
+            return { error: 'Sponsor ID is required' };
         }
 
-        const currentTeam = await prisma.teams.findUnique({
+        const currentSponsor = await prisma.sponsors.findUnique({
             where: { id },
         });
 
-        if (!currentTeam) {
-            return { error: 'Team does not exist' };
+        if (!currentSponsor) {
+            return { error: 'Sponsor does not exist' };
         }
 
-        const name = (formData.get('name') as string) || currentTeam.name;
-        const description = (formData.get('description') as string) || currentTeam.description;
+        const name = formData.get('name') as string;
         const imageFile = formData.get('image') as File | null;
-
-        const updateData: { name: string; description: string; image?: string | null } = {
-            name,
-            description,
-        };
+        const link = formData.get('link') as string;
 
         let newImageUrl: string | null = null;
         if (imageFile && imageFile.size > 0) {
             try {
-                // Primero subimos la nueva imagen
                 newImageUrl = await uploadFile({
                     file: imageFile,
-                    folder: 'teams',
-                    prefix: 'team-',
+                    folder: 'sponsors',
+                    prefix: 'sponsor-',
                 });
 
                 // Si la subida fue exitosa y existe una imagen anterior, la eliminamos
-                if (newImageUrl && currentTeam.image) {
-                    await deleteFile(currentTeam.image);
+                if (newImageUrl && currentSponsor.image) {
+                    await deleteFile(currentSponsor.image);
                 }
-
-                updateData.image = newImageUrl;
             } catch (error) {
                 if (error instanceof Error) {
                     return { error: error.message };
@@ -159,41 +150,34 @@ export async function updateTeam(id: string, formData: FormData) {
             }
         }
 
-        const response = await prisma.teams.update({
+        const response = await prisma.sponsors.update({
             where: { id },
-            data: updateData,
+            data: {
+                name,
+                image: newImageUrl,
+                link,
+            },
         });
 
         const session = await getServerSession(authOptions);
         await logAuditEvent({
-            action: AUDIT_ACTIONS.BLOG.UPDATE,
-            entity: AUDIT_ENTITIES.BLOG,
-            entityId: id,
-            description: `Team "${name}" updated`,
+            action: AUDIT_ACTIONS.SPONSORS.UPDATE,
+            entity: AUDIT_ENTITIES.SPONSORS,
+            entityId: response.id,
+            description: `Sponsor "${name}" updated`,
             metadata: {
-                before: {
-                    name: currentTeam.name,
-                },
-                after: {
-                    name: response.name,
-                },
-                changes: {
-                    name:
-                        name !== currentTeam.name
-                            ? { from: currentTeam.name, to: name }
-                            : undefined,
-                },
+                sponsorId: response.id,
+                name,
             },
             userId: session?.user?.id,
             userName: session?.user?.name
                 ? `${session.user.name} ${session.user.lastName || ''}`.trim()
                 : undefined,
         });
-
-        revalidatePath('/admin/administration/teams');
+        revalidatePath('/admin/administration/sponsors');
         return response;
     } catch (error) {
-        console.error('Error updating team', error);
+        console.error('Error updating sponsor', error);
         throw error;
     }
 }
