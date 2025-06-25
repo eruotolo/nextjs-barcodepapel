@@ -54,8 +54,8 @@ export default function EditUserModal({
                             setImagePreview(user.image);
                         }
                     }
-                } catch (e) {
-                    console.log(e);
+                } catch (error) {
+                    console.log(error);
                 }
             }
         }

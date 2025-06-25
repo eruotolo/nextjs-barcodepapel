@@ -16,7 +16,7 @@ export interface UploadFileOptions {
     prefix?: string;
 }
 
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB en bytes
+const MAX_FILE_SIZE = 4 * 1024 * 1024; // 4MB en bytes
 const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
 const ALLOWED_EXTENSIONS = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
 
@@ -27,7 +27,7 @@ export async function uploadFile({
 }: UploadFileOptions): Promise<string | null> {
     // Validar tamaño del archivo
     if (!file || file.size > MAX_FILE_SIZE) {
-        throw new Error('El archivo excede el tamaño máximo permitido de 5MB');
+        throw new Error('El archivo excede el tamaño máximo permitido de 4MB');
     }
 
     // Validar tipo de archivo

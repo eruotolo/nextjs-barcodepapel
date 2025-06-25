@@ -27,7 +27,8 @@
                 "useConst": "error",
                 "useEnumInitializers": "off",
                 "noUselessElse": "error",
-                "useTemplate": "error"
+                "useTemplate": "error",
+                "useSelfClosingElements": "off"
             },
             "a11y": {
                 "useKeyWithClickEvents": "off",

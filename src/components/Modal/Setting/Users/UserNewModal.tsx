@@ -7,8 +7,8 @@ import { useForm } from 'react-hook-form';
 
 import { createUser } from '@/actions/Settings/Users';
 import BtnActionNew from '@/components/BtnActionNew/BtnActionNew';
-import type { UserFormData } from '@/types/settings/Users/UsersInterface';
 import type { UpdateData } from '@/types/settings/Generic/InterfaceGeneric';
+import type { UserFormData } from '@/types/settings/Users/UsersInterface';
 
 import {
     Dialog,
@@ -61,7 +61,7 @@ export default function UserNewModal({ refreshAction }: UpdateData) {
             }
 
             // Éxito: cerrar modal, refrescar tabla y resetear formulario
-            await refreshAction();
+            refreshAction();
             reset();
             toast.success('Nuevo Usuario Successful', {
                 description: 'El usuario se ha creado correctamente.',

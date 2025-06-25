@@ -1,0 +1,216 @@
+'use client';
+
+import Image from 'next/image';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+
+import { getTeamById, updateTeam } from '@/actions/Administration/Teams';
+import type { TeamsInterface } from '@/types/Administration/Teams/TeamsInterface';
+import type { EditModalPropsAlt } from '@/types/settings/Generic/InterfaceGeneric';
+
+import BtnSubmit from '@/components/BtnSubmit/BtnSubmit';
+
+import { Button } from '@/components/ui/button';
+import {
+    Dialog,
+    DialogClose,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { FilePenLine } from 'lucide-react';
+import { toast } from 'sonner';
+
+export default function EditTeamModal({
+    id,
+    refreshAction,
+    open,
+    onCloseAction,
+}: EditModalPropsAlt) {
+    const {
+        register,
+        reset,
+        setValue,
+        handleSubmit,
+        formState: { errors },
+    } = useForm<TeamsInterface>({ mode: 'onChange' });
+
+    const [error, setError] = useState('');
+    const [imagePreview, setImagePreview] = useState('/team.jpg');
+    const [teamData, setTeamData] = useState<TeamsInterface | null>(null);
+    const [selectedImage, setSelectedImage] = useState<File | null>(null);
+
+    useEffect(() => {
+        if (!open) {
+            reset();
+            setImagePreview('/team.jpg');
+            setError('');
+            setTeamData(null);
+        }
+    }, [open, reset]);
+
+    const handleCloseModal = () => {
+        onCloseAction(false);
+        reset();
+        setImagePreview('/team.jpg');
+        setError('');
+        setTeamData(null);
+    };
+
+    useEffect(() => {
+        const loadTeamData = async () => {
+            if (open && id) {
+                try {
+                    const team = await getTeamById(id);
+                    if (team) {
+                        setTeamData(team);
+                        setValue('name', team.name);
+                        setValue('description', team.description);
+                        // Si el equipo tiene imagen, mostrarla
+                        if (team.image) {
+                            setImagePreview(team.image);
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error al cargar los datos del equipo:', error);
+                    toast.error('Error', {
+                        description: 'No se pudieron cargar los datos del equipo',
+                    });
+                }
+            }
+        }
+        loadTeamData();
+    }, [open, id, setValue]);
+
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        const maxSizeInBytes = 4194304; // 4MB
+
+        if (file) {
+            if (file.size > maxSizeInBytes) {
+                setError('La imagen no puede superar 4MB.');
+                e.target.value = '';
+                setImagePreview(teamData?.image || '/team.jpg');
+                setSelectedImage(null);
+                return;
+            }
+            setError('');
+            const previewUrl = URL.createObjectURL(file);
+            setImagePreview(previewUrl);
+            setSelectedImage(file);
+        }
+    };
+
+    const onSubmit = async (data: TeamsInterface) => {
+        const formData = new FormData();
+        formData.append('name', data.name);
+        formData.append('description', data.description);
+        if (selectedImage) {
+            formData.append('image', selectedImage);
+        }
+        const response = await updateTeam(id as string, formData);
+        if ('error' in response) {
+            setError(response.error);
+        } else {
+            refreshAction?.();
+            onCloseAction(false);
+            toast.success('Editado Correctamente', {
+                description: 'El miembro se ha editado correctamente.',
+            });
+        }
+    };
+
+    return (
+        <Dialog open={open} onOpenChange={handleCloseModal}>
+            <DialogContent className="overflow-hidden sm:max-w-[700px]">
+                <DialogHeader>
+                    <DialogTitle>Editar Miembro del Equipo</DialogTitle>
+                    <DialogDescription>
+                        Modifica los datos del miembro del equipo. Puedes cambiar el nombre,
+                        descripción e imagen. Asegúrate de que toda la información esté correcta
+                        antes de guardar los cambios.
+                    </DialogDescription>
+                </DialogHeader>
+
+                <form onSubmit={handleSubmit(onSubmit)}>
+                    <div className="grid grid-cols-3">
+                        <div className="col-span-2 mr-[15px]">
+                            <div className="mb-[15px]">
+                                <Label className="custom-label">Nombre</Label>
+                                <Input
+                                    id="name"
+                                    type="text"
+                                    placeholder="Nombre Completo"
+                                    className="w-full"
+                                    autoComplete="off"
+                                    {...register('name', {
+                                        required: 'El nombre es obligatorio'
+                                    })}
+                                />
+                                {errors.name && (
+                                    <p className="custom-form-error">{errors.name.message}</p>
+                                )}
+                            </div>
+                            <div className="mb-[15px]">
+                                <Label className="custom-label">Descripción</Label>
+                                <Textarea
+                                    id="description"
+                                    placeholder="Escribe la descripción de este miembro"
+                                    {...register('description', {
+                                        required: 'La descripción es requerida',
+                                    })}
+                                />
+                                {errors.description && (
+                                    <p className="custom-form-error">
+                                        {errors.description.message}
+                                    </p>
+                                )}
+                            </div>
+                        </div>
+                        <div className="col-span-1 flex flex-col items-center">
+                            <Image
+                                src={imagePreview}
+                                width={220}
+                                height={220}
+                                alt="Vista previa de la imagen"
+                                className="h-[200px] w-[200px] rounded-[50%] object-cover"
+                            />
+                            <label
+                                htmlFor="file-upload"
+                                className="mt-[34px] flex w-full cursor-pointer items-center justify-center rounded-md bg-gray-600 px-4 py-2 text-[13px] font-medium text-white hover:bg-gray-400 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none"
+                            >
+                                <FilePenLine className="mr-2 h-5 w-5" />
+                                Cambiar foto
+                            </label>
+                            <Input
+                                id="file-upload"
+                                type="file"
+                                accept="image/*"
+                                className="hidden"
+                                onChange={handleImageChange}
+                            />
+                        </div>
+                    </div>
+                    {error && <p className="text-sm text-red-500">{error}</p>}
+                    <DialogFooter className="items-end">
+                        <DialogClose asChild>
+                            <Button
+                                type="button"
+                                variant="outline"
+                                onClick={handleCloseModal}
+                            >
+                                Cancelar
+                            </Button>
+                        </DialogClose>
+                        <BtnSubmit label="Actualizar" />
+                    </DialogFooter>
+                </form>
+            </DialogContent>
+        </Dialog>
+    );
+}
