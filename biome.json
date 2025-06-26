@@ -8,7 +8,7 @@
         "rules": {
             "recommended": true,
             "correctness": {
-                "noUnusedImports": "warn",
+                "noUnusedImports": "off",
                 "noUnusedVariables": "warn",
                 "useExhaustiveDependencies": "warn"
             },
@@ -36,7 +36,11 @@
             },
             "complexity": {
                 "noBannedTypes": "warn",
-                "noStaticOnlyClass": "warn"
+                "noStaticOnlyClass": "warn",
+                "noExcessiveCognitiveComplexity": "off"
+            },
+            "nursery": {
+                "noDuplicatedFields": "off"
             }
         }
     },

@@ -1,4 +1,12 @@
-import { LayoutDashboard, LifeBuoy, Newspaper, Settings2, Shield, Users } from 'lucide-react';
+import {
+    LayoutDashboard,
+    LifeBuoy,
+    Medal,
+    Newspaper,
+    Settings2,
+    Shield,
+    Users,
+} from 'lucide-react';
 
 export const navData = {
     navMain: [
@@ -18,6 +26,12 @@ export const navData = {
             title: 'Equipo',
             url: '/admin/administration/teams',
             icon: Users,
+            roles: [],
+        },
+        {
+            title: 'Sponsors',
+            url: '/admin/administration/sponsors',
+            icon: Medal,
             roles: [],
         },
     ],

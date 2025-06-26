@@ -9,7 +9,6 @@ import type { TeamsInterface } from '@/types/Administration/Teams/TeamsInterface
 import type { EditModalPropsAlt } from '@/types/settings/Generic/InterfaceGeneric';
 
 import BtnSubmit from '@/components/BtnSubmit/BtnSubmit';
-
 import { Button } from '@/components/ui/button';
 import {
     Dialog,
@@ -51,15 +50,12 @@ export default function EditTeamModal({
             setImagePreview('/team.jpg');
             setError('');
             setTeamData(null);
+            setSelectedImage(null);
         }
     }, [open, reset]);
 
     const handleCloseModal = () => {
         onCloseAction(false);
-        reset();
-        setImagePreview('/team.jpg');
-        setError('');
-        setTeamData(null);
     };
 
     useEffect(() => {
@@ -83,7 +79,7 @@ export default function EditTeamModal({
                     });
                 }
             }
-        }
+        };
         loadTeamData();
     }, [open, id, setValue]);
 
@@ -118,7 +114,7 @@ export default function EditTeamModal({
             setError(response.error);
         } else {
             refreshAction?.();
-            onCloseAction(false);
+            handleCloseModal();
             toast.success('Editado Correctamente', {
                 description: 'El miembro se ha editado correctamente.',
             });
@@ -149,7 +145,7 @@ export default function EditTeamModal({
                                     className="w-full"
                                     autoComplete="off"
                                     {...register('name', {
-                                        required: 'El nombre es obligatorio'
+                                        required: 'El nombre es obligatorio',
                                     })}
                                 />
                                 {errors.name && (
@@ -199,11 +195,7 @@ export default function EditTeamModal({
                     {error && <p className="text-sm text-red-500">{error}</p>}
                     <DialogFooter className="items-end">
                         <DialogClose asChild>
-                            <Button
-                                type="button"
-                                variant="outline"
-                                onClick={handleCloseModal}
-                            >
+                            <Button type="button" variant="outline" onClick={handleCloseModal}>
                                 Cancelar
                             </Button>
                         </DialogClose>

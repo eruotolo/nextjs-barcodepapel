@@ -1,7 +1,7 @@
 'use server';
 
 import prisma from '@/lib/db/db';
-import type { CategoryInterface } from '@/types/Administration/Blog/CategoryInterface';
+import type { CategoryInterface } from '@/types/Administration/Blogs/CategoryInterface';
 
 export async function getAllCategories(): Promise<CategoryInterface[]> {
     try {

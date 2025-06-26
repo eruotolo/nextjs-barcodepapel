@@ -1,15 +1,14 @@
 'use client';
 
 import Image from 'next/image';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
-import { createTeam } from '@/actions/Administration/Teams';
-import BtnActionNew from '@/components/BtnActionNew/BtnActionNew';
-import BtnSubmit from '@/components/BtnSubmit/BtnSubmit';
-import type { TeamsInterface } from '@/types/Administration/Teams/TeamsInterface';
-import type { UpdateData } from '@/types/settings/Generic/InterfaceGeneric';
+import { getSponsorById, updateSponsor } from '@/actions/Administration/Sponsors';
+import type { SponsorsInterface } from '@/types/Administration/Sponsors/SponsorsInterface';
+import type { EditModalPropsAlt } from '@/types/settings/Generic/InterfaceGeneric';
 
+import BtnSubmit from '@/components/BtnSubmit/BtnSubmit';
 import { Button } from '@/components/ui/button';
 import {
     Dialog,
@@ -22,29 +21,65 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import { FilePenLine } from 'lucide-react';
 import { toast } from 'sonner';
 
-export default function NewTeamModal({ refreshAction }: UpdateData) {
+export default function EditSponsorModal({
+    id,
+    refreshAction,
+    open,
+    onCloseAction,
+}: EditModalPropsAlt) {
     const {
         register,
         reset,
+        setValue,
         handleSubmit,
         formState: { errors },
-    } = useForm<TeamsInterface>({ mode: 'onChange' });
+    } = useForm<SponsorsInterface>({ mode: 'onChange' });
 
-    const [isOpen, setIsOpen] = useState(false);
     const [error, setError] = useState('');
-    const [imagePreview, setImagePreview] = useState('/team.jpg');
+    const [imagePreview, setImagePreview] = useState('/default.png');
+    const [sponsorData, setSponsorData] = useState<SponsorsInterface | null>(null);
     const [selectedImage, setSelectedImage] = useState<File | null>(null);
 
-    const handleOpenChange = (open: boolean) => {
-        setIsOpen(open);
+    useEffect(() => {
         if (!open) {
             reset();
+            setImagePreview('/default.png');
+            setError('');
+            setSponsorData(null);
+            setSelectedImage(null);
         }
+    }, [open, reset]);
+
+    const handleCloseModal = () => {
+        onCloseAction(false);
     };
+
+    useEffect(() => {
+        const loadSponsorData = async () => {
+            if (open && id) {
+                try {
+                    const sponsor = await getSponsorById(id);
+                    if (sponsor) {
+                        setSponsorData(sponsor);
+                        setValue('name', sponsor.name);
+                        setValue('link', sponsor.link || '');
+                        if (sponsor.image) {
+                            setImagePreview(sponsor.image);
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error al cargar los datos del sponsor:', error);
+                    toast.error('Error', {
+                        description: 'No se pudieron cargar los datos del sponsor',
+                    });
+                }
+            }
+        };
+        loadSponsorData();
+    }, [open, id, setValue]);
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -54,7 +89,7 @@ export default function NewTeamModal({ refreshAction }: UpdateData) {
             if (file.size > maxSizeInBytes) {
                 setError('La imagen no puede superar 4MB.');
                 e.target.value = '';
-                setImagePreview('/team.jpg');
+                setImagePreview(sponsorData?.image || '/default.png');
                 setSelectedImage(null);
                 return;
             }
@@ -65,48 +100,41 @@ export default function NewTeamModal({ refreshAction }: UpdateData) {
         }
     };
 
-    const onSubmit = async (data: TeamsInterface) => {
+    const onSubmit = async (data: SponsorsInterface) => {
         const formData = new FormData();
         formData.append('name', data.name);
-        formData.append('description', data.description);
+        if (data.link) {
+            formData.append('link', data.link);
+        }
         if (selectedImage) {
             formData.append('image', selectedImage);
         }
-        try {
-            const response = await createTeam(formData);
 
-            if (!response) {
-                setError('Problemas al crear el Team');
-                return;
-            }
-            refreshAction();
-            setIsOpen(false);
-            toast.success('Nuevo Miembro del Equipo Creado', {
-                description: 'El miembro se ha creado correctamente.',
+        const response = await updateSponsor(id as string, formData);
+
+        if ('error' in response) {
+            setError(response.error);
+        } else {
+            toast.success('Sponsor Editado Correctamente', {
+                description: 'El sponsor se ha editado correctamente.',
             });
-        } catch (error) {
-            reset();
-            toast.error('Nuevo Miembro Failed', {
-                description: 'Error al intentar crear el miembro',
-            });
-            setImagePreview('/team.jpg');
-            setError('Error al crear el miembro. Inténtalo de nuevo.');
-            console.error(error);
+            refreshAction?.();
+            handleCloseModal();
         }
     };
 
     return (
-        <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-            <BtnActionNew label="Nuevo" permission={['Crear']} />
+        <Dialog open={open} onOpenChange={handleCloseModal}>
             <DialogContent className="overflow-hidden sm:max-w-[700px]">
                 <DialogHeader>
-                    <DialogTitle>Crear Nuevo Miembro del Equipo</DialogTitle>
+                    <DialogTitle>Editar Sponsor</DialogTitle>
                     <DialogDescription>
-                        Introduce los datos del nuevo miembro del equipo, como el nombre y la
-                        imagen. Asegúrate de que toda la información esté correcta antes de proceder
-                        a crear la cuenta.
+                        Modifica los datos del sponsor. Puedes cambiar el nombre, link e imagen.
+                        Asegúrate de que toda la información esté correcta antes de guardar los
+                        cambios.
                     </DialogDescription>
                 </DialogHeader>
+
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <div className="grid grid-cols-3">
                         <div className="col-span-2 mr-[15px]">
@@ -118,25 +146,26 @@ export default function NewTeamModal({ refreshAction }: UpdateData) {
                                     placeholder="Nombre Completo"
                                     className="w-full"
                                     autoComplete="off"
-                                    {...register('name', { required: 'El nombre es obligatorio' })}
+                                    {...register('name', {
+                                        required: 'El nombre es obligatorio',
+                                    })}
                                 />
                                 {errors.name && (
                                     <p className="custom-form-error">{errors.name.message}</p>
                                 )}
                             </div>
                             <div className="mb-[15px]">
-                                <Label className="custom-label">Descripción</Label>
-                                <Textarea
-                                    id="description"
-                                    placeholder="Escribe la descripción de este miembro"
-                                    {...register('description', {
-                                        required: 'La descripción es requerida',
-                                    })}
+                                <Label className="custom-label">Link del Sponsor</Label>
+                                <Input
+                                    id="link"
+                                    type="text"
+                                    placeholder="https://ejemplo.com"
+                                    className="w-full"
+                                    autoComplete="off"
+                                    {...register('link')}
                                 />
-                                {errors.description && (
-                                    <p className="custom-form-error">
-                                        {errors.description.message}
-                                    </p>
+                                {errors.link && (
+                                    <p className="custom-form-error">{errors.link.message}</p>
                                 )}
                             </div>
                         </div>
@@ -149,14 +178,14 @@ export default function NewTeamModal({ refreshAction }: UpdateData) {
                                 className="h-[200px] w-[200px] rounded-[50%] object-cover"
                             />
                             <label
-                                htmlFor="file-upload"
+                                htmlFor="file-upload-sponsor-edit"
                                 className="mt-[34px] flex w-full cursor-pointer items-center justify-center rounded-md bg-gray-600 px-4 py-2 text-[13px] font-medium text-white hover:bg-gray-400 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none"
                             >
                                 <FilePenLine className="mr-2 h-5 w-5" />
                                 Cambiar foto
                             </label>
                             <Input
-                                id="file-upload"
+                                id="file-upload-sponsor-edit"
                                 type="file"
                                 accept="image/*"
                                 className="hidden"
@@ -167,11 +196,11 @@ export default function NewTeamModal({ refreshAction }: UpdateData) {
                     {error && <p className="text-sm text-red-500">{error}</p>}
                     <DialogFooter className="items-end">
                         <DialogClose asChild>
-                            <Button type="button" variant="outline">
+                            <Button type="button" variant="outline" onClick={handleCloseModal}>
                                 Cancelar
                             </Button>
                         </DialogClose>
-                        <BtnSubmit label="Crear" />
+                        <BtnSubmit label="Actualizar" />
                     </DialogFooter>
                 </form>
             </DialogContent>

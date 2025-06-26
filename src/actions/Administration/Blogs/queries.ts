@@ -1,7 +1,10 @@
 'use server';
 
 import prisma from '@/lib/db/db';
-import type { BlogInterface, BlogUniqueInterface } from '@/types/Administration/Blog/BlogInterface';
+import type {
+    BlogInterface,
+    BlogUniqueInterface,
+} from '@/types/Administration/Blogs/BlogInterface';
 
 // Crear el formateador de fechas como constante para reutilización
 const DATE_FORMATTER = new Intl.DateTimeFormat('es-ES', {

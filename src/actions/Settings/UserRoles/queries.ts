@@ -38,7 +38,7 @@ export async function updateUserRoles(id: string, roles: string[]) {
         throw new Error('User ID is invalid');
     }
 
-    if (!Array.isArray(roles) || roles.some((roleId) => roleId !== 'string')) {
+    if (!Array.isArray(roles) || roles.some((roleId) => typeof roleId !== 'string')) {
         throw new Error('Roles must be an array of valid IDs');
     }
 

@@ -1,7 +1,7 @@
 'use server';
 
 import prisma from '@/lib/db/db';
-import type { PrintedMaterialInterface } from '@/types/Administration/PrintedMaterial/PrintedMaterialInterface';
+import type { PrintedMaterialInterface } from '@/types/Administration/PrintedMaterials/PrintedMaterialInterface';
 
 export async function getAllMaterial(): Promise<PrintedMaterialInterface[]> {
     try {

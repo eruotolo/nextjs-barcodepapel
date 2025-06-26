@@ -4,10 +4,10 @@ import Image from 'next/image';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 
-import { createTeam } from '@/actions/Administration/Teams';
+import { createSponsor } from '@/actions/Administration/Sponsors';
 import BtnActionNew from '@/components/BtnActionNew/BtnActionNew';
 import BtnSubmit from '@/components/BtnSubmit/BtnSubmit';
-import type { TeamsInterface } from '@/types/Administration/Teams/TeamsInterface';
+import type { SponsorsInterface } from '@/types/Administration/Sponsors/SponsorsInterface';
 import type { UpdateData } from '@/types/settings/Generic/InterfaceGeneric';
 
 import { Button } from '@/components/ui/button';
@@ -22,21 +22,20 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import { FilePenLine } from 'lucide-react';
 import { toast } from 'sonner';
 
-export default function NewTeamModal({ refreshAction }: UpdateData) {
+export default function NewSponsorModal({ refreshAction }: UpdateData) {
     const {
         register,
         reset,
         handleSubmit,
         formState: { errors },
-    } = useForm<TeamsInterface>({ mode: 'onChange' });
+    } = useForm<SponsorsInterface>({ mode: 'onChange' });
 
     const [isOpen, setIsOpen] = useState(false);
     const [error, setError] = useState('');
-    const [imagePreview, setImagePreview] = useState('/team.jpg');
+    const [imagePreview, setImagePreview] = useState('/default.png');
     const [selectedImage, setSelectedImage] = useState<File | null>(null);
 
     const handleOpenChange = (open: boolean) => {
@@ -54,7 +53,7 @@ export default function NewTeamModal({ refreshAction }: UpdateData) {
             if (file.size > maxSizeInBytes) {
                 setError('La imagen no puede superar 4MB.');
                 e.target.value = '';
-                setImagePreview('/team.jpg');
+                setImagePreview('/default.png');
                 setSelectedImage(null);
                 return;
             }
@@ -65,32 +64,36 @@ export default function NewTeamModal({ refreshAction }: UpdateData) {
         }
     };
 
-    const onSubmit = async (data: TeamsInterface) => {
+    const onSubmit = async (data: SponsorsInterface) => {
         const formData = new FormData();
         formData.append('name', data.name);
-        formData.append('description', data.description);
+
+        if (data.link) {
+            formData.append('link', data.link);
+        }
+
         if (selectedImage) {
             formData.append('image', selectedImage);
         }
         try {
-            const response = await createTeam(formData);
+            const response = await createSponsor(formData);
 
             if (!response) {
-                setError('Problemas al crear el Team');
+                setError('Problemas al crear el Sponsors');
                 return;
             }
             refreshAction();
             setIsOpen(false);
-            toast.success('Nuevo Miembro del Equipo Creado', {
-                description: 'El miembro se ha creado correctamente.',
+            toast.success('Nuevo Sponsors Creado', {
+                description: 'El sponsors se ha creado correctamente.',
             });
         } catch (error) {
             reset();
-            toast.error('Nuevo Miembro Failed', {
-                description: 'Error al intentar crear el miembro',
+            toast.error('Nuevo Sponsors Failed', {
+                description: 'Error al intentar crear el sponsors',
             });
-            setImagePreview('/team.jpg');
-            setError('Error al crear el miembro. Inténtalo de nuevo.');
+            setImagePreview('/default.png');
+            setError('Error al crear el sponsors. Inténtalo de nuevo.');
             console.error(error);
         }
     };
@@ -98,49 +101,43 @@ export default function NewTeamModal({ refreshAction }: UpdateData) {
     return (
         <Dialog open={isOpen} onOpenChange={handleOpenChange}>
             <BtnActionNew label="Nuevo" permission={['Crear']} />
-            <DialogContent className="overflow-hidden sm:max-w-[700px]">
+            <DialogContent className="overflow-hidden sm:max-w-[500px]">
                 <DialogHeader>
-                    <DialogTitle>Crear Nuevo Miembro del Equipo</DialogTitle>
+                    <DialogTitle>Crear Nuevo Sponsors</DialogTitle>
                     <DialogDescription>
-                        Introduce los datos del nuevo miembro del equipo, como el nombre y la
-                        imagen. Asegúrate de que toda la información esté correcta antes de proceder
-                        a crear la cuenta.
+                        Introduce los datos del nuevo sponsors, como el nombre y la imagen.
+                        Asegúrate de que toda la información esté correcta antes de proceder a crear
+                        la cuenta.
                     </DialogDescription>
                 </DialogHeader>
                 <form onSubmit={handleSubmit(onSubmit)}>
-                    <div className="grid grid-cols-3">
-                        <div className="col-span-2 mr-[15px]">
-                            <div className="mb-[15px]">
-                                <Label className="custom-label">Nombre</Label>
-                                <Input
-                                    id="name"
-                                    type="text"
-                                    placeholder="Nombre Completo"
-                                    className="w-full"
-                                    autoComplete="off"
-                                    {...register('name', { required: 'El nombre es obligatorio' })}
-                                />
-                                {errors.name && (
-                                    <p className="custom-form-error">{errors.name.message}</p>
-                                )}
-                            </div>
-                            <div className="mb-[15px]">
-                                <Label className="custom-label">Descripción</Label>
-                                <Textarea
-                                    id="description"
-                                    placeholder="Escribe la descripción de este miembro"
-                                    {...register('description', {
-                                        required: 'La descripción es requerida',
-                                    })}
-                                />
-                                {errors.description && (
-                                    <p className="custom-form-error">
-                                        {errors.description.message}
-                                    </p>
-                                )}
-                            </div>
+                    <div className="flex flex-col">
+                        <div className="mb-[15px]">
+                            <Label className="custom-label">Nombre</Label>
+                            <Input
+                                id="name"
+                                type="text"
+                                placeholder="Nombre Completo"
+                                className="w-full"
+                                autoComplete="off"
+                                {...register('name', { required: 'El nombre es obligatorio' })}
+                            />
+                            {errors.name && (
+                                <p className="custom-form-error">{errors.name.message}</p>
+                            )}
                         </div>
-                        <div className="col-span-1 flex flex-col items-center">
+                        <div className="mb-[15px]">
+                            <Label className="custom-label">Link Sponsors</Label>
+                            <Input
+                                id="link"
+                                type="link"
+                                placeholder="Link del Sponsors"
+                                className="w-full"
+                                autoComplete="off"
+                                {...register('link')}
+                            />
+                        </div>
+                        <div className="mb-[15px]">
                             <Image
                                 src={imagePreview}
                                 width={220}
@@ -153,7 +150,7 @@ export default function NewTeamModal({ refreshAction }: UpdateData) {
                                 className="mt-[34px] flex w-full cursor-pointer items-center justify-center rounded-md bg-gray-600 px-4 py-2 text-[13px] font-medium text-white hover:bg-gray-400 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none"
                             >
                                 <FilePenLine className="mr-2 h-5 w-5" />
-                                Cambiar foto
+                                Imagen Sponsor
                             </label>
                             <Input
                                 id="file-upload"

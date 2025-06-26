@@ -1,7 +1,7 @@
 import type {
     BlogCategoryInterface,
     CategoryInterface,
-} from '@/types/Administration/Blog/CategoryInterface';
+} from '@/types/Administration/Blogs/CategoryInterface';
 
 export interface BlogInterface {
     id: string;
