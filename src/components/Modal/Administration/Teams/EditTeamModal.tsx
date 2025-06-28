@@ -132,7 +132,6 @@ export default function EditTeamModal({
                         antes de guardar los cambios.
                     </DialogDescription>
                 </DialogHeader>
-
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <div className="grid grid-cols-3">
                         <div className="col-span-2 mr-[15px]">

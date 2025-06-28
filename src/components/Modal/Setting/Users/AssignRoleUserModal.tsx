@@ -94,12 +94,12 @@ export default function AssignRoleUserModal({
         try {
             const roles = formData.getAll('roles') as string[];
             console.log('Roles from FormData:', roles); // Debug log
-            
+
             // Validar que roles sea un array válido
             if (!Array.isArray(roles)) {
                 throw new Error('Formato de roles inválido');
             }
-            
+
             const result = await updateUserRoles(id, roles);
             if (result.success) {
                 refreshAction?.();

@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -78,7 +77,9 @@ export default function AssignCategoriesModal({
     // Manejar cambio de selección de categorías
     const handleCategoryChange = (categoryId: string) => {
         setSelectedCategories((prev) =>
-            prev.includes(categoryId) ? prev.filter((id) => id !== categoryId) : [...prev, categoryId],
+            prev.includes(categoryId)
+                ? prev.filter((id) => id !== categoryId)
+                : [...prev, categoryId],
         );
     };
 
@@ -118,7 +119,7 @@ export default function AssignCategoriesModal({
                     </DialogDescription>
                 </DialogHeader>
                 <form onSubmit={handleSubmit}>
-                    <div className="mb-[15px] grid grid-cols-1 max-h-60 overflow-y-auto">
+                    <div className="mb-[15px] grid max-h-60 grid-cols-1 overflow-y-auto">
                         {allCategories.map((category) => (
                             <div key={category.id} className="flex items-center px-4 py-1">
                                 <input
@@ -141,7 +142,11 @@ export default function AssignCategoriesModal({
                     </div>
                     {error && <p className="mb-4 text-sm text-red-500">{error}</p>}
                     <DialogFooter>
-                        <Button type="button" variant="outline" onClick={() => onCloseAction(false)}>
+                        <Button
+                            type="button"
+                            variant="outline"
+                            onClick={() => onCloseAction(false)}
+                        >
                             Cancelar
                         </Button>
                         <SubmitButton disabled={allCategories.length === 0} />

@@ -1,7 +1,7 @@
 'use client';
 
-import Form from 'next/form';
 import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 
 import { createCategory } from '@/actions/Administration/Categories';
 import BtnActionNew from '@/components/BtnActionNew/BtnActionNew';
@@ -19,34 +19,42 @@ import {
     DialogTitle,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 
+interface CategoryFormData {
+    name: string;
+}
+
 export default function NewCategoryModal({ refreshAction }: UpdateData) {
+    const {
+        register,
+        reset,
+        handleSubmit,
+        formState: { errors },
+    } = useForm<CategoryFormData>({ mode: 'onChange' });
+
     const [isOpen, setIsOpen] = useState(false);
     const [error, setError] = useState('');
-    const [name, setName] = useState('');
-
-    const resetFormFields = () => {
-        setName('');
-        setError('');
-    };
 
     const handleOpenChange = (open: boolean) => {
         setIsOpen(open);
         if (!open) {
-            resetFormFields();
+            reset();
+            setError('');
         }
     };
 
-    const onSubmit = async (formData: FormData) => {
+    const onSubmit = async (data: CategoryFormData) => {
         setError('');
 
-        const name = formData.get('name');
-
-        if (!name || typeof name !== 'string' || name.trim() === '') {
+        if (!data.name || data.name.trim() === '') {
             setError('El nombre es requerido');
             return;
         }
+
+        const formData = new FormData();
+        formData.append('name', data.name);
 
         try {
             const response = await createCategory(formData);
@@ -60,7 +68,7 @@ export default function NewCategoryModal({ refreshAction }: UpdateData) {
                 description: 'La categoría se ha creado correctamente.',
             });
             refreshAction();
-            resetFormFields();
+            reset();
             setIsOpen(false);
         } catch (error) {
             console.error(error);
@@ -82,18 +90,18 @@ export default function NewCategoryModal({ refreshAction }: UpdateData) {
                         Introduce el nombre de la nueva categoría que deseas crear.
                     </DialogDescription>
                 </DialogHeader>
-                <Form action={onSubmit}>
+                <form onSubmit={handleSubmit(onSubmit)}>
                     <div className="mb-[15px] grid grid-cols-1">
+                        <Label className="custom-label">Nombre de la Categoría</Label>
                         <Input
                             id="name"
-                            name="name"
                             type="text"
                             placeholder="Nombre de la categoría"
                             className="w-full"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
+                            autoComplete="off"
+                            {...register('name', { required: 'El nombre es requerido' })}
                         />
-                        {error && <p className="custome-form-error">{error}</p>}
+                        {errors.name && <p className="custom-form-error">{errors.name.message}</p>}
                     </div>
                     {error && <p className="mb-4 text-sm text-red-500">{error}</p>}
                     <DialogFooter className="mt-6 items-end">
@@ -104,7 +112,7 @@ export default function NewCategoryModal({ refreshAction }: UpdateData) {
                         </DialogClose>
                         <BtnSubmit />
                     </DialogFooter>
-                </Form>
+                </form>
             </DialogContent>
         </Dialog>
     );

@@ -66,7 +66,7 @@ function ActionCell({ row, refreshTable }: ActionCellProps) {
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                     <Button variant="ghost" className="h-8 w-8 p-0">
-                        <span className="sr-only">Open menu</span>
+                        <span className="sr-only">Abrir menú</span>
                         <MoreHorizontal className="h-4 w-4" />
                     </Button>
                 </DropdownMenuTrigger>
@@ -121,6 +121,15 @@ export const EventCalendarsColumns = (
         },
     },
     {
+        id: 'Categoria',
+        accessorKey: 'eventCategory.name',
+        header: () => <div>Categoría</div>,
+        cell: ({ row }) => {
+            const categoryName = row.original.eventCategory?.name || 'Sin categoría';
+            return <div className="text-sm text-gray-600">{categoryName}</div>;
+        },
+    },
+    {
         id: 'Fecha',
         accessorKey: 'date',
         header: () => <div>Fecha</div>,
@@ -144,7 +153,7 @@ export const EventCalendarsColumns = (
         header: () => <div>Precio</div>,
         cell: ({ row }) => {
             const price = `${row.original.price || 'Gratis'}`;
-            return <div>{price}</div>;
+            return <div>CLP$ {price}</div>;
         },
     },
     {

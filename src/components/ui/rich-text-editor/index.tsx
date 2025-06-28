@@ -6,7 +6,7 @@ import Link from '@tiptap/extension-link';
 import TextAlign from '@tiptap/extension-text-align';
 import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import MenuBar from './menu-bar';
 
 interface RichTextEditorProps {
@@ -61,6 +61,13 @@ export default function RichTextEditor({
             setCharCount(text.length);
         },
     });
+
+    // Actualizar el contenido del editor cuando cambie la prop content
+    useEffect(() => {
+        if (editor && content !== editor.getHTML()) {
+            editor.commands.setContent(content);
+        }
+    }, [content, editor]);
 
     return (
         <div>

@@ -65,7 +65,9 @@ export async function deleteFile(url: string): Promise<void> {
         // Extraer la ruta relativa desde la URL (después del dominio)
         const urlObj = new URL(url);
         // El pathname comienza con '/', así que lo quitamos
-        const filePath = urlObj.pathname.startsWith('/') ? urlObj.pathname.slice(1) : urlObj.pathname;
+        const filePath = urlObj.pathname.startsWith('/')
+            ? urlObj.pathname.slice(1)
+            : urlObj.pathname;
 
         await del(filePath, {
             token: process.env.BLOB_READ_WRITE_TOKEN,

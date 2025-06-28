@@ -83,3 +83,51 @@ export async function getPostById(id: string): Promise<BlogUniqueInterface | nul
         throw error;
     }
 }
+
+export async function getPostFromHome(offset = 0, limit = 6): Promise<BlogInterface[]> {
+    try {
+        const response = await prisma.blog.findMany({
+            select: {
+                id: true,
+                name: true,
+                image: true,
+                author: true,
+                primaryCategoryId: true,
+                primaryCategory: {
+                    select: {
+                        id: true,
+                        name: true,
+                    },
+                },
+                BlogCategory: {
+                    select: {
+                        id: true,
+                        blogId: true,
+                        categoryId: true,
+                        category: {
+                            select: {
+                                id: true,
+                                name: true,
+                            },
+                        },
+                    },
+                },
+                createdAt: true,
+            },
+            orderBy: {
+                createdAt: 'desc',
+            },
+            skip: offset,
+            take: limit,
+        });
+
+        // Mapear y formatear las fechas usando el formateador reutilizable
+        return response.map((blog) => ({
+            ...blog,
+            createdAt: DATE_FORMATTER.format(blog.createdAt),
+        }));
+    } catch (error) {
+        console.error('Error fetching blog posts for home:', error);
+        throw error;
+    }
+}

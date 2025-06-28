@@ -4,7 +4,8 @@ import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
-import { getEventById, updateEvent } from '@/actions/Administration/EventCalendars';
+import { getEventByIdForEdit, updateEvent } from '@/actions/Administration/EventCalendars';
+import { getEventCategoriesForSelect } from '@/actions/Administration/EventCategories';
 import type {
     EventeCalendarInterface,
     EventeCalendarUniqueInterface,
@@ -24,9 +25,20 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 import { FilePenLine } from 'lucide-react';
 import { toast } from 'sonner';
+
+interface EventCategory {
+    id: string;
+    name: string;
+}
 
 export default function EditEventCalendarModal({
     id,
@@ -38,6 +50,7 @@ export default function EditEventCalendarModal({
         register,
         reset,
         setValue,
+        watch,
         handleSubmit,
         formState: { errors },
     } = useForm<EventeCalendarInterface>({ mode: 'onChange' });
@@ -46,6 +59,27 @@ export default function EditEventCalendarModal({
     const [imagePreview, setImagePreview] = useState('/default.png');
     const [eventData, setEventData] = useState<EventeCalendarUniqueInterface | null>(null);
     const [selectedImage, setSelectedImage] = useState<File | null>(null);
+    const [categories, setCategories] = useState<EventCategory[]>([]);
+
+    const selectedCategoryId = watch('eventCategoryId');
+
+    // Cargar categorías
+    useEffect(() => {
+        const loadCategories = async () => {
+            if (open) {
+                try {
+                    const data = await getEventCategoriesForSelect();
+                    setCategories(data);
+                } catch (error) {
+                    console.error('Error loading categories:', error);
+                    toast.error('Error', {
+                        description: 'No se pudieron cargar las categorías',
+                    });
+                }
+            }
+        };
+        loadCategories();
+    }, [open]);
 
     useEffect(() => {
         if (!open) {
@@ -65,21 +99,20 @@ export default function EditEventCalendarModal({
         const loadEventData = async () => {
             if (open && id) {
                 try {
-                    const event = await getEventById(id);
+                    const event = await getEventByIdForEdit(id);
                     if (event) {
                         setEventData(event);
                         setValue('name', event.name);
-                        setValue('description', event.description || '');
                         setValue('venue', event.venue || '');
                         setValue('showTime', event.showTime || '');
                         setValue('audienceType', event.audienceType || '');
                         setValue('price', event.price || '');
+                        setValue('linkUrl', event.linkUrl || '');
+                        setValue('eventCategoryId', event.eventCategoryId);
 
-                        // Convert the event date to YYYY-MM-DD format for date input
-                        // Since the query returns a formatted date string, we'll use today's date
-                        // TODO: Consider returning the raw date from the query for better editing experience
-                        const today = new Date();
-                        const dateValue = today.toISOString().slice(0, 10); // YYYY-MM-DD format
+                        // Convert the raw date to YYYY-MM-DD format for date input
+                        const eventDate = new Date(event.date);
+                        const dateValue = eventDate.toISOString().slice(0, 10);
                         setValue('date', dateValue);
 
                         if (event.image) {
@@ -119,11 +152,13 @@ export default function EditEventCalendarModal({
     const onSubmit = async (data: EventeCalendarInterface) => {
         const formData = new FormData();
         formData.append('name', data.name);
-        formData.append('date', data.date);
 
-        if (data.description) {
-            formData.append('description', data.description);
-        }
+        // Fix timezone issue by creating date at noon local time
+        const dateValue = new Date(`${data.date}T12:00:00`);
+        formData.append('date', dateValue.toISOString());
+
+        formData.append('eventCategoryId', data.eventCategoryId); // Nuevo campo requerido
+
         if (data.venue) {
             formData.append('venue', data.venue);
         }
@@ -136,6 +171,9 @@ export default function EditEventCalendarModal({
         if (data.price) {
             formData.append('price', data.price);
         }
+        if (data.linkUrl) {
+            formData.append('linkUrl', data.linkUrl); // Nuevo campo opcional
+        }
         if (selectedImage) {
             formData.append('image', selectedImage);
         }
@@ -143,7 +181,7 @@ export default function EditEventCalendarModal({
         const response = await updateEvent(id as string, formData);
 
         if ('error' in response) {
-            setError(response.error);
+            setError(response.error || 'Error desconocido');
         } else {
             toast.success('Evento Editado Correctamente', {
                 description: 'El evento se ha editado correctamente.',
@@ -159,12 +197,11 @@ export default function EditEventCalendarModal({
                 <DialogHeader>
                     <DialogTitle>Editar Evento</DialogTitle>
                     <DialogDescription>
-                        Modifica los datos del evento. Puedes cambiar el nombre, fecha, descripción,
-                        lugar, hora, tipo de audiencia, precio e imagen. Asegurate de que toda la
-                        información esté correcta antes de guardar los cambios.
+                        Modifica los datos del evento. Puedes cambiar el nombre, categoría, fecha,
+                        lugar, hora, tipo de audiencia, precio, enlace e imagen. Asegurate de que
+                        toda la información esté correcta antes de guardar los cambios.
                     </DialogDescription>
                 </DialogHeader>
-
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <div className="grid grid-cols-3">
                         <div className="col-span-2 mr-[15px]">
@@ -184,6 +221,37 @@ export default function EditEventCalendarModal({
                                     <p className="custom-form-error">{errors.name.message}</p>
                                 )}
                             </div>
+
+                            <div className="mb-[15px]">
+                                <Label className="custom-label">Categoría</Label>
+                                <Select
+                                    value={selectedCategoryId}
+                                    onValueChange={(value) => setValue('eventCategoryId', value)}
+                                >
+                                    <SelectTrigger className="w-full">
+                                        <SelectValue placeholder="Selecciona una categoría" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {categories.map((category) => (
+                                            <SelectItem key={category.id} value={category.id}>
+                                                {category.name}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                                {errors.eventCategoryId && (
+                                    <p className="custom-form-error">
+                                        {errors.eventCategoryId.message}
+                                    </p>
+                                )}
+                                <input
+                                    type="hidden"
+                                    {...register('eventCategoryId', {
+                                        required: 'La categoría es obligatoria',
+                                    })}
+                                />
+                            </div>
+
                             <div className="mb-[15px]">
                                 <Label className="custom-label">Fecha</Label>
                                 <Input
@@ -199,6 +267,7 @@ export default function EditEventCalendarModal({
                                     <p className="custom-form-error">{errors.date.message}</p>
                                 )}
                             </div>
+
                             <div className="mb-[15px]">
                                 <Label className="custom-label">Lugar</Label>
                                 <Input
@@ -210,6 +279,7 @@ export default function EditEventCalendarModal({
                                     {...register('venue')}
                                 />
                             </div>
+
                             <div className="mb-[15px]">
                                 <Label className="custom-label">Hora del Espectáculo</Label>
                                 <Input
@@ -220,6 +290,7 @@ export default function EditEventCalendarModal({
                                     {...register('showTime')}
                                 />
                             </div>
+
                             <div className="mb-[15px]">
                                 <Label className="custom-label">Tipo de Audiencia</Label>
                                 <Input
@@ -231,6 +302,7 @@ export default function EditEventCalendarModal({
                                     {...register('audienceType')}
                                 />
                             </div>
+
                             <div className="mb-[15px]">
                                 <Label className="custom-label">Precio</Label>
                                 <Input
@@ -243,14 +315,16 @@ export default function EditEventCalendarModal({
                                     {...register('price')}
                                 />
                             </div>
+
                             <div className="mb-[15px]">
-                                <Label className="custom-label">Descripción</Label>
-                                <Textarea
-                                    id="description"
-                                    placeholder="Descripci�n del evento"
+                                <Label className="custom-label">Enlace (URL)</Label>
+                                <Input
+                                    id="linkUrl"
+                                    type="url"
+                                    placeholder="https://ejemplo.com"
                                     className="w-full"
                                     autoComplete="off"
-                                    {...register('description')}
+                                    {...register('linkUrl')}
                                 />
                             </div>
                         </div>

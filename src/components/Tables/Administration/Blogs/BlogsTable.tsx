@@ -1,4 +1,3 @@
-
 'use client';
 
 import { getAllPost } from '@/actions/Administration/Blogs';

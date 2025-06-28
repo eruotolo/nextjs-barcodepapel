@@ -1,6 +1,9 @@
 'use client';
 
-import { getCategoryById, updateCategory } from '@/actions/Administration/Categories';
+import {
+    getEventCategoryById,
+    updateEventCategory,
+} from '@/actions/Administration/EventCategories';
 import type { EditModalProps } from '@/types/settings/Generic/InterfaceGeneric';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -18,11 +21,11 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 
-interface CategoryFormData {
+interface EventCategoryFormData {
     name: string;
 }
 
-export default function EditCategoryModal({
+export default function EditEventCategoryModal({
     id,
     refreshAction,
     open,
@@ -34,7 +37,7 @@ export default function EditCategoryModal({
         setValue,
         handleSubmit,
         formState: { errors },
-    } = useForm<CategoryFormData>({ mode: 'onChange' });
+    } = useForm<EventCategoryFormData>({ mode: 'onChange' });
 
     const [error, setError] = useState('');
 
@@ -46,24 +49,24 @@ export default function EditCategoryModal({
     }, [open, reset]);
 
     useEffect(() => {
-        async function loadCategory() {
+        async function loadEventCategory() {
             if (id && open) {
                 try {
-                    const category = await getCategoryById(id);
-                    if (category) {
-                        setValue('name', category.name || '');
+                    const eventCategory = await getEventCategoryById(id);
+                    if (eventCategory) {
+                        setValue('name', eventCategory.name || '');
                     }
                 } catch (e) {
-                    console.error('Error loading category:', e);
-                    setError('Error al cargar la categoría');
+                    console.error('Error loading event category:', e);
+                    setError('Error al cargar la categoría de evento');
                 }
             }
         }
 
-        loadCategory();
+        loadEventCategory();
     }, [id, open, setValue]);
 
-    const onSubmit = async (data: CategoryFormData) => {
+    const onSubmit = async (data: EventCategoryFormData) => {
         if (!data.name || data.name.trim() === '') {
             setError('El nombre es requerido');
             return;
@@ -73,21 +76,21 @@ export default function EditCategoryModal({
         formData.append('name', data.name);
 
         try {
-            const response = await updateCategory(id, formData);
+            const response = await updateEventCategory(id, formData);
             if ('error' in response) {
                 setError(response.error);
                 return;
             }
             refreshAction();
             onCloseAction(false);
-            toast.success('Categoría Actualizada', {
-                description: 'La categoría se ha actualizado correctamente.',
+            toast.success('Categoría de Evento Actualizada', {
+                description: 'La categoría de evento se ha actualizado correctamente.',
             });
         } catch (error) {
-            setError('Error al actualizar la categoría. Inténtalo de nuevo.');
+            setError('Error al actualizar la categoría de evento. Inténtalo de nuevo.');
             console.error(error);
             toast.error('Actualización Fallida', {
-                description: 'Error al intentar actualizar la categoría',
+                description: 'Error al intentar actualizar la categoría de evento',
             });
         }
     };
@@ -96,9 +99,9 @@ export default function EditCategoryModal({
         <Dialog open={open} onOpenChange={onCloseAction}>
             <DialogContent className="overflow-hidden sm:max-w-[400px]">
                 <DialogHeader>
-                    <DialogTitle>Editar Categoría</DialogTitle>
+                    <DialogTitle>Editar Categoría de Evento</DialogTitle>
                     <DialogDescription>
-                        Modifica el nombre de la categoría existente.
+                        Modifica el nombre de la categoría de evento existente.
                     </DialogDescription>
                 </DialogHeader>
                 <form onSubmit={handleSubmit(onSubmit)}>
@@ -107,7 +110,7 @@ export default function EditCategoryModal({
                         <Input
                             id="name"
                             type="text"
-                            placeholder="Nombre de la categoría"
+                            placeholder="Nombre de la categoría de evento"
                             className="w-full"
                             autoComplete="off"
                             {...register('name', { required: 'El nombre es requerido' })}

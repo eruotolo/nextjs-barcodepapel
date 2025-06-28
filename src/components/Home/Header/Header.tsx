@@ -28,7 +28,7 @@ export default function HeaderWeb() {
             <header className="z-50 flex">
                 <div
                     className={`w-full transition-all duration-700 ease-in-out ${
-                        scrolled ? 'md:bg-negro md:fixed md:top-0' : 'bg-transparent'
+                        scrolled ? 'md:bg-negro z-10 md:fixed md:top-0' : 'bg-transparent'
                     }`}
                 >
                     <div className="mx-auto max-w-[1100px]">

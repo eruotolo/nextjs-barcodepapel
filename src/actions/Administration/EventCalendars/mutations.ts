@@ -14,11 +14,17 @@ export async function createEvent(formData: FormData) {
         const name = formData.get('name') as string;
         const imageFile = formData.get('image') as File | null;
         const date = formData.get('date') as string;
-        const description = formData.get('description') as string | null;
         const venue = formData.get('venue') as string | null;
         const showTime = formData.get('showTime') as string | null;
         const audienceType = formData.get('audienceType') as string | null;
         const price = formData.get('price') as string | null;
+        const linkUrl = formData.get('linkUrl') as string | null; // Nuevo campo
+        const eventCategoryId = formData.get('eventCategoryId') as string; // Nuevo campo requerido
+
+        // Validar que eventCategoryId esté presente
+        if (!eventCategoryId) {
+            return { error: 'Category is required' };
+        }
 
         let imageUrl: string | null = null;
         if (imageFile && imageFile.size > 0) {
@@ -50,11 +56,12 @@ export async function createEvent(formData: FormData) {
                 name,
                 image: imageUrl,
                 date: dateValue,
-                description,
                 venue,
                 showTime,
                 audienceType,
                 price: priceValue,
+                linkUrl, // Nuevo campo
+                eventCategoryId, // Nuevo campo
             },
         });
 
@@ -126,7 +133,7 @@ export async function deleteEvent(id: string) {
         });
 
         revalidatePath('/admin/administration/events');
-        
+
         // Convertir Decimal a número para serialización
         return {
             ...response,
@@ -155,13 +162,19 @@ export async function updateEvent(id: string, formData: FormData) {
         const name = (formData.get('name') as string) || currentEvent.name;
         const imageFile = formData.get('image') as File | null;
         const dateString = formData.get('date') as string;
-        const description =
-            (formData.get('description') as string | null) || currentEvent.description;
         const venue = (formData.get('venue') as string | null) || currentEvent.venue;
         const showTime = (formData.get('showTime') as string | null) || currentEvent.showTime;
         const audienceType =
             (formData.get('audienceType') as string | null) || currentEvent.audienceType;
         const priceString = formData.get('price') as string;
+        const linkUrl = (formData.get('linkUrl') as string | null) || currentEvent.linkUrl; // Nuevo campo
+        const eventCategoryId =
+            (formData.get('eventCategoryId') as string) || currentEvent.eventCategoryId; // Nuevo campo
+
+        // Validar que eventCategoryId esté presente
+        if (!eventCategoryId) {
+            return { error: 'Category is required' };
+        }
 
         const dateValue = dateString ? new Date(dateString) : currentEvent.date;
         let priceValue: number;
@@ -176,19 +189,21 @@ export async function updateEvent(id: string, formData: FormData) {
             name: string;
             image?: string | null;
             date: Date;
-            description: string | null;
             venue: string | null;
             showTime: string | null;
             audienceType: string | null;
             price: number;
+            linkUrl: string | null; // Nuevo campo
+            eventCategoryId: string; // Nuevo campo
         } = {
             name,
             date: dateValue,
-            description,
             venue,
             showTime,
             audienceType,
             price: priceValue,
+            linkUrl, // Nuevo campo
+            eventCategoryId, // Nuevo campo
         };
 
         let newImageUrl: string | null = null;

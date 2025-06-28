@@ -24,6 +24,7 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import RichTextEditor from '@/components/ui/rich-text-editor';
 import {
     Select,
     SelectContent,
@@ -31,7 +32,6 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-import RichTextEditor from '@/components/ui/rich-text-editor';
 import { FilePenLine } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -43,7 +43,13 @@ export default function NewBlogModal({ refreshAction }: UpdateData) {
         setValue,
         watch,
         formState: { errors },
-    } = useForm<BlogUniqueInterface>({ mode: 'onChange' });
+    } = useForm<BlogUniqueInterface>({
+        mode: 'onChange',
+        defaultValues: {
+            primaryCategoryId: '',
+            description: '',
+        },
+    });
 
     const [isOpen, setIsOpen] = useState(false);
     const [error, setError] = useState('');
@@ -108,15 +114,22 @@ export default function NewBlogModal({ refreshAction }: UpdateData) {
     };
 
     const handleCategoryChange = (value: string) => {
-        setValue('primaryCategoryId', value);
+        setValue('primaryCategoryId', value, {
+            shouldValidate: true,
+        });
     };
 
-    const onSubmit = async (data: BlogUniqueInterface) => {
-        if (!data.primaryCategoryId) {
-            setError('Debes seleccionar una categoría principal.');
-            return;
-        }
+    // Registrar campos que no tienen register para validaciones
+    useEffect(() => {
+        register('primaryCategoryId', {
+            required: 'La categoría principal es obligatoria',
+        });
+        register('description', {
+            required: 'La descripción es obligatoria',
+        });
+    }, [register]);
 
+    const onSubmit = async (data: BlogUniqueInterface) => {
         const formData = new FormData();
         formData.append('name', data.name);
         formData.append('author', data.author);
@@ -152,16 +165,10 @@ export default function NewBlogModal({ refreshAction }: UpdateData) {
         }
     };
 
-    const handleSubmitForm = (e: React.FormEvent) => {
-        e.preventDefault();
-        handleSubmit(onSubmit)();
-    };
-
     return (
         <Dialog open={isOpen} onOpenChange={handleOpenChange}>
             <BtnActionNew label="Nuevo" permission={['Crear']} />
-            <DialogContent className="overflow-hidden sm:max-w-[900px] max-h-[90vh]">
-                <div className="overflow-y-auto max-h-[calc(90vh-120px)]">
+            <DialogContent className="max-h-[90vh] overflow-hidden sm:max-w-[900px]">
                 <DialogHeader>
                     <DialogTitle>Crear Nuevo Blog</DialogTitle>
                     <DialogDescription>
@@ -169,6 +176,10 @@ export default function NewBlogModal({ refreshAction }: UpdateData) {
                         esté correcta antes de proceder.
                     </DialogDescription>
                 </DialogHeader>
+                <form
+                    onSubmit={handleSubmit(onSubmit)}
+                    className="max-h-[calc(90vh-120px)] overflow-y-auto"
+                >
                     <div className="grid grid-cols-3">
                         <div className="col-span-2 mr-[15px]">
                             <div className="mb-[15px]">
@@ -217,9 +228,9 @@ export default function NewBlogModal({ refreshAction }: UpdateData) {
                                         ))}
                                     </SelectContent>
                                 </Select>
-                                {!selectedCategoryId && (
+                                {errors.primaryCategoryId && (
                                     <p className="custom-form-error">
-                                        La categoría principal es obligatoria
+                                        {errors.primaryCategoryId.message}
                                     </p>
                                 )}
                             </div>
@@ -235,9 +246,9 @@ export default function NewBlogModal({ refreshAction }: UpdateData) {
                                     }}
                                     imageFolder="blog-images"
                                 />
-                                {!description && (
+                                {errors.description && (
                                     <p className="custom-form-error">
-                                        La descripción es obligatoria
+                                        {errors.description.message}
                                     </p>
                                 )}
                             </div>
@@ -268,15 +279,15 @@ export default function NewBlogModal({ refreshAction }: UpdateData) {
                         </div>
                     </div>
                     {error && <p className="text-sm text-red-500">{error}</p>}
-                </div>
-                <DialogFooter className="items-end">
-                    <DialogClose asChild>
-                        <Button type="button" variant="outline">
-                            Cancelar
-                        </Button>
-                    </DialogClose>
-                    <BtnSubmit label="Crear" onClick={handleSubmitForm} />
-                </DialogFooter>
+                    <DialogFooter className="items-end">
+                        <DialogClose asChild>
+                            <Button type="button" variant="outline">
+                                Cancelar
+                            </Button>
+                        </DialogClose>
+                        <BtnSubmit label="Crear" />
+                    </DialogFooter>
+                </form>
             </DialogContent>
         </Dialog>
     );

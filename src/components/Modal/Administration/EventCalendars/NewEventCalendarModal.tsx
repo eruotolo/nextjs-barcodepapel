@@ -1,10 +1,11 @@
 'use client';
 
 import Image from 'next/image';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { createEvent } from '@/actions/Administration/EventCalendars';
+import { getEventCategoriesForSelect } from '@/actions/Administration/EventCategories';
 import BtnActionNew from '@/components/BtnActionNew/BtnActionNew';
 import BtnSubmit from '@/components/BtnSubmit/BtnSubmit';
 import type { EventeCalendarInterface } from '@/types/Administration/EventCalendars/EventeCalendarInterface';
@@ -22,15 +23,29 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { FilePenLine } from 'lucide-react';
 import { toast } from 'sonner';
+
+interface EventCategory {
+    id: string;
+    name: string;
+}
 
 export default function NewEventCalendarModal({ refreshAction }: UpdateData) {
     const {
         register,
         reset,
         handleSubmit,
+        setValue,
+        watch,
         formState: { errors },
     } = useForm<EventeCalendarInterface>({ mode: 'onChange' });
 
@@ -38,7 +53,28 @@ export default function NewEventCalendarModal({ refreshAction }: UpdateData) {
     const [error, setError] = useState('');
     const [imagePreview, setImagePreview] = useState('/default.png');
     const [selectedImage, setSelectedImage] = useState<File | null>(null);
+    const [categories, setCategories] = useState<EventCategory[]>([]);
     const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const selectedCategoryId = watch('eventCategoryId');
+
+    // Cargar categorías cuando se abre el modal
+    useEffect(() => {
+        const loadCategories = async () => {
+            if (isOpen) {
+                try {
+                    const data = await getEventCategoriesForSelect();
+                    setCategories(data);
+                } catch (error) {
+                    console.error('Error loading categories:', error);
+                    toast.error('Error', {
+                        description: 'No se pudieron cargar las categorías',
+                    });
+                }
+            }
+        };
+        loadCategories();
+    }, [isOpen]);
 
     const handleOpenChange = (open: boolean) => {
         setIsOpen(open);
@@ -75,11 +111,13 @@ export default function NewEventCalendarModal({ refreshAction }: UpdateData) {
     const onSubmit = async (data: EventeCalendarInterface) => {
         const formData = new FormData();
         formData.append('name', data.name);
-        formData.append('date', data.date);
 
-        if (data.description) {
-            formData.append('description', data.description);
-        }
+        // Fix timezone issue by creating date at noon local time
+        const dateValue = new Date(`${data.date}T12:00:00`);
+        formData.append('date', dateValue.toISOString());
+
+        formData.append('eventCategoryId', data.eventCategoryId); // Nuevo campo requerido
+
         if (data.venue) {
             formData.append('venue', data.venue);
         }
@@ -91,6 +129,9 @@ export default function NewEventCalendarModal({ refreshAction }: UpdateData) {
         }
         if (data.price) {
             formData.append('price', data.price);
+        }
+        if (data.linkUrl) {
+            formData.append('linkUrl', data.linkUrl); // Nuevo campo opcional
         }
 
         if (selectedImage) {
@@ -148,6 +189,37 @@ export default function NewEventCalendarModal({ refreshAction }: UpdateData) {
                                     <p className="custom-form-error">{errors.name.message}</p>
                                 )}
                             </div>
+
+                            <div className="mb-[15px]">
+                                <Label className="custom-label">Categoría</Label>
+                                <Select
+                                    value={selectedCategoryId}
+                                    onValueChange={(value) => setValue('eventCategoryId', value)}
+                                >
+                                    <SelectTrigger className="w-full">
+                                        <SelectValue placeholder="Selecciona una categoría" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {categories.map((category) => (
+                                            <SelectItem key={category.id} value={category.id}>
+                                                {category.name}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                                {errors.eventCategoryId && (
+                                    <p className="custom-form-error">
+                                        {errors.eventCategoryId.message}
+                                    </p>
+                                )}
+                                <input
+                                    type="hidden"
+                                    {...register('eventCategoryId', {
+                                        required: 'La categoría es obligatoria',
+                                    })}
+                                />
+                            </div>
+
                             <div className="mb-[15px]">
                                 <Label className="custom-label">Fecha</Label>
                                 <Input
@@ -163,6 +235,7 @@ export default function NewEventCalendarModal({ refreshAction }: UpdateData) {
                                     <p className="custom-form-error">{errors.date.message}</p>
                                 )}
                             </div>
+
                             <div className="mb-[15px]">
                                 <Label className="custom-label">Lugar</Label>
                                 <Input
@@ -174,6 +247,7 @@ export default function NewEventCalendarModal({ refreshAction }: UpdateData) {
                                     {...register('venue')}
                                 />
                             </div>
+
                             <div className="mb-[15px]">
                                 <Label className="custom-label">Hora del Espectáculo</Label>
                                 <Input
@@ -184,6 +258,7 @@ export default function NewEventCalendarModal({ refreshAction }: UpdateData) {
                                     {...register('showTime')}
                                 />
                             </div>
+
                             <div className="mb-[15px]">
                                 <Label className="custom-label">Tipo de Audiencia</Label>
                                 <Input
@@ -195,6 +270,7 @@ export default function NewEventCalendarModal({ refreshAction }: UpdateData) {
                                     {...register('audienceType')}
                                 />
                             </div>
+
                             <div className="mb-[15px]">
                                 <Label className="custom-label">Precio</Label>
                                 <Input
@@ -207,17 +283,20 @@ export default function NewEventCalendarModal({ refreshAction }: UpdateData) {
                                     {...register('price')}
                                 />
                             </div>
+
                             <div className="mb-[15px]">
-                                <Label className="custom-label">Descripción</Label>
-                                <Textarea
-                                    id="description"
-                                    placeholder="Descripción del evento"
+                                <Label className="custom-label">Enlace (URL)</Label>
+                                <Input
+                                    id="linkUrl"
+                                    type="url"
+                                    placeholder="https://ejemplo.com"
                                     className="w-full"
                                     autoComplete="off"
-                                    {...register('description')}
+                                    {...register('linkUrl')}
                                 />
                             </div>
                         </div>
+
                         <div className="col-span-1">
                             <Image
                                 src={imagePreview}

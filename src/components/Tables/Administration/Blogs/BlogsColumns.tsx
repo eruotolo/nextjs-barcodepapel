@@ -215,7 +215,7 @@ export const BlogsColumns = (refreshTable: () => Promise<void>): ColumnDef<BlogI
             }
 
             return (
-                <div className="flex flex-wrap gap-1 md:w-[380px]">
+                <div className="flex flex-wrap gap-1">
                     {secondaryCategories.map((category) => (
                         <span
                             key={`${blog.id}-${category.id}`}

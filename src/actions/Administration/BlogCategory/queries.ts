@@ -48,7 +48,10 @@ export async function updateBlogCategories(blogId: string, categories: string[])
         throw new Error('Blog ID is invalid');
     }
 
-    if (!Array.isArray(categories) || categories.some((categoryId) => typeof categoryId !== 'string')) {
+    if (
+        !Array.isArray(categories) ||
+        categories.some((categoryId) => typeof categoryId !== 'string')
+    ) {
         throw new Error('Categories must be an array of valid IDs');
     }
 
@@ -98,10 +101,14 @@ export async function updateBlogCategories(blogId: string, categories: string[])
             });
             const validCategoryIds = existingCategories.map((c) => c.id);
             const validCategoryNames = existingCategories.map((c) => c.name);
-            const invalidCategories = categories.filter((categoryId) => !validCategoryIds.includes(categoryId));
+            const invalidCategories = categories.filter(
+                (categoryId) => !validCategoryIds.includes(categoryId),
+            );
 
             if (invalidCategories.length > 0) {
-                throw new Error(`The following categories do not exist: ${invalidCategories.join(', ')}`);
+                throw new Error(
+                    `The following categories do not exist: ${invalidCategories.join(', ')}`,
+                );
             }
 
             // Asignar nuevas categorías al blog
@@ -123,7 +130,10 @@ export async function updateBlogCategories(blogId: string, categories: string[])
 
         const session = await getServerSession(authOptions);
         await logAuditEvent({
-            action: categories.length > 0 ? AUDIT_ACTIONS.BLOG.ASSIGN_CATEGORIES : AUDIT_ACTIONS.BLOG.REMOVE_CATEGORIES,
+            action:
+                categories.length > 0
+                    ? AUDIT_ACTIONS.BLOG.ASSIGN_CATEGORIES
+                    : AUDIT_ACTIONS.BLOG.REMOVE_CATEGORIES,
             entity: AUDIT_ENTITIES.BLOG,
             entityId: blogId,
             description:

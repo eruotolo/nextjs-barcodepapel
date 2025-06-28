@@ -32,7 +32,7 @@ export default function MenuBar({
     const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         if (!e.target.files?.[0]) return;
         const file = e.target.files[0];
-        
+
         // Validación del lado del cliente (4MB máximo)
         const maxSizeInBytes = 4194304; // 4MB
         if (file.size > maxSizeInBytes) {
@@ -45,14 +45,14 @@ export default function MenuBar({
         const formData = new FormData();
         formData.append('image', file);
         formData.append('folder', imageFolder);
-        
+
         try {
             const res = await fetch('/api/upload-image', {
                 method: 'POST',
                 body: formData,
             });
             const data = await res.json();
-            
+
             if (res.ok && data?.url) {
                 editor.chain().focus().setImage({ src: data.url }).run();
                 toast.success('Imagen subida', {

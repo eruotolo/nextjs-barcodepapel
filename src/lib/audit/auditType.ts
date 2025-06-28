@@ -63,6 +63,11 @@ export const AUDIT_ACTIONS = {
         UPDATE: 'updateSponsor',
         DELETE: 'deleteSponsor',
     },
+    EVENT_CATEGORIES: {
+        CREATE: 'createEventCategory',
+        UPDATE: 'updateEventCategory',
+        DELETE: 'deleteEventCategory',
+    },
 } as const;
 
 // Definimos un objeto con todas las entidades
@@ -79,6 +84,7 @@ export const AUDIT_ENTITIES = {
     EVENTS: 'Events',
     MATERIALS: 'Materials',
     SPONSORS: 'Sponsors',
+    EVENT_CATEGORIES: 'EventsCategories',
 } as const;
 
 // Tipos derivados de los objetos

@@ -28,8 +28,6 @@ yarn-error.log*
 # Archivos del sistema
 .DS_Store
 *.pem
-CLAUDE.md
-GEMINI.md
 
 # Despliegue
 .vercel

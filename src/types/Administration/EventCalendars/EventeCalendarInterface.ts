@@ -3,11 +3,16 @@ export interface EventeCalendarInterface {
     name: string;
     image?: string | null;
     date: string;
-    description?: string;
     venue?: string; // Lugar
     showTime?: string; // Hora del espectáculo
     audienceType?: string;
     price: string;
+    linkUrl?: string; // Nuevo campo agregado
+    eventCategoryId: string; // Nuevo campo requerido
+    eventCategory?: {
+        id: string;
+        name: string;
+    }; // Relación con la categoría
     createdAt?: string;
 }
 
@@ -16,10 +21,15 @@ export interface EventeCalendarUniqueInterface {
     name: string;
     image?: string | null;
     date: string;
-    description?: string | null;
     venue?: string | null; // Lugar
     showTime?: string; // Hora del espectáculo
     audienceType?: string | null;
     price: string;
+    linkUrl?: string | null; // Nuevo campo agregado
+    eventCategoryId: string; // Nuevo campo requerido
+    eventCategory?: {
+        id: string;
+        name: string;
+    }; // Relación con la categoría
     createdAt?: string;
 }

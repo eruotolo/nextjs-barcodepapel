@@ -89,9 +89,9 @@ bun update
 
 ## AUMENTAR BUFFER DE GIT CONFIG
 
-````
+```
 git config http.postBuffer 524288000
-````
+```
 
 ## 📝 Notas
 

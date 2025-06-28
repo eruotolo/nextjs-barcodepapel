@@ -40,7 +40,6 @@
     --sidebar-accent-foreground: oklch(0.205 0 0);
     --sidebar-border: oklch(0.922 0 0);
     --sidebar-ring: oklch(0.87 0 0);
-
 }
 
 @theme {
@@ -54,10 +53,10 @@
     --font-inter: 'Inter', sans-serif;
     --font-mono: 'JetBrains Mono', monospace;
     --font-basic-sans: 'Basic Sans', sans-serif;
-    --color-fucsia: #F50A86;
-    --color-blanco: #FFFFFF;
+    --color-fucsia: #f50a86;
+    --color-blanco: #ffffff;
     --color-negro: #1d1d1b;
-    --color-azul: #2764ad
+    --color-azul: #2764ad;
 }
 
 @theme inline {
@@ -145,7 +144,7 @@
     }
 
     .menu-mobile {
-        @apply bg-negro backdrop-blur-2xl fixed top-0 left-0 h-screen w-[100%] p-10 duration-500 ease-in-out
+        @apply bg-negro fixed top-0 left-0 z-20 h-screen w-[100%] p-10 backdrop-blur-2xl duration-500 ease-in-out;
     }
 }
 
@@ -171,7 +170,7 @@
 }
 
 .bg-web {
-    background-image: url("/background-web.png");
+    background-image: url('/background-web.png');
     background-position: center;
     background-size: cover;
     background-color: var(--color-azul);

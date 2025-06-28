@@ -1,13 +1,17 @@
 'use client';
 
-import { getCategoryById, updateCategory } from '@/actions/Administration/Categories';
-import type { EditModalProps } from '@/types/settings/Generic/InterfaceGeneric';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+
+import { createEventCategory } from '@/actions/Administration/EventCategories';
+import BtnActionNew from '@/components/BtnActionNew/BtnActionNew';
+import BtnSubmit from '@/components/BtnSubmit/BtnSubmit';
+import type { UpdateData } from '@/types/settings/Generic/InterfaceGeneric';
 
 import { Button } from '@/components/ui/button';
 import {
     Dialog,
+    DialogClose,
     DialogContent,
     DialogDescription,
     DialogFooter,
@@ -18,52 +22,32 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 
-interface CategoryFormData {
+interface EventCategoryFormData {
     name: string;
 }
 
-export default function EditCategoryModal({
-    id,
-    refreshAction,
-    open,
-    onCloseAction,
-}: EditModalProps) {
+export default function NewEventCategoryModal({ refreshAction }: UpdateData) {
     const {
         register,
         reset,
-        setValue,
         handleSubmit,
         formState: { errors },
-    } = useForm<CategoryFormData>({ mode: 'onChange' });
+    } = useForm<EventCategoryFormData>({ mode: 'onChange' });
 
+    const [isOpen, setIsOpen] = useState(false);
     const [error, setError] = useState('');
 
-    useEffect(() => {
+    const handleOpenChange = (open: boolean) => {
+        setIsOpen(open);
         if (!open) {
             reset();
             setError('');
         }
-    }, [open, reset]);
+    };
 
-    useEffect(() => {
-        async function loadCategory() {
-            if (id && open) {
-                try {
-                    const category = await getCategoryById(id);
-                    if (category) {
-                        setValue('name', category.name || '');
-                    }
-                } catch (e) {
-                    console.error('Error loading category:', e);
-                    setError('Error al cargar la categoría');
-                }
-            }
-        }
+    const onSubmit = async (data: EventCategoryFormData) => {
+        setError('');
 
-        loadCategory();
-    }, [id, open, setValue]);
-
-    const onSubmit = async (data: CategoryFormData) => {
         if (!data.name || data.name.trim() === '') {
             setError('El nombre es requerido');
             return;
@@ -73,32 +57,39 @@ export default function EditCategoryModal({
         formData.append('name', data.name);
 
         try {
-            const response = await updateCategory(id, formData);
+            const response = await createEventCategory(formData);
+
             if ('error' in response) {
                 setError(response.error);
                 return;
             }
-            refreshAction();
-            onCloseAction(false);
-            toast.success('Categoría Actualizada', {
-                description: 'La categoría se ha actualizado correctamente.',
+
+            toast.success('Nueva Categoría de Evento Creada', {
+                description: 'La categoría de evento se ha creado correctamente.',
             });
+            refreshAction();
+            reset();
+            setIsOpen(false);
         } catch (error) {
-            setError('Error al actualizar la categoría. Inténtalo de nuevo.');
             console.error(error);
-            toast.error('Actualización Fallida', {
-                description: 'Error al intentar actualizar la categoría',
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            setError(
+                `Error al crear la categoría de evento. Inténtalo de nuevo. (${errorMessage})`,
+            );
+            toast.error('Crear Categoría de Evento Fallido', {
+                description: 'Error al intentar crear la categoría de evento',
             });
         }
     };
 
     return (
-        <Dialog open={open} onOpenChange={onCloseAction}>
-            <DialogContent className="overflow-hidden sm:max-w-[400px]">
+        <Dialog open={isOpen} onOpenChange={handleOpenChange}>
+            <BtnActionNew label="Nueva" permission={['Crear']} />
+            <DialogContent className="sm:max-w-[400px]">
                 <DialogHeader>
-                    <DialogTitle>Editar Categoría</DialogTitle>
+                    <DialogTitle>Crear Nueva Categoría de Evento</DialogTitle>
                     <DialogDescription>
-                        Modifica el nombre de la categoría existente.
+                        Introduce el nombre de la nueva categoría de evento que deseas crear.
                     </DialogDescription>
                 </DialogHeader>
                 <form onSubmit={handleSubmit(onSubmit)}>
@@ -107,7 +98,7 @@ export default function EditCategoryModal({
                         <Input
                             id="name"
                             type="text"
-                            placeholder="Nombre de la categoría"
+                            placeholder="Nombre de la categoría de evento"
                             className="w-full"
                             autoComplete="off"
                             {...register('name', { required: 'El nombre es requerido' })}
@@ -116,9 +107,12 @@ export default function EditCategoryModal({
                     </div>
                     {error && <p className="mb-4 text-sm text-red-500">{error}</p>}
                     <DialogFooter className="mt-6 items-end">
-                        <Button type="submit" className="custom-button">
-                            Actualizar
-                        </Button>
+                        <DialogClose asChild>
+                            <Button type="button" variant="outline">
+                                Cancelar
+                            </Button>
+                        </DialogClose>
+                        <BtnSubmit />
                     </DialogFooter>
                 </form>
             </DialogContent>

@@ -23,6 +23,7 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import RichTextEditor from '@/components/ui/rich-text-editor';
 import {
     Select,
     SelectContent,
@@ -30,7 +31,6 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-import RichTextEditor from '@/components/ui/rich-text-editor';
 import { FilePenLine } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -47,7 +47,13 @@ export default function EditBlogModal({
         handleSubmit,
         watch,
         formState: { errors },
-    } = useForm<BlogUniqueInterface>({ mode: 'onChange' });
+    } = useForm<BlogUniqueInterface>({
+        mode: 'onChange',
+        defaultValues: {
+            primaryCategoryId: '',
+            description: '',
+        },
+    });
 
     const [error, setError] = useState('');
     const [imagePreview, setImagePreview] = useState('/default.png');
@@ -139,15 +145,22 @@ export default function EditBlogModal({
     };
 
     const handleCategoryChange = (value: string) => {
-        setValue('primaryCategoryId', value);
+        setValue('primaryCategoryId', value, {
+            shouldValidate: true,
+        });
     };
 
-    const onSubmit = async (data: BlogUniqueInterface) => {
-        if (!data.primaryCategoryId) {
-            setError('Debes seleccionar una categoría principal.');
-            return;
-        }
+    // Registrar campos que no tienen register para validaciones
+    useEffect(() => {
+        register('primaryCategoryId', {
+            required: 'La categoría principal es obligatoria',
+        });
+        register('description', {
+            required: 'La descripción es obligatoria',
+        });
+    }, [register]);
 
+    const onSubmit = async (data: BlogUniqueInterface) => {
         const formData = new FormData();
         formData.append('name', data.name);
         formData.append('author', data.author);
@@ -180,15 +193,9 @@ export default function EditBlogModal({
         }
     };
 
-    const handleSubmitForm = (e: React.FormEvent) => {
-        e.preventDefault();
-        handleSubmit(onSubmit)();
-    };
-
     return (
         <Dialog open={open} onOpenChange={handleCloseModal}>
-            <DialogContent className="overflow-hidden sm:max-w-[900px] max-h-[90vh]">
-                <div className="overflow-y-auto max-h-[calc(90vh-120px)]">
+            <DialogContent className="max-h-[90vh] overflow-hidden sm:max-w-[900px]">
                 <DialogHeader>
                     <DialogTitle>Editar Blog</DialogTitle>
                     <DialogDescription>
@@ -197,6 +204,10 @@ export default function EditBlogModal({
                         antes de guardar los cambios.
                     </DialogDescription>
                 </DialogHeader>
+                <form
+                    onSubmit={handleSubmit(onSubmit)}
+                    className="max-h-[calc(90vh-120px)] overflow-y-auto"
+                >
                     <div className="grid grid-cols-3">
                         <div className="col-span-2 mr-[15px]">
                             <div className="mb-[15px]">
@@ -249,9 +260,9 @@ export default function EditBlogModal({
                                         ))}
                                     </SelectContent>
                                 </Select>
-                                {!selectedCategoryId && (
+                                {errors.primaryCategoryId && (
                                     <p className="custom-form-error">
-                                        La categoría principal es obligatoria
+                                        {errors.primaryCategoryId.message}
                                     </p>
                                 )}
                             </div>
@@ -267,9 +278,9 @@ export default function EditBlogModal({
                                     }}
                                     imageFolder="blog-images"
                                 />
-                                {!description && (
+                                {errors.description && (
                                     <p className="custom-form-error">
-                                        La descripción es obligatoria
+                                        {errors.description.message}
                                     </p>
                                 )}
                             </div>
@@ -283,14 +294,14 @@ export default function EditBlogModal({
                                 className="h-[200px] w-[200px] rounded-[3%] object-cover"
                             />
                             <label
-                                htmlFor="file-upload-blog-edit"
+                                htmlFor="file-upload"
                                 className="mt-[34px] flex w-full cursor-pointer items-center justify-center rounded-md bg-gray-600 px-4 py-2 text-[13px] font-medium text-white hover:bg-gray-400 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none"
                             >
                                 <FilePenLine className="mr-2 h-5 w-5" />
                                 Cambiar foto
                             </label>
                             <Input
-                                id="file-upload-blog-edit"
+                                id="file-upload"
                                 type="file"
                                 accept="image/*"
                                 className="hidden"
@@ -299,15 +310,15 @@ export default function EditBlogModal({
                         </div>
                     </div>
                     {error && <p className="text-sm text-red-500">{error}</p>}
-                </div>
-                <DialogFooter className="items-end">
-                    <DialogClose asChild>
-                        <Button type="button" variant="outline" onClick={handleCloseModal}>
-                            Cancelar
-                        </Button>
-                    </DialogClose>
-                    <BtnSubmit label="Actualizar" onClick={handleSubmitForm} />
-                </DialogFooter>
+                    <DialogFooter className="items-end">
+                        <DialogClose asChild>
+                            <Button type="button" variant="outline" onClick={handleCloseModal}>
+                                Cancelar
+                            </Button>
+                        </DialogClose>
+                        <BtnSubmit label="Actualizar" />
+                    </DialogFooter>
+                </form>
             </DialogContent>
         </Dialog>
     );
