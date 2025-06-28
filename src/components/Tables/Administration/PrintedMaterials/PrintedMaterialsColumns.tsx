@@ -1,7 +1,7 @@
 'use client';
 
 import { BtnDeleteCell, BtnEditCell } from '@/components/BtnActionCell/BtnActionCell';
-import dynamic from 'next/dynamic';
+dynamic;
 import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
@@ -17,46 +17,47 @@ import type { Column, ColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown, MoreHorizontal } from 'lucide-react';
 import { toast } from 'sonner';
 
-import { deleteSponsor } from '@/actions/Administration/Sponsors';
-import type { SponsorsInterface } from '@/types/Administration/Sponsors/SponsorsInterface';
+import { deleteMaterial } from '@/actions/Administration/PrintedMaterials';
+import type { PrintedMaterialInterface } from '@/types/Administration/PrintedMaterials/PrintedMaterialInterface';
+import dynamic from 'next/dynamic';
 
 interface ActionCellProps {
     row: {
-        original: SponsorsInterface;
+        original: PrintedMaterialInterface;
     };
     refreshTable: () => Promise<void>;
 }
 
-const DynamicEditSponsorModal = dynamic(
-    () => import('@/components/Modal/Administration/Sponsors/EditSponsorModal'),
+const DynamicEditMaterialModal = dynamic(
+    () => import('@/components/Modal/Administration/PrintedMaterials/EditPrintedMaterialModal'),
     { ssr: false },
 );
 
 function ActionCell({ row, refreshTable }: ActionCellProps) {
-    const sponsorId = row.original.id;
-    const [openEditSponsor, setOpenEditSponsor] = useState(false);
+    const materialId = row.original.id;
+    const [openEditMaterial, setOpenEditMaterial] = useState(false);
 
-    const handleEditSponsorCloseModal = () => {
-        setOpenEditSponsor(false);
+    const handleEditMaterialCloseModal = () => {
+        setOpenEditMaterial(false);
     };
 
-    const handleDelete = async (sponsorId: string) => {
+    const handleDelete = async (materialId: string) => {
         try {
-            const success = await deleteSponsor(sponsorId);
+            const success = await deleteMaterial(materialId);
             if (success) {
                 refreshTable();
-                toast.success('Sponsor Eliminado', {
-                    description: 'El sponsor se ha eliminado correctamente.',
+                toast.success('Material Eliminado', {
+                    description: 'El material se ha eliminado correctamente.',
                 });
             } else {
                 toast.error('Error', {
-                    description: 'No se pudo eliminar sponsor',
+                    description: 'No se pudo eliminar el material',
                 });
             }
         } catch (error) {
-            console.error('Error al eliminar el sponsor', error);
+            console.error('Error al eliminar el material', error);
             toast.error('Error', {
-                description: 'Hubo un error al intentar eliminar el sponsor',
+                description: 'Ocurrio un error al eliminar el material',
             });
         }
     };
@@ -74,44 +75,44 @@ function ActionCell({ row, refreshTable }: ActionCellProps) {
                     <DropdownMenuLabel>Acciones</DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <BtnEditCell
-                        onAction={() => setOpenEditSponsor(true)}
-                        label="Editar Sponsor"
+                        onAction={() => setOpenEditMaterial(true)}
+                        label="Editar Material"
                         permission={['Editar']}
                         className="cursor-pointer"
                     />
                     <BtnDeleteCell
                         onDelete={handleDelete}
-                        label="Eliminar Sponsor"
-                        itemId={sponsorId}
+                        label="Eliminar Material"
+                        itemId={materialId}
                         permission={['Eliminar']}
                         className="cursor-pointer text-red-600"
                     />
                 </DropdownMenuContent>
             </DropdownMenu>
-            {openEditSponsor && (
-                <DynamicEditSponsorModal
-                    id={sponsorId}
+            {openEditMaterial && (
+                <DynamicEditMaterialModal
+                    id={materialId}
                     refreshAction={refreshTable}
-                    open={openEditSponsor}
-                    onCloseAction={handleEditSponsorCloseModal}
+                    open={openEditMaterial}
+                    onCloseAction={handleEditMaterialCloseModal}
                 />
             )}
         </>
     );
 }
 
-export const SponsorsColumns = (
+export const PrintedMaterialsColumns = (
     refreshTable: () => Promise<void>,
-): ColumnDef<SponsorsInterface>[] => [
+): ColumnDef<PrintedMaterialInterface>[] => [
     {
         id: 'Nombre',
         accessorKey: 'name',
-        header: ({ column }: { column: Column<SponsorsInterface> }) => (
+        header: ({ column }: { column: Column<PrintedMaterialInterface> }) => (
             <Button
                 variant="ghost"
                 onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
             >
-                Nombre del Sponsor
+                Nombre del Material
                 <ArrowUpDown className="ml-2 h-4 w-4" />
             </Button>
         ),
@@ -121,9 +122,27 @@ export const SponsorsColumns = (
         },
     },
     {
+        id: 'Versión',
+        accessorKey: 'numberVersion',
+        header: () => <div>Versión</div>,
+        cell: ({ row }) => {
+            const version = `${row.original.numberVersion}`;
+            return <div>{version}</div>;
+        },
+    },
+    {
+        id: 'Descripción',
+        accessorKey: 'description',
+        header: () => <div>Descripción</div>,
+        cell: ({ row }) => {
+            const description = `${row.original.description}`;
+            return <div>{description}</div>;
+        },
+    },
+    {
         id: 'Link',
         accessorKey: 'link',
-        header: () => <div>Url Sponsor</div>,
+        header: () => <div>Url Material</div>,
         cell: ({ row }) => {
             const link = `${row.original.link}`;
             return <div>{link}</div>;

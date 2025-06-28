@@ -1,4 +1,6 @@
 import {
+    BookType,
+    Calendar,
     LayoutDashboard,
     LifeBuoy,
     Medal,
@@ -23,6 +25,12 @@ export const navData = {
             roles: [],
         },
         {
+            title: 'Cartelera',
+            url: '/admin/administration/events',
+            icon: Calendar,
+            roles: [],
+        },
+        {
             title: 'Equipo',
             url: '/admin/administration/teams',
             icon: Users,
@@ -32,6 +40,12 @@ export const navData = {
             title: 'Sponsors',
             url: '/admin/administration/sponsors',
             icon: Medal,
+            roles: [],
+        },
+        {
+            title: 'Impresos',
+            url: '/admin/administration/materials',
+            icon: BookType,
             roles: [],
         },
     ],

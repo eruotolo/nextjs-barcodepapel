@@ -10,6 +10,8 @@ export async function getAllMaterial(): Promise<PrintedMaterialInterface[]> {
                 id: true,
                 name: true,
                 numberVersion: true,
+                description: true,
+                link: true,
             },
             orderBy: {
                 numberVersion: 'asc',

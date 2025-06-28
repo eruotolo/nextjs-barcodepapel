@@ -4,10 +4,10 @@ import Image from 'next/image';
 import { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
-import { createSponsor } from '@/actions/Administration/Sponsors';
+import { createEvent } from '@/actions/Administration/EventCalendars';
 import BtnActionNew from '@/components/BtnActionNew/BtnActionNew';
 import BtnSubmit from '@/components/BtnSubmit/BtnSubmit';
-import type { SponsorsInterface } from '@/types/Administration/Sponsors/SponsorsInterface';
+import type { EventeCalendarInterface } from '@/types/Administration/EventCalendars/EventeCalendarInterface';
 import type { UpdateData } from '@/types/settings/Generic/InterfaceGeneric';
 
 import { Button } from '@/components/ui/button';
@@ -22,16 +22,17 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import { FilePenLine } from 'lucide-react';
 import { toast } from 'sonner';
 
-export default function NewSponsorModal({ refreshAction }: UpdateData) {
+export default function NewEventCalendarModal({ refreshAction }: UpdateData) {
     const {
         register,
         reset,
         handleSubmit,
         formState: { errors },
-    } = useForm<SponsorsInterface>({ mode: 'onChange' });
+    } = useForm<EventeCalendarInterface>({ mode: 'onChange' });
 
     const [isOpen, setIsOpen] = useState(false);
     const [error, setError] = useState('');
@@ -71,36 +72,50 @@ export default function NewSponsorModal({ refreshAction }: UpdateData) {
         }
     };
 
-    const onSubmit = async (data: SponsorsInterface) => {
+    const onSubmit = async (data: EventeCalendarInterface) => {
         const formData = new FormData();
         formData.append('name', data.name);
+        formData.append('date', data.date);
 
-        if (data.link) {
-            formData.append('link', data.link);
+        if (data.description) {
+            formData.append('description', data.description);
+        }
+        if (data.venue) {
+            formData.append('venue', data.venue);
+        }
+        if (data.showTime) {
+            formData.append('showTime', data.showTime);
+        }
+        if (data.audienceType) {
+            formData.append('audienceType', data.audienceType);
+        }
+        if (data.price) {
+            formData.append('price', data.price);
         }
 
         if (selectedImage) {
             formData.append('image', selectedImage);
         }
+
         try {
-            const response = await createSponsor(formData);
+            const response = await createEvent(formData);
 
             if (!response) {
-                setError('Problemas al crear el Sponsors');
+                setError('Problemas al crear el evento');
                 return;
             }
             refreshAction();
             handleOpenChange(false);
-            toast.success('Nuevo Sponsors Creado', {
-                description: 'El sponsors se ha creado correctamente.',
+            toast.success('Nuevo Evento Creado', {
+                description: 'El evento se ha creado correctamente.',
             });
         } catch (error) {
             reset();
-            toast.error('Nuevo Sponsors Failed', {
-                description: 'Error al intentar crear el sponsors',
+            toast.error('Error al Crear Evento', {
+                description: 'Error al intentar crear el evento',
             });
             setImagePreview('/default.png');
-            setError('Error al crear el sponsors. Inténtalo de nuevo.');
+            setError('Error al crear el evento. Inténtalo de nuevo.');
             console.error(error);
         }
     };
@@ -108,13 +123,12 @@ export default function NewSponsorModal({ refreshAction }: UpdateData) {
     return (
         <Dialog open={isOpen} onOpenChange={handleOpenChange}>
             <BtnActionNew label="Nuevo" permission={['Crear']} />
-            <DialogContent className="overflow-hidden sm:max-w-[700px]">
+            <DialogContent className="overflow-hidden sm:max-w-[800px]">
                 <DialogHeader>
-                    <DialogTitle>Crear Nuevo Sponsors</DialogTitle>
+                    <DialogTitle>Crear Nuevo Evento</DialogTitle>
                     <DialogDescription>
-                        Introduce los datos del nuevo sponsors, como el nombre y la imagen.
-                        Asegúrate de que toda la información esté correcta antes de proceder a crear
-                        la cuenta.
+                        Introduce los datos del nuevo evento. Asegúrate de que toda la información
+                        esté correcta antes de proceder.
                     </DialogDescription>
                 </DialogHeader>
                 <form onSubmit={handleSubmit(onSubmit)}>
@@ -125,7 +139,7 @@ export default function NewSponsorModal({ refreshAction }: UpdateData) {
                                 <Input
                                     id="name"
                                     type="text"
-                                    placeholder="Nombre Completo"
+                                    placeholder="Nombre del evento"
                                     className="w-full"
                                     autoComplete="off"
                                     {...register('name', { required: 'El nombre es obligatorio' })}
@@ -135,14 +149,72 @@ export default function NewSponsorModal({ refreshAction }: UpdateData) {
                                 )}
                             </div>
                             <div className="mb-[15px]">
-                                <Label className="custom-label">Link Sponsors</Label>
+                                <Label className="custom-label">Fecha</Label>
                                 <Input
-                                    id="link"
-                                    type="link"
-                                    placeholder="Link del Sponsors"
+                                    id="date"
+                                    type="date"
                                     className="w-full"
                                     autoComplete="off"
-                                    {...register('link')}
+                                    {...register('date', {
+                                        required: 'La fecha es obligatoria',
+                                    })}
+                                />
+                                {errors.date && (
+                                    <p className="custom-form-error">{errors.date.message}</p>
+                                )}
+                            </div>
+                            <div className="mb-[15px]">
+                                <Label className="custom-label">Lugar</Label>
+                                <Input
+                                    id="venue"
+                                    type="text"
+                                    placeholder="Lugar del evento"
+                                    className="w-full"
+                                    autoComplete="off"
+                                    {...register('venue')}
+                                />
+                            </div>
+                            <div className="mb-[15px]">
+                                <Label className="custom-label">Hora del Espectáculo</Label>
+                                <Input
+                                    id="showTime"
+                                    type="time"
+                                    className="w-full"
+                                    autoComplete="off"
+                                    {...register('showTime')}
+                                />
+                            </div>
+                            <div className="mb-[15px]">
+                                <Label className="custom-label">Tipo de Audiencia</Label>
+                                <Input
+                                    id="audienceType"
+                                    type="text"
+                                    placeholder="Tipo de audiencia"
+                                    className="w-full"
+                                    autoComplete="off"
+                                    {...register('audienceType')}
+                                />
+                            </div>
+                            <div className="mb-[15px]">
+                                <Label className="custom-label">Precio</Label>
+                                <Input
+                                    id="price"
+                                    type="number"
+                                    step="0.01"
+                                    placeholder="Precio del evento"
+                                    className="w-full"
+                                    autoComplete="off"
+                                    {...register('price')}
+                                />
+                            </div>
+                            <div className="mb-[15px]">
+                                <Label className="custom-label">Descripción</Label>
+                                <Textarea
+                                    id="description"
+                                    placeholder="Descripción del evento"
+                                    className="w-full"
+                                    autoComplete="off"
+                                    {...register('description')}
                                 />
                             </div>
                         </div>
@@ -155,14 +227,14 @@ export default function NewSponsorModal({ refreshAction }: UpdateData) {
                                 className="h-[220px] w-[220px] rounded-[3%] object-cover"
                             />
                             <label
-                                htmlFor="file-upload"
+                                htmlFor="file-upload-event"
                                 className="mt-[34px] flex w-full cursor-pointer items-center justify-center rounded-md bg-gray-600 px-4 py-2 text-[13px] font-medium text-white hover:bg-gray-400 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none"
                             >
                                 <FilePenLine className="mr-2 h-5 w-5" />
-                                Imagen Sponsor
+                                Imagen Evento
                             </label>
                             <Input
-                                id="file-upload"
+                                id="file-upload-event"
                                 type="file"
                                 accept="image/*"
                                 className="hidden"

@@ -9,6 +9,7 @@ export async function getAllSponsors(): Promise<SponsorsInterface[]> {
             select: {
                 id: true,
                 name: true,
+                link: true,
             },
             orderBy: {
                 name: 'asc',

@@ -1,45 +1,39 @@
 'use client';
 
-import { getAllSponsors } from '@/actions/Administration/Sponsors';
-import type { SponsorsInterface } from '@/types/Administration/Sponsors/SponsorsInterface';
+import { getAllCategories } from '@/actions/Administration/Categories';
+import type { CategoryInterface } from '@/types/Administration/Blogs/CategoryInterface';
 import { useCallback, useEffect, useState } from 'react';
 
-import NewSponsorModal from '@/components/Modal/Administration/Sponsors/NewSponsorModal';
-import { SponsorsColumns } from '@/components/Tables/Administration/Sponsors/SponsorsColumns';
+import NewCategoryModal from '@/components/Modal/Administration/Categories/NewCategoryModal';
+import { CategoriesColumns } from '@/components/Tables/Administration/Categories/CategoriesColumns';
 import { DataTable } from '@/components/ui/data-table/data-table';
 
-export default function SponsorsTable() {
-    const [sponsorsData, setSponsorsData] = useState<SponsorsInterface[]>([]);
+export default function CategoriesTable() {
+    const [categoriesData, setCategoriesData] = useState<CategoryInterface[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [, setError] = useState<string | null>(null);
 
-    const fetchSponsors = useCallback(async () => {
+    const fetchCategories = useCallback(async () => {
         setIsLoading(true);
         try {
-            const data = await getAllSponsors();
-
-            const transformedData = data.map((sponsor) => ({
-                id: sponsor.id,
-                name: sponsor.name,
-                link: sponsor.link,
-            }));
-            setSponsorsData(transformedData);
+            const data = await getAllCategories();
+            setCategoriesData(data);
             setError(null);
         } catch (error) {
-            console.error('Error al obtener los Sponsors', error);
+            console.error('Error al obtener las categorias', error);
             const message = error instanceof Error ? error.message : 'Ocurrio un error desconocido';
-            setError(`Error al obtener los sponsors ${message}`);
+            setError(`Error al obtener las categorias ${message}`);
         } finally {
             setIsLoading(false);
         }
     }, []);
 
     useEffect(() => {
-        fetchSponsors();
-    }, [fetchSponsors]);
+        fetchCategories();
+    }, [fetchCategories]);
 
     const refreshTable = async () => {
-        await fetchSponsors();
+        await fetchCategories();
     };
 
     return (
@@ -47,18 +41,18 @@ export default function SponsorsTable() {
             <div className="flex h-auto w-full justify-between">
                 <div>
                     <h5 className="mb-[5px] text-[20px] leading-none font-medium tracking-tight">
-                        Sponsors
+                        Categorías
                     </h5>
                     <p className="text-muted-foreground text-[13px]">Crear, Editar y Eliminar</p>
                 </div>
                 <div>
-                    <NewSponsorModal refreshAction={refreshTable} />
+                    <NewCategoryModal refreshAction={fetchCategories} />
                 </div>
             </div>
             <div className="mt-[20px]">
                 <DataTable
-                    columns={SponsorsColumns(refreshTable)}
-                    data={sponsorsData}
+                    columns={CategoriesColumns(refreshTable)}
+                    data={categoriesData}
                     loading={isLoading}
                     filterPlaceholder="Buscar..."
                 />

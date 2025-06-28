@@ -1,45 +1,40 @@
+
 'use client';
 
-import { getAllSponsors } from '@/actions/Administration/Sponsors';
-import type { SponsorsInterface } from '@/types/Administration/Sponsors/SponsorsInterface';
+import { getAllPost } from '@/actions/Administration/Blogs';
+import type { BlogInterface } from '@/types/Administration/Blogs/BlogInterface';
 import { useCallback, useEffect, useState } from 'react';
 
-import NewSponsorModal from '@/components/Modal/Administration/Sponsors/NewSponsorModal';
-import { SponsorsColumns } from '@/components/Tables/Administration/Sponsors/SponsorsColumns';
+import NewBlogModal from '@/components/Modal/Administration/Blogs/NewBlogModal';
+import { BlogsColumns } from '@/components/Tables/Administration/Blogs/BlogsColumns';
 import { DataTable } from '@/components/ui/data-table/data-table';
 
-export default function SponsorsTable() {
-    const [sponsorsData, setSponsorsData] = useState<SponsorsInterface[]>([]);
+export default function BlogsTable() {
+    const [blogsData, setBlogsData] = useState<BlogInterface[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [, setError] = useState<string | null>(null);
 
-    const fetchSponsors = useCallback(async () => {
+    const fetchBlogs = useCallback(async () => {
         setIsLoading(true);
         try {
-            const data = await getAllSponsors();
-
-            const transformedData = data.map((sponsor) => ({
-                id: sponsor.id,
-                name: sponsor.name,
-                link: sponsor.link,
-            }));
-            setSponsorsData(transformedData);
+            const data = await getAllPost();
+            setBlogsData(data);
             setError(null);
         } catch (error) {
-            console.error('Error al obtener los Sponsors', error);
+            console.error('Error al obtener los blogs', error);
             const message = error instanceof Error ? error.message : 'Ocurrio un error desconocido';
-            setError(`Error al obtener los sponsors ${message}`);
+            setError(`Error al obtener los blogs ${message}`);
         } finally {
             setIsLoading(false);
         }
     }, []);
 
     useEffect(() => {
-        fetchSponsors();
-    }, [fetchSponsors]);
+        fetchBlogs();
+    }, [fetchBlogs]);
 
     const refreshTable = async () => {
-        await fetchSponsors();
+        await fetchBlogs();
     };
 
     return (
@@ -47,18 +42,18 @@ export default function SponsorsTable() {
             <div className="flex h-auto w-full justify-between">
                 <div>
                     <h5 className="mb-[5px] text-[20px] leading-none font-medium tracking-tight">
-                        Sponsors
+                        Blogs
                     </h5>
                     <p className="text-muted-foreground text-[13px]">Crear, Editar y Eliminar</p>
                 </div>
                 <div>
-                    <NewSponsorModal refreshAction={refreshTable} />
+                    <NewBlogModal refreshAction={refreshTable} />
                 </div>
             </div>
             <div className="mt-[20px]">
                 <DataTable
-                    columns={SponsorsColumns(refreshTable)}
-                    data={sponsorsData}
+                    columns={BlogsColumns(refreshTable)}
+                    data={blogsData}
                     loading={isLoading}
                     filterPlaceholder="Buscar..."
                 />

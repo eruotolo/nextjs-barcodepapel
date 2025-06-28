@@ -25,8 +25,8 @@ export async function createEvent(formData: FormData) {
             try {
                 imageUrl = await uploadFile({
                     file: imageFile,
-                    folder: 'teams',
-                    prefix: 'team-',
+                    folder: 'events',
+                    prefix: 'event-',
                 });
             } catch (error) {
                 if (error instanceof Error) {
@@ -35,16 +35,26 @@ export async function createEvent(formData: FormData) {
             }
         }
 
+        // Convertir la fecha a formato ISO-8601 completo
+        const dateValue = new Date(date);
+
+        // Convertir precio a decimal si existe
+        let priceValue: number | null = null;
+        if (price && price.trim() !== '') {
+            const parsedPrice = Number.parseFloat(price);
+            priceValue = Number.isNaN(parsedPrice) ? null : parsedPrice;
+        }
+
         const response = await prisma.eventeCalendar.create({
             data: {
                 name,
                 image: imageUrl,
-                date,
+                date: dateValue,
                 description,
                 venue,
                 showTime,
                 audienceType,
-                price,
+                price: priceValue,
             },
         });
 
@@ -65,7 +75,12 @@ export async function createEvent(formData: FormData) {
         });
 
         revalidatePath('/admin/administration/events');
-        return response;
+
+        // Convertir Decimal a número para serialización
+        return {
+            ...response,
+            price: response.price ? response.price.toNumber() : null,
+        };
     } catch (error) {
         console.error('Error creating event', error);
         throw error;
@@ -111,7 +126,12 @@ export async function deleteEvent(id: string) {
         });
 
         revalidatePath('/admin/administration/events');
-        return response;
+        
+        // Convertir Decimal a número para serialización
+        return {
+            ...response,
+            price: response.price ? response.price.toNumber() : null,
+        };
     } catch (error) {
         console.error('Error delete event', error);
         throw error;
@@ -134,17 +154,23 @@ export async function updateEvent(id: string, formData: FormData) {
 
         const name = (formData.get('name') as string) || currentEvent.name;
         const imageFile = formData.get('image') as File | null;
-        const date = (formData.get('date') as string) || currentEvent.date;
+        const dateString = formData.get('date') as string;
         const description =
             (formData.get('description') as string | null) || currentEvent.description;
         const venue = (formData.get('venue') as string | null) || currentEvent.venue;
         const showTime = (formData.get('showTime') as string | null) || currentEvent.showTime;
         const audienceType =
             (formData.get('audienceType') as string | null) || currentEvent.audienceType;
-        const price = (formData.get('price') as string) || currentEvent.price;
+        const priceString = formData.get('price') as string;
 
-        const dateValue = date ? new Date(date) : currentEvent.date;
-        const priceValue = price ? Number(price) : Number(currentEvent.price);
+        const dateValue = dateString ? new Date(dateString) : currentEvent.date;
+        let priceValue: number;
+        if (priceString && priceString.trim() !== '') {
+            const parsedPrice = Number.parseFloat(priceString);
+            priceValue = Number.isNaN(parsedPrice) ? Number(currentEvent.price) : parsedPrice;
+        } else {
+            priceValue = Number(currentEvent.price);
+        }
 
         const updateData: {
             name: string;
@@ -171,8 +197,8 @@ export async function updateEvent(id: string, formData: FormData) {
                 // Primero subimos la nueva imagen
                 newImageUrl = await uploadFile({
                     file: imageFile,
-                    folder: 'teams',
-                    prefix: 'team-',
+                    folder: 'events',
+                    prefix: 'event-',
                 });
 
                 // Si la subida fue exitosa y existe una imagen anterior, la eliminamos
@@ -220,7 +246,12 @@ export async function updateEvent(id: string, formData: FormData) {
         });
 
         revalidatePath('/admin/administration/events');
-        return response;
+
+        // Convertir Decimal a número para serialización
+        return {
+            ...response,
+            price: response.price ? response.price.toNumber() : null,
+        };
     } catch (error) {
         console.error('Error updating event', error);
         throw error;

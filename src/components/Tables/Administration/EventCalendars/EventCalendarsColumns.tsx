@@ -17,46 +17,46 @@ import type { Column, ColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown, MoreHorizontal } from 'lucide-react';
 import { toast } from 'sonner';
 
-import { deleteSponsor } from '@/actions/Administration/Sponsors';
-import type { SponsorsInterface } from '@/types/Administration/Sponsors/SponsorsInterface';
+import { deleteEvent } from '@/actions/Administration/EventCalendars';
+import type { EventeCalendarInterface } from '@/types/Administration/EventCalendars/EventeCalendarInterface';
 
 interface ActionCellProps {
     row: {
-        original: SponsorsInterface;
+        original: EventeCalendarInterface;
     };
     refreshTable: () => Promise<void>;
 }
 
-const DynamicEditSponsorModal = dynamic(
-    () => import('@/components/Modal/Administration/Sponsors/EditSponsorModal'),
+const DynamicEditEventCalendarModal = dynamic(
+    () => import('@/components/Modal/Administration/EventCalendars/EditEventCalendarModal'),
     { ssr: false },
 );
 
 function ActionCell({ row, refreshTable }: ActionCellProps) {
-    const sponsorId = row.original.id;
-    const [openEditSponsor, setOpenEditSponsor] = useState(false);
+    const eventId = row.original.id;
+    const [openEditEvent, setOpenEditEvent] = useState(false);
 
-    const handleEditSponsorCloseModal = () => {
-        setOpenEditSponsor(false);
+    const handleEditEventCloseModal = () => {
+        setOpenEditEvent(false);
     };
 
-    const handleDelete = async (sponsorId: string) => {
+    const handleDelete = async (eventId: string) => {
         try {
-            const success = await deleteSponsor(sponsorId);
+            const success = await deleteEvent(eventId);
             if (success) {
                 refreshTable();
-                toast.success('Sponsor Eliminado', {
-                    description: 'El sponsor se ha eliminado correctamente.',
+                toast.success('Evento Eliminado', {
+                    description: 'El evento se ha eliminado correctamente.',
                 });
             } else {
                 toast.error('Error', {
-                    description: 'No se pudo eliminar sponsor',
+                    description: 'No se pudo eliminar el evento',
                 });
             }
         } catch (error) {
-            console.error('Error al eliminar el sponsor', error);
+            console.error('Error al eliminar el evento', error);
             toast.error('Error', {
-                description: 'Hubo un error al intentar eliminar el sponsor',
+                description: 'Ocurrió un error al eliminar el evento',
             });
         }
     };
@@ -74,44 +74,44 @@ function ActionCell({ row, refreshTable }: ActionCellProps) {
                     <DropdownMenuLabel>Acciones</DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <BtnEditCell
-                        onAction={() => setOpenEditSponsor(true)}
-                        label="Editar Sponsor"
+                        onAction={() => setOpenEditEvent(true)}
+                        label="Editar Evento"
                         permission={['Editar']}
                         className="cursor-pointer"
                     />
                     <BtnDeleteCell
                         onDelete={handleDelete}
-                        label="Eliminar Sponsor"
-                        itemId={sponsorId}
+                        label="Eliminar Evento"
+                        itemId={eventId}
                         permission={['Eliminar']}
                         className="cursor-pointer text-red-600"
                     />
                 </DropdownMenuContent>
             </DropdownMenu>
-            {openEditSponsor && (
-                <DynamicEditSponsorModal
-                    id={sponsorId}
+            {openEditEvent && (
+                <DynamicEditEventCalendarModal
+                    id={eventId}
                     refreshAction={refreshTable}
-                    open={openEditSponsor}
-                    onCloseAction={handleEditSponsorCloseModal}
+                    open={openEditEvent}
+                    onCloseAction={handleEditEventCloseModal}
                 />
             )}
         </>
     );
 }
 
-export const SponsorsColumns = (
+export const EventCalendarsColumns = (
     refreshTable: () => Promise<void>,
-): ColumnDef<SponsorsInterface>[] => [
+): ColumnDef<EventeCalendarInterface>[] => [
     {
         id: 'Nombre',
         accessorKey: 'name',
-        header: ({ column }: { column: Column<SponsorsInterface> }) => (
+        header: ({ column }: { column: Column<EventeCalendarInterface> }) => (
             <Button
                 variant="ghost"
                 onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
             >
-                Nombre del Sponsor
+                Nombre del Evento
                 <ArrowUpDown className="ml-2 h-4 w-4" />
             </Button>
         ),
@@ -121,12 +121,30 @@ export const SponsorsColumns = (
         },
     },
     {
-        id: 'Link',
-        accessorKey: 'link',
-        header: () => <div>Url Sponsor</div>,
+        id: 'Fecha',
+        accessorKey: 'date',
+        header: () => <div>Fecha</div>,
         cell: ({ row }) => {
-            const link = `${row.original.link}`;
-            return <div>{link}</div>;
+            const date = `${row.original.date}`;
+            return <div>{date}</div>;
+        },
+    },
+    {
+        id: 'Hora',
+        accessorKey: 'showTime',
+        header: () => <div>Hora</div>,
+        cell: ({ row }) => {
+            const showTime = `${row.original.showTime || 'Sin hora'}`;
+            return <div>{showTime}</div>;
+        },
+    },
+    {
+        id: 'Precio',
+        accessorKey: 'price',
+        header: () => <div>Precio</div>,
+        cell: ({ row }) => {
+            const price = `${row.original.price || 'Gratis'}`;
+            return <div>{price}</div>;
         },
     },
     {

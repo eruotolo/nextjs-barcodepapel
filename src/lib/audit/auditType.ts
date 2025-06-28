@@ -35,6 +35,8 @@ export const AUDIT_ACTIONS = {
         CREATE: 'createBlog',
         UPDATE: 'updateBlog',
         DELETE: 'deleteBlog',
+        ASSIGN_CATEGORIES: 'assignCategoriesBlog',
+        REMOVE_CATEGORIES: 'removeCategoriesBlog',
     },
     CATEGORY: {
         CREATE: 'createCategory',

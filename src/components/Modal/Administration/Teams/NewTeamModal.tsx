@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { createTeam } from '@/actions/Administration/Teams';
@@ -36,13 +36,20 @@ export default function NewTeamModal({ refreshAction }: UpdateData) {
 
     const [isOpen, setIsOpen] = useState(false);
     const [error, setError] = useState('');
-    const [imagePreview, setImagePreview] = useState('/team.jpg');
+    const [imagePreview, setImagePreview] = useState('/default.png');
     const [selectedImage, setSelectedImage] = useState<File | null>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     const handleOpenChange = (open: boolean) => {
         setIsOpen(open);
         if (!open) {
             reset();
+            setImagePreview('/default.png');
+            setSelectedImage(null);
+            setError('');
+            if (fileInputRef.current) {
+                fileInputRef.current.value = '';
+            }
         }
     };
 
@@ -54,7 +61,7 @@ export default function NewTeamModal({ refreshAction }: UpdateData) {
             if (file.size > maxSizeInBytes) {
                 setError('La imagen no puede superar 4MB.');
                 e.target.value = '';
-                setImagePreview('/team.jpg');
+                setImagePreview('/default.png');
                 setSelectedImage(null);
                 return;
             }
@@ -80,7 +87,7 @@ export default function NewTeamModal({ refreshAction }: UpdateData) {
                 return;
             }
             refreshAction();
-            setIsOpen(false);
+            handleOpenChange(false);
             toast.success('Nuevo Miembro del Equipo Creado', {
                 description: 'El miembro se ha creado correctamente.',
             });
@@ -146,7 +153,7 @@ export default function NewTeamModal({ refreshAction }: UpdateData) {
                                 width={220}
                                 height={220}
                                 alt="Vista previa de la imagen"
-                                className="h-[200px] w-[200px] rounded-[50%] object-cover"
+                                className="h-[220px] w-[220px] rounded-[3%] object-cover"
                             />
                             <label
                                 htmlFor="file-upload"
@@ -161,6 +168,7 @@ export default function NewTeamModal({ refreshAction }: UpdateData) {
                                 accept="image/*"
                                 className="hidden"
                                 onChange={handleImageChange}
+                                ref={fileInputRef}
                             />
                         </div>
                     </div>

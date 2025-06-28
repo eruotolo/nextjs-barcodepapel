@@ -62,7 +62,7 @@ export async function createMaterial(formData: FormData) {
                 : undefined,
         });
 
-        revalidatePath('/admin/administration/material');
+        revalidatePath('/admin/administration/materials');
         return response;
     } catch (error) {
         console.error('Error creating material', error);
@@ -109,7 +109,7 @@ export async function deleteMaterial(id: string) {
                 : undefined,
         });
 
-        revalidatePath('/admin/administration/material');
+        revalidatePath('/admin/administration/materials');
         return response;
     } catch (error) {
         console.error('Error delete material', error);
@@ -184,7 +184,7 @@ export async function updateMaterial(id: string, formData: FormData) {
                 : undefined,
         });
 
-        revalidatePath('/admin/administration/material');
+        revalidatePath('/admin/administration/materials');
         return response;
     } catch (error) {
         console.error('Error updating material', error);
