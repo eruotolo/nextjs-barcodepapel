@@ -1,16 +1,12 @@
 'use client';
 
-import { signOut } from 'next-auth/react';
+import { ChevronsUpDown, Key, LogOut, UserPen } from 'lucide-react';
 import dynamic from 'next/dynamic';
-import { usePathname } from 'next/navigation';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import { signOut } from 'next-auth/react';
 import { useState } from 'react';
 
-import useAuthStore from '@/store/authStore';
-
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { ChevronsUpDown, Key, LogOut, UserPen } from 'lucide-react';
-
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -20,13 +16,13 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-
 import {
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
     useSidebar,
 } from '@/components/ui/sidebar';
+import useAuthStore from '@/store/authStore';
 
 const DynamicEditUserModal = dynamic(
     () => import('@/components/Modal/Setting/Users/EditUserModal'),

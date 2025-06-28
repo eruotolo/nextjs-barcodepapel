@@ -1,14 +1,13 @@
 'use client';
 
+import { FilePenLine } from 'lucide-react';
 import Image from 'next/image';
 import { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
-
+import { toast } from 'sonner';
 import { createSponsor } from '@/actions/Administration/Sponsors';
 import BtnActionNew from '@/components/BtnActionNew/BtnActionNew';
 import BtnSubmit from '@/components/BtnSubmit/BtnSubmit';
-import type { SponsorsInterface } from '@/types/Administration/Sponsors/SponsorsInterface';
-import type { UpdateData } from '@/types/settings/Generic/InterfaceGeneric';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -22,8 +21,8 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { FilePenLine } from 'lucide-react';
-import { toast } from 'sonner';
+import type { SponsorsInterface } from '@/types/Administration/Sponsors/SponsorsInterface';
+import type { UpdateData } from '@/types/settings/Generic/InterfaceGeneric';
 
 export default function NewSponsorModal({ refreshAction }: UpdateData) {
     const {

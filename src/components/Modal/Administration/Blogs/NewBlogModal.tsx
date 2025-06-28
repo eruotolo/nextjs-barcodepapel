@@ -1,17 +1,14 @@
 'use client';
 
+import { FilePenLine } from 'lucide-react';
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
-
+import { toast } from 'sonner';
 import { createPost } from '@/actions/Administration/Blogs';
 import { getAllCategories } from '@/actions/Administration/Categories';
 import BtnActionNew from '@/components/BtnActionNew/BtnActionNew';
 import BtnSubmit from '@/components/BtnSubmit/BtnSubmit';
-import type { BlogUniqueInterface } from '@/types/Administration/Blogs/BlogInterface';
-import type { CategoryInterface } from '@/types/Administration/Blogs/CategoryInterface';
-import type { UpdateData } from '@/types/settings/Generic/InterfaceGeneric';
-
 import { Button } from '@/components/ui/button';
 import {
     Dialog,
@@ -32,8 +29,9 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-import { FilePenLine } from 'lucide-react';
-import { toast } from 'sonner';
+import type { BlogUniqueInterface } from '@/types/Administration/Blogs/BlogInterface';
+import type { CategoryInterface } from '@/types/Administration/Blogs/CategoryInterface';
+import type { UpdateData } from '@/types/settings/Generic/InterfaceGeneric';
 
 export default function NewBlogModal({ refreshAction }: UpdateData) {
     const {

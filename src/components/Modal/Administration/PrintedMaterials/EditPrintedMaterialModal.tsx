@@ -1,12 +1,11 @@
 'use client';
 
+import { FilePenLine } from 'lucide-react';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-
+import { toast } from 'sonner';
 import { getMaterialById, updateMaterial } from '@/actions/Administration/PrintedMaterials';
-import type { PrintedMaterialInterface } from '@/types/Administration/PrintedMaterials/PrintedMaterialInterface';
-import type { EditModalPropsAlt } from '@/types/settings/Generic/InterfaceGeneric';
 
 import BtnSubmit from '@/components/BtnSubmit/BtnSubmit';
 import { Button } from '@/components/ui/button';
@@ -22,8 +21,8 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { FilePenLine } from 'lucide-react';
-import { toast } from 'sonner';
+import type { PrintedMaterialInterface } from '@/types/Administration/PrintedMaterials/PrintedMaterialInterface';
+import type { EditModalPropsAlt } from '@/types/settings/Generic/InterfaceGeneric';
 
 export default function EditPrintedMaterialModal({
     id,

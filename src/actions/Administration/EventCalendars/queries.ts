@@ -1,11 +1,11 @@
 'use server';
 
+import type { Prisma } from '@prisma/client';
 import prisma from '@/lib/db/db';
 import type {
     EventeCalendarInterface,
     EventeCalendarUniqueInterface,
 } from '@/types/Administration/EventCalendars/EventeCalendarInterface';
-import type { Prisma } from '@prisma/client';
 
 const DATEOTHER_FORMATTER = new Intl.DateTimeFormat('es-ES', {
     day: 'numeric',

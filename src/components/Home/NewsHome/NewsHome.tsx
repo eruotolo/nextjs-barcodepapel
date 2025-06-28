@@ -1,5 +1,5 @@
-import { getPostFromHome } from '@/actions/Administration/Blogs/queries';
 import Image from 'next/image';
+import { getPostFromHome } from '@/actions/Administration/Blogs/queries';
 
 export default async function NewsHome() {
     const initialPosts = await getPostFromHome(0, 6);

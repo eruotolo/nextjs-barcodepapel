@@ -4,9 +4,6 @@ import Image from 'next/image';
 import { useEffect, useState } from 'react';
 
 import { getUserById } from '@/actions/Settings/Users';
-import type { EditModalPropsAlt } from '@/types/settings/Generic/InterfaceGeneric';
-import type { UserQueryWithDetails } from '@/types/settings/Users/UsersInterface';
-
 import {
     Dialog,
     DialogClose,
@@ -18,6 +15,8 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import type { EditModalPropsAlt } from '@/types/settings/Generic/InterfaceGeneric';
+import type { UserQueryWithDetails } from '@/types/settings/Users/UsersInterface';
 
 export default function ViewUserModal({ id, open, onCloseAction }: EditModalPropsAlt) {
     const [imagePreview, setImagePreview] = useState('/shadcn.jpg');

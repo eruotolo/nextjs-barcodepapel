@@ -1,7 +1,7 @@
-import Cartelera from '@/components/Home/Cartelera/Cartelera';
-import NewsHome from '@/components/Home/NewsHome/NewsHome';
 import Image from 'next/image';
 import Link from 'next/link';
+import Cartelera from '@/components/Home/Cartelera/Cartelera';
+import NewsHome from '@/components/Home/NewsHome/NewsHome';
 
 export default async function Home() {
     const imageSlider = '/image-home-01.png';

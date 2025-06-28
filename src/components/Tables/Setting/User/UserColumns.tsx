@@ -1,5 +1,11 @@
 'use client';
 
+import type { ColumnDef } from '@tanstack/react-table';
+import { ArrowUpDown, MoreHorizontal } from 'lucide-react';
+import dynamic from 'next/dynamic';
+import { useState } from 'react';
+import { toast } from 'sonner';
+import { deleteUser } from '@/actions/Settings/Users';
 import {
     BtnChangePasswordCell,
     BtnConfigCell,
@@ -7,9 +13,6 @@ import {
     BtnEditCell,
     BtnViewCell,
 } from '@/components/BtnActionCell/BtnActionCell';
-import dynamic from 'next/dynamic';
-import { useState } from 'react';
-
 import { Button } from '@/components/ui/button';
 import {
     DropdownMenu,
@@ -19,11 +22,6 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import type { UserInterface } from '@/types/settings/Users/UsersInterface';
-import type { ColumnDef } from '@tanstack/react-table';
-import { ArrowUpDown, MoreHorizontal } from 'lucide-react';
-import { toast } from 'sonner';
-
-import { deleteUser } from '@/actions/Settings/Users';
 
 const DynamicChangeUserPassModal = dynamic(
     () => import('@/components/Modal/Setting/Users/ChangeUserPasswordModal'),

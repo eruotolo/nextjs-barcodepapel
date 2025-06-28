@@ -1,12 +1,11 @@
 'use client';
 
+import { FilePenLine } from 'lucide-react';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-
+import { toast } from 'sonner';
 import { getSponsorById, updateSponsor } from '@/actions/Administration/Sponsors';
-import type { SponsorsInterface } from '@/types/Administration/Sponsors/SponsorsInterface';
-import type { EditModalPropsAlt } from '@/types/settings/Generic/InterfaceGeneric';
 
 import BtnSubmit from '@/components/BtnSubmit/BtnSubmit';
 import { Button } from '@/components/ui/button';
@@ -21,8 +20,8 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { FilePenLine } from 'lucide-react';
-import { toast } from 'sonner';
+import type { SponsorsInterface } from '@/types/Administration/Sponsors/SponsorsInterface';
+import type { EditModalPropsAlt } from '@/types/settings/Generic/InterfaceGeneric';
 
 export default function EditSponsorModal({
     id,

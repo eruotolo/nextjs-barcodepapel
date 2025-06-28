@@ -1,9 +1,13 @@
 'use client';
 
-import { BtnDeleteCell, BtnEditCell } from '@/components/BtnActionCell/BtnActionCell';
+
+import type { ColumnDef } from '@tanstack/react-table';
+import { ArrowUpDown, MoreHorizontal } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import { useState } from 'react';
-
+import { toast } from 'sonner';
+import { deleteCategory } from '@/actions/Administration/Categories';
+import { BtnDeleteCell, BtnEditCell } from '@/components/BtnActionCell/BtnActionCell';
 import { Button } from '@/components/ui/button';
 import {
     DropdownMenu,
@@ -12,12 +16,6 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-
-import type { ColumnDef } from '@tanstack/react-table';
-import { ArrowUpDown, MoreHorizontal } from 'lucide-react';
-import { toast } from 'sonner';
-
-import { deleteCategory } from '@/actions/Administration/Categories';
 import type { CategoryInterface } from '@/types/Administration/Blogs/CategoryInterface';
 
 interface ActionCellProps {

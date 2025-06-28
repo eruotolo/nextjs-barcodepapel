@@ -1,3 +1,4 @@
+import type { Editor } from '@tiptap/react';
 import {
     AlignCenter,
     AlignLeft,
@@ -9,14 +10,13 @@ import {
     Highlighter,
     ImageIcon,
     Italic,
+    Link as LinkIcon,
     List,
     ListOrdered,
     Strikethrough,
-    Link as LinkIcon,
 } from 'lucide-react';
-import { Toggle } from '../toggle';
-import type { Editor } from '@tiptap/react';
 import { toast } from 'sonner';
+import { Toggle } from '../toggle';
 
 export default function MenuBar({
     editor,

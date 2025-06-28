@@ -1,9 +1,8 @@
 import '../globals.css';
 import type { Metadata } from 'next';
-import { BasicSans } from './fonts';
-
 import Footer from '@/components/Home/Footer/Footer';
 import DynamicHeader from '@/components/Home/Header/DynamicHeader';
+import { BasicSans } from './fonts';
 
 export const metadata: Metadata = {
     title: 'Barco de Papel',

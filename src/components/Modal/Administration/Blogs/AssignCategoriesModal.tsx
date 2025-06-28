@@ -6,9 +6,6 @@ import { toast } from 'sonner';
 
 import { getBlogCategories, updateBlogCategories } from '@/actions/Administration/BlogCategory';
 import { getAllCategories } from '@/actions/Administration/Categories';
-import type { CategoryInterface } from '@/types/Administration/Blogs/CategoryInterface';
-import type { EditModalPropsAlt } from '@/types/settings/Generic/InterfaceGeneric';
-
 import { Button } from '@/components/ui/button';
 import {
     Dialog,
@@ -18,6 +15,8 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@/components/ui/dialog';
+import type { CategoryInterface } from '@/types/Administration/Blogs/CategoryInterface';
+import type { EditModalPropsAlt } from '@/types/settings/Generic/InterfaceGeneric';
 
 // Componente para el botón de envío con estado
 function SubmitButton({ disabled }: { disabled: boolean }) {

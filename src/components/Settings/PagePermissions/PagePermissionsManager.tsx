@@ -1,13 +1,17 @@
 'use client';
 
+import type { Column } from '@tanstack/react-table';
+import { ArrowUpDown, MoreHorizontal, Pencil, Plus, Trash2 } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 import {
     createPage,
     deletePage,
     updatePage,
     updatePageRole,
 } from '@/actions/Settings/Pages/mutations';
-import { getPages } from '@/actions/Settings/Pages/queries';
 import type { Page } from '@/actions/Settings/Pages/queries';
+import { getPages } from '@/actions/Settings/Pages/queries';
 import { getRoles } from '@/actions/Settings/Roles/queries';
 import {
     AlertDialog,
@@ -43,10 +47,6 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import type { Column } from '@tanstack/react-table';
-import { ArrowUpDown, MoreHorizontal, Pencil, Plus, Trash2 } from 'lucide-react';
-import { useEffect, useState } from 'react';
-import { toast } from 'sonner';
 
 interface Role {
     id: string;

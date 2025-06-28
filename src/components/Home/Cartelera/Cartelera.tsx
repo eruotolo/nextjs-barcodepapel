@@ -1,5 +1,5 @@
-import { getEventMonth } from '@/actions/Administration/EventCalendars/queries';
 import Image from 'next/image';
+import { getEventMonth } from '@/actions/Administration/EventCalendars/queries';
 
 export default async function Cartelera() {
     const upcomingEvents = await getEventMonth();

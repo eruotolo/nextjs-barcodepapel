@@ -1,5 +1,5 @@
-import { getToken } from 'next-auth/jwt';
 import type { NextRequest } from 'next/server';
+import { getToken } from 'next-auth/jwt';
 
 export async function verifyAuth(req: NextRequest) {
     return getToken({

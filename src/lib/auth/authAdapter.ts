@@ -1,6 +1,6 @@
-import prisma from '@/dbprisma/db';
 import type { User } from '@prisma/client';
 import { Prisma } from '@prisma/client';
+import prisma from '@/dbprisma/db';
 
 const AuthAdapter = () => {
     const updateUserSession = async (userId: string, userData: Partial<User>): Promise<User> => {

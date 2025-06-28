@@ -4,8 +4,8 @@ import { MapPin } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { MapContainer, Marker, TileLayer, useMap, useMapEvents } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import L from 'leaflet';
 import type { LeafletEvent, LeafletMouseEvent } from 'leaflet';
+import L from 'leaflet';
 import { renderToStaticMarkup } from 'react-dom/server';
 
 // Crear un icono personalizado usando Lucide React

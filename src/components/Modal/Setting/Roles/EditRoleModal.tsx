@@ -1,9 +1,9 @@
 'use client';
 
-import { getRoleById, updateRole } from '@/actions/Settings/Roles';
-import type { EditModalProps } from '@/types/settings/Generic/InterfaceGeneric';
 import Form from 'next/form';
 import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
+import { getRoleById, updateRole } from '@/actions/Settings/Roles';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -16,7 +16,7 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { toast } from 'sonner';
+import type { EditModalProps } from '@/types/settings/Generic/InterfaceGeneric';
 
 export default function EditRoleModal({ id, refreshAction, open, onCloseAction }: EditModalProps) {
     const [error, setError] = useState('');

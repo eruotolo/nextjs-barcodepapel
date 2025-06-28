@@ -1,15 +1,12 @@
 'use client';
 
+import { FilePenLine } from 'lucide-react';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-
+import { toast } from 'sonner';
 import { getPostById, updatePost } from '@/actions/Administration/Blogs';
 import { getAllCategories } from '@/actions/Administration/Categories';
-import type { BlogUniqueInterface } from '@/types/Administration/Blogs/BlogInterface';
-import type { CategoryInterface } from '@/types/Administration/Blogs/CategoryInterface';
-import type { EditModalPropsAlt } from '@/types/settings/Generic/InterfaceGeneric';
-
 import BtnSubmit from '@/components/BtnSubmit/BtnSubmit';
 import { Button } from '@/components/ui/button';
 import {
@@ -31,8 +28,9 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-import { FilePenLine } from 'lucide-react';
-import { toast } from 'sonner';
+import type { BlogUniqueInterface } from '@/types/Administration/Blogs/BlogInterface';
+import type { CategoryInterface } from '@/types/Administration/Blogs/CategoryInterface';
+import type { EditModalPropsAlt } from '@/types/settings/Generic/InterfaceGeneric';
 
 export default function EditBlogModal({
     id,

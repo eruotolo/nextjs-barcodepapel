@@ -1,14 +1,12 @@
 'use client';
 
-import { getAllRoles } from '@/actions/Settings/Roles';
-import { getUserRoles, updateUserRoles } from '@/actions/Settings/UserRoles';
-import type { EditModalPropsAlt } from '@/types/settings/Generic/InterfaceGeneric';
-import type { RoleQuery, UserRoleQuery } from '@/types/settings/Roles/RolesInterface';
 
 import Form from 'next/form';
 import { useEffect, useState } from 'react';
 import { useFormStatus } from 'react-dom';
-
+import { toast } from 'sonner';
+import { getAllRoles } from '@/actions/Settings/Roles';
+import { getUserRoles, updateUserRoles } from '@/actions/Settings/UserRoles';
 import { Button } from '@/components/ui/button';
 import {
     Dialog,
@@ -18,7 +16,8 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@/components/ui/dialog';
-import { toast } from 'sonner';
+import type { EditModalPropsAlt } from '@/types/settings/Generic/InterfaceGeneric';
+import type { RoleQuery, UserRoleQuery } from '@/types/settings/Roles/RolesInterface';
 
 // Componente para el botón de envío con estado
 function SubmitButton({ disabled }: { disabled: boolean }) {

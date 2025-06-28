@@ -1,12 +1,11 @@
 'use client';
 
-import { getAllMaterial } from '@/actions/Administration/PrintedMaterials';
-import type { PrintedMaterialInterface } from '@/types/Administration/PrintedMaterials/PrintedMaterialInterface';
 import { useCallback, useEffect, useState } from 'react';
-
+import { getAllMaterial } from '@/actions/Administration/PrintedMaterials';
 import NewPrintedMaterialModal from '@/components/Modal/Administration/PrintedMaterials/NewPrintedMaterialModal';
 import { PrintedMaterialsColumns } from '@/components/Tables/Administration/PrintedMaterials/PrintedMaterialsColumns';
 import { DataTable } from '@/components/ui/data-table/data-table';
+import type { PrintedMaterialInterface } from '@/types/Administration/PrintedMaterials/PrintedMaterialInterface';
 
 export default function PrintedMaterialsTable() {
     const [materialsData, setMaterialsData] = useState<PrintedMaterialInterface[]>([]);

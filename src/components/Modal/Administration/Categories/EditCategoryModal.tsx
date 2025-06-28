@@ -1,9 +1,9 @@
 'use client';
 
-import { getCategoryById, updateCategory } from '@/actions/Administration/Categories';
-import type { EditModalProps } from '@/types/settings/Generic/InterfaceGeneric';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
+import { getCategoryById, updateCategory } from '@/actions/Administration/Categories';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -16,7 +16,7 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { toast } from 'sonner';
+import type { EditModalProps } from '@/types/settings/Generic/InterfaceGeneric';
 
 interface CategoryFormData {
     name: string;

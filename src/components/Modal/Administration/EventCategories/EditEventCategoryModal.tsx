@@ -1,12 +1,12 @@
 'use client';
 
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 import {
     getEventCategoryById,
     updateEventCategory,
 } from '@/actions/Administration/EventCategories';
-import type { EditModalProps } from '@/types/settings/Generic/InterfaceGeneric';
-import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -19,7 +19,7 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { toast } from 'sonner';
+import type { EditModalProps } from '@/types/settings/Generic/InterfaceGeneric';
 
 interface EventCategoryFormData {
     name: string;

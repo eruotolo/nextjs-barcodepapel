@@ -1,17 +1,12 @@
 'use client';
 
-import { getAllPermissions } from '@/actions/Settings/Permission';
-import { getPermissionRoles, updatePermissionRoles } from '@/actions/Settings/PermissionRole';
-import type { EditModalPropsAlt } from '@/types/settings/Generic/InterfaceGeneric';
-import type {
-    PermissionQuery,
-    PermissionRoleQuery,
-} from '@/types/settings/Permission/PermissionInterface';
 
 import Form from 'next/form';
 import { useEffect, useState } from 'react';
 import { useFormStatus } from 'react-dom';
-
+import { toast } from 'sonner';
+import { getAllPermissions } from '@/actions/Settings/Permission';
+import { getPermissionRoles, updatePermissionRoles } from '@/actions/Settings/PermissionRole';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
@@ -23,7 +18,11 @@ import {
     DialogTitle,
 } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
-import { toast } from 'sonner';
+import type { EditModalPropsAlt } from '@/types/settings/Generic/InterfaceGeneric';
+import type {
+    PermissionQuery,
+    PermissionRoleQuery,
+} from '@/types/settings/Permission/PermissionInterface';
 
 // Componente para el botón de envío con estado
 function SubmitButton({ disabled }: { disabled: boolean }) {

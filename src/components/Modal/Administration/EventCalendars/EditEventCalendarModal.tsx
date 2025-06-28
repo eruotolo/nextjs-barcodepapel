@@ -1,16 +1,12 @@
 'use client';
 
+import { FilePenLine } from 'lucide-react';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-
+import { toast } from 'sonner';
 import { getEventByIdForEdit, updateEvent } from '@/actions/Administration/EventCalendars';
 import { getEventCategoriesForSelect } from '@/actions/Administration/EventCategories';
-import type {
-    EventeCalendarInterface,
-    EventeCalendarUniqueInterface,
-} from '@/types/Administration/EventCalendars/EventeCalendarInterface';
-import type { EditModalPropsAlt } from '@/types/settings/Generic/InterfaceGeneric';
 
 import BtnSubmit from '@/components/BtnSubmit/BtnSubmit';
 import { Button } from '@/components/ui/button';
@@ -32,8 +28,11 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-import { FilePenLine } from 'lucide-react';
-import { toast } from 'sonner';
+import type {
+    EventeCalendarInterface,
+    EventeCalendarUniqueInterface,
+} from '@/types/Administration/EventCalendars/EventeCalendarInterface';
+import type { EditModalPropsAlt } from '@/types/settings/Generic/InterfaceGeneric';
 
 interface EventCategory {
     id: string;

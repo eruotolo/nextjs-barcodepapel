@@ -2,11 +2,10 @@
 
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-
+import { toast } from 'sonner';
 import { createEventCategory } from '@/actions/Administration/EventCategories';
 import BtnActionNew from '@/components/BtnActionNew/BtnActionNew';
 import BtnSubmit from '@/components/BtnSubmit/BtnSubmit';
-import type { UpdateData } from '@/types/settings/Generic/InterfaceGeneric';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -20,7 +19,7 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { toast } from 'sonner';
+import type { UpdateData } from '@/types/settings/Generic/InterfaceGeneric';
 
 interface EventCategoryFormData {
     name: string;
