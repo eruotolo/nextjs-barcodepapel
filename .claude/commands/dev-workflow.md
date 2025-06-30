@@ -1,0 +1,212 @@
+# Workflow de Desarrollo Interactivo
+
+Este archivo define comandos de desarrollo completos para uso con Claude CLI, incluyendo formateo, build, Git y más.
+
+## 🎯 Uso Rápido
+
+Simplemente escribe: **"dev workflow"** para ver el menú de opciones disponibles.
+
+## 📋 Menú de Comandos de Desarrollo Disponibles
+
+### 1. **Format + Add + Commit**
+
+- Aplica **next_best_practices** SOLO a archivos en staging
+- Formateo Next.js 15 + React 19 + corrección ortográfica bilingüe
+- Agrega todos los archivos modificados
+- Crea commit con template personalizado
+- Queda listo para push manual
+
+### 2. **Quick Format (Solo Git Staged)**
+
+- Aplica formateo según **next_best_practices** SOLO a archivos en staging
+- Prettier + Tailwind + Biome lint + corrección ortográfica
+- Perfecto antes de revisar cambios específicos
+
+### 3. **Format Full Project**
+
+- Aplica **next_best_practices** a TODO el proyecto
+- Formateo completo Next.js 15 + React 19 + corrección ortográfica bilingüe
+- Perfecto para mantener consistencia global
+- Sin commit (solo formateo)
+
+### 4. **Build + Format + Commit**
+
+- Ejecuta build del proyecto con verificación de tipos
+- Aplica **next_best_practices** SOLO a archivos en staging
+- Formateo Next.js 15 + React 19 + corrección ortográfica bilingüe
+- Agrega archivos y hace commit
+- Listo para push manual
+
+### 6. **Simple Commit**
+
+- Solo agrega archivos y hace commit
+- Sin formateo ni build
+- Para commits rápidos
+
+### 7. **Status Check**
+
+- Muestra estado actual del repositorio local
+- Lista archivos modificados
+- Muestra últimos commits
+- Información de la rama actual
+- Sin verificación remota (push manual)
+
+### 8. **Stash Management**
+
+- Guardar trabajo temporal
+- Aplicar stash guardado
+- Listar stashes disponibles
+
+## 🔧 Template de Commit Automático
+
+**Formato**: `Task: [descripción] Date: [DD-MM-YYYY] Version: [X.Y]`
+
+### Datos Automáticos:
+
+- **Fecha**: Se genera automáticamente con formato DD-MM-YYYY
+- **Versión**: Se auto-incrementa basándose en el último commit
+- **Tarea**: El usuario solo proporciona la descripción
+
+### Ejemplo de Flujo:
+
+```
+Usuario: "dev workflow"
+Claude: "¿Qué comando de desarrollo quieres ejecutar? (1-8)"
+Usuario: "1"
+Claude: "¿Qué tarea realizaste?"
+Usuario: "Creación de componente Newsletter"
+Claude: Ejecuta -> Format + Add + Commit (listo para push manual)
+```
+
+## 🚀 Comandos Especiales
+
+### Format + Add + Commit (Opción 1)
+
+Este comando ejecuta la secuencia usando **next_best_practices** SOLO en archivos staged:
+
+1. `git add .` - Agrega archivos modificados al staging
+2. **Formateo selectivo** - Aplica next_best_practices solo a archivos en staging
+3. **Corrección ortográfica bilingüe** - Corrige errores respetando Spanglish del cliente
+4. `git commit` - Con template personalizado
+5. ✅ **Listo para `git push` manual**
+
+### Quick Format (Opción 2)
+
+Solo formateo de archivos en staging usando **next_best_practices**:
+
+1. **Formateo selectivo** - Solo archivos en Git staging area
+2. **Corrección ortográfica bilingüe** - Aplica reglas de next_best_practices
+3. ✅ **Sin commit** - Solo formateo para revisar cambios
+
+### Format Full Project (Opción 3)
+
+Formateo completo del proyecto usando **next_best_practices**:
+
+1. `bun run bun:format-prettier` - Aplica formateo Prettier a TODO el proyecto
+2. `bun run sort-tw` - Ordena clases Tailwind en TODOS los archivos
+3. `npx biome check .` - Lint completo del proyecto
+4. **Corrección ortográfica bilingüe** - Aplica reglas a TODO el proyecto
+5. ✅ **Sin commit** - Solo formateo global
+
+### Build + Format + Commit (Opción 4)
+
+Secuencia con verificación completa usando **next_best_practices** en staged files:
+
+1. `rm -rf .next` - Limpia build anterior
+2. `bun run build` - Build limpio desde cero
+3. `npx tsc --noEmit` - Verificación de tipos TypeScript
+4. `git add .` - Agrega archivos modificados
+5. **Formateo selectivo** - Aplica next_best_practices solo a archivos staged
+6. **Corrección ortográfica bilingüe** - Aplica reglas de next_best_practices
+7. `git commit` - Con template personalizado
+8. ✅ **Listo para `git push` manual**
+
+### Version Auto-Increment
+
+El sistema detecta automáticamente la siguiente versión:
+
+- Lee el último commit
+- Extrae el número de versión actual
+- Incrementa automáticamente (2.10 → 2.11)
+
+### Error Handling
+
+- Si falla el build, NO hace commit
+- Si falla el formateo, muestra el error y para
+- Muestra mensajes claros de éxito/error
+- Permite retry en caso de errores temporales
+
+## 📝 Ejemplos de Uso
+
+### Ejemplo 1: Format + Commit
+
+```
+Input: "dev workflow"
+Output: Menú de desarrollo
+Input: "1"
+Output: "¿Qué tarea realizaste?"
+Input: "Fix responsive design en header"
+Output: Format → Add → Commit (versión 2.15) → ✅ Listo para push manual
+```
+
+### Ejemplo 2: Solo Formateo
+
+```
+Input: "dev workflow"
+Output: Menú de desarrollo  
+Input: "2"
+Output: Formatea código sin commit → ✅ Listo para revisar cambios
+```
+
+### Ejemplo 3: Build + Format + Commit
+
+```
+Input: "dev workflow"
+Output: Menú de desarrollo
+Input: "4"
+Output: "¿Qué tarea realizaste?"
+Input: "Implementación completa del sistema de usuarios"
+Output: Clean → Build → Format → Add → Commit (versión 2.16) → ✅ Listo para push manual
+```
+
+## 🎨 Personalización
+
+### Modificar Template
+
+Para cambiar el formato del commit, edita la línea del template en el código:
+
+```bash
+"Task: $task Date: $date Version: $version"
+```
+
+### Agregar Comandos
+
+Para agregar nuevos comandos al menú:
+
+1. Agrega la opción al menú (numerado)
+2. Implementa la lógica correspondiente
+3. Actualiza esta documentación
+
+### Cambiar Versioning
+
+Actualmente usa formato X.Y (2.10, 2.11...). Para cambiar:
+
+- Modifica la lógica de auto-incremento
+- Ajusta el patrón de extracción de versión
+
+## 🔍 Troubleshooting
+
+### Problemas Comunes:
+
+- **"No hay cambios para commit"**: Verificar `git status` primero
+- **"Falla el build"**: Revisar errores antes de commit
+- **"Conflicto en push"**: Hacer `git pull` primero
+- **"Versión incorrecta"**: Verificar formato del último commit
+
+### Debug Mode:
+
+Para ver más detalles de la ejecución, incluir `--verbose` en cualquier comando.
+
+---
+
+**Nota**: Este sistema está diseñado para trabajar exclusivamente con Claude CLI y mantener consistencia en el formato de commits del proyecto.

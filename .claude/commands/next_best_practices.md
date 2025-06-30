@@ -5,28 +5,30 @@ Estas instrucciones definen las convenciones de código para mantener consistenc
 ## 1. ESTRUCTURA DE ARCHIVOS Y NAMING CONVENTIONS
 
 ### Naming Conventions
+
 ```typescript
 // ✅ CORRECTO - PascalCase para componentes
-NewBlogModal.tsx
-BlogsTable.tsx
-AdminLayout.tsx
+NewBlogModal.tsx;
+BlogsTable.tsx;
+AdminLayout.tsx;
 
 // ✅ CORRECTO - camelCase para utilities y hooks
-usePagePermissions.ts
-blogInterface.ts
-apiHelpers.ts
+usePagePermissions.ts;
+blogInterface.ts;
+apiHelpers.ts;
 
 // ✅ CORRECTO - kebab-case para pages y routes
-blog-details/page.tsx
-user-profile/layout.tsx
+blog - details / page.tsx;
+user - profile / layout.tsx;
 
 // ❌ INCORRECTO
-newblogmodal.tsx
-BlogsTable.js (usar .tsx)
-admin_layout.tsx
+newblogmodal.tsx;
+BlogsTable.js(usar.tsx);
+admin_layout.tsx;
 ```
 
 ### Estructura de Directorios
+
 ```
 src/
 ├── app/                    # App Router (Next.js 15)
@@ -46,6 +48,7 @@ src/
 ## 2. IMPORT/EXPORT PATTERNS
 
 ### Orden de Imports
+
 ```typescript
 // ✅ CORRECTO - Orden específico
 'use client'; // Directiva de cliente (si aplica)
@@ -77,6 +80,7 @@ import { createPost } from '@/actions/Administration/Blogs';
 ```
 
 ### Export Patterns
+
 ```typescript
 // ✅ CORRECTO - Default export para componentes principales
 export default function BlogModal() {
@@ -98,13 +102,14 @@ export { default as EditBlogModal } from './EditBlogModal';
 ## 3. COMPONENTES: SERVER vs CLIENT
 
 ### Server Components (por defecto)
+
 ```typescript
 // ✅ CORRECTO - Server Component (NO usar 'use client')
 import { getAllBlogs } from '@/actions/Administration/Blogs/queries';
 
 export default async function BlogsPage() {
   const blogs = await getAllBlogs();
-  
+
   return (
     <div>
       <h1>Blogs</h1>
@@ -119,6 +124,7 @@ export default async function BlogsPage() {
 ```
 
 ### Client Components
+
 ```typescript
 // ✅ CORRECTO - Client Component
 'use client';
@@ -128,15 +134,15 @@ import { toast } from 'sonner';
 
 export default function InteractiveModal() {
   const [isOpen, setIsOpen] = useState(false);
-  
+
   useEffect(() => {
     // Efectos del lado del cliente
   }, []);
-  
+
   const handleClick = () => {
     toast.success('Acción completada');
   };
-  
+
   return (
     <button onClick={handleClick}>
       Abrir Modal
@@ -146,6 +152,7 @@ export default function InteractiveModal() {
 ```
 
 ### Cuándo usar 'use client'
+
 ```typescript
 // ✅ USAR 'use client' cuando:
 // - Usas hooks (useState, useEffect, etc.)
@@ -163,15 +170,16 @@ export default function InteractiveModal() {
 ## 4. TYPESCRIPT PATTERNS
 
 ### Interfaces y Types
+
 ```typescript
 // ✅ CORRECTO - Interfaces para objetos
 export interface BlogInterface {
-  id: string;
-  name: string;
-  content: string;
-  author: string;
-  publishedAt: Date;
-  categories: CategoryInterface[];
+    id: string;
+    name: string;
+    content: string;
+    author: string;
+    publishedAt: Date;
+    categories: CategoryInterface[];
 }
 
 // ✅ CORRECTO - Types para uniones y primitivos
@@ -180,20 +188,21 @@ export type ID = string | number;
 
 // ✅ CORRECTO - Props interfaces
 interface BlogModalProps {
-  blog?: BlogInterface;
-  isOpen: boolean;
-  onClose: () => void;
+    blog?: BlogInterface;
+    isOpen: boolean;
+    onClose: () => void;
 }
 
 // ✅ CORRECTO - Generics para reutilización
 interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
-  data: TData[];
-  loading?: boolean;
+    columns: ColumnDef<TData, TValue>[];
+    data: TData[];
+    loading?: boolean;
 }
 ```
 
 ### Anotaciones de Tipos
+
 ```typescript
 // ✅ CORRECTO - Explicito cuando sea necesario
 const [blogs, setBlogs] = useState<BlogInterface[]>([]);
@@ -205,19 +214,20 @@ const blogCount = blogs.length; // number inferido
 
 // ✅ CORRECTO - Async functions
 async function fetchBlog(id: string): Promise<BlogInterface | null> {
-  try {
-    const blog = await getBlogById(id);
-    return blog;
-  } catch (error) {
-    console.error('Error fetching blog:', error);
-    return null;
-  }
+    try {
+        const blog = await getBlogById(id);
+        return blog;
+    } catch (error) {
+        console.error('Error fetching blog:', error);
+        return null;
+    }
 }
 ```
 
 ## 5. HOOKS Y STATE MANAGEMENT
 
 ### useState Patterns
+
 ```typescript
 // ✅ CORRECTO - Estado primitivo
 const [isLoading, setIsLoading] = useState(false);
@@ -225,104 +235,104 @@ const [error, setError] = useState<string | null>(null);
 
 // ✅ CORRECTO - Estado de objeto
 const [formData, setFormData] = useState<BlogFormData>({
-  name: '',
-  content: '',
-  categoryId: ''
+    name: '',
+    content: '',
+    categoryId: '',
 });
 
 // ✅ CORRECTO - Función de actualización
 const updateFormField = useCallback((field: keyof BlogFormData, value: string) => {
-  setFormData(prev => ({
-    ...prev,
-    [field]: value
-  }));
+    setFormData((prev) => ({
+        ...prev,
+        [field]: value,
+    }));
 }, []);
 ```
 
 ### useEffect Patterns
+
 ```typescript
 // ✅ CORRECTO - Cleanup y dependencies
 useEffect(() => {
-  let isMounted = true;
-  
-  const fetchData = async () => {
-    try {
-      setIsLoading(true);
-      const data = await fetchBlogs();
-      if (isMounted) {
-        setBlogs(data);
-      }
-    } catch (error) {
-      if (isMounted) {
-        setError('Failed to fetch blogs');
-      }
-    } finally {
-      if (isMounted) {
-        setIsLoading(false);
-      }
-    }
-  };
-  
-  fetchData();
-  
-  return () => {
-    isMounted = false;
-  };
+    let isMounted = true;
+
+    const fetchData = async () => {
+        try {
+            setIsLoading(true);
+            const data = await fetchBlogs();
+            if (isMounted) {
+                setBlogs(data);
+            }
+        } catch (error) {
+            if (isMounted) {
+                setError('Failed to fetch blogs');
+            }
+        } finally {
+            if (isMounted) {
+                setIsLoading(false);
+            }
+        }
+    };
+
+    fetchData();
+
+    return () => {
+        isMounted = false;
+    };
 }, []);
 
 // ❌ INCORRECTO - Sin cleanup
 useEffect(() => {
-  fetchBlogs().then(setBlogs);
+    fetchBlogs().then(setBlogs);
 }, []);
 ```
 
 ### Custom Hooks
+
 ```typescript
 // ✅ CORRECTO - Custom hook reutilizable
-function useAsyncData<T>(
-  fetchFn: () => Promise<T>,
-  dependencies: React.DependencyList = []
-) {
-  const [data, setData] = useState<T | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
-  
-  useEffect(() => {
-    let isMounted = true;
-    
-    const loadData = async () => {
-      try {
-        setIsLoading(true);
-        setError(null);
-        const result = await fetchFn();
-        if (isMounted) {
-          setData(result);
-        }
-      } catch (err) {
-        if (isMounted) {
-          setError(err instanceof Error ? err : new Error('Unknown error'));
-        }
-      } finally {
-        if (isMounted) {
-          setIsLoading(false);
-        }
-      }
-    };
-    
-    loadData();
-    
-    return () => {
-      isMounted = false;
-    };
-  }, dependencies);
-  
-  return { data, isLoading, error };
+function useAsyncData<T>(fetchFn: () => Promise<T>, dependencies: React.DependencyList = []) {
+    const [data, setData] = useState<T | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<Error | null>(null);
+
+    useEffect(() => {
+        let isMounted = true;
+
+        const loadData = async () => {
+            try {
+                setIsLoading(true);
+                setError(null);
+                const result = await fetchFn();
+                if (isMounted) {
+                    setData(result);
+                }
+            } catch (err) {
+                if (isMounted) {
+                    setError(err instanceof Error ? err : new Error('Unknown error'));
+                }
+            } finally {
+                if (isMounted) {
+                    setIsLoading(false);
+                }
+            }
+        };
+
+        loadData();
+
+        return () => {
+            isMounted = false;
+        };
+    }, dependencies);
+
+    return { data, isLoading, error };
 }
 ```
 
 ## 6. SERVER ACTIONS Y FORMULARIOS
 
 ### Server Actions
+
 ```typescript
 // ✅ CORRECTO - Server Action
 'use server';
@@ -332,44 +342,45 @@ import { redirect } from 'next/navigation';
 import { prisma } from '@/lib/prisma';
 
 export async function createBlog(formData: FormData): Promise<ActionResult> {
-  try {
-    // Validación de datos
-    const name = formData.get('name') as string;
-    const content = formData.get('content') as string;
-    
-    if (!name || !content) {
-      return { success: false, error: 'Missing required fields' };
+    try {
+        // Validación de datos
+        const name = formData.get('name') as string;
+        const content = formData.get('content') as string;
+
+        if (!name || !content) {
+            return { success: false, error: 'Missing required fields' };
+        }
+
+        // Operación de base de datos
+        const blog = await prisma.blog.create({
+            data: {
+                name,
+                content,
+                authorId: 'user-id', // Obtener del session
+                createdAt: new Date(),
+            },
+        });
+
+        // Revalidar cache
+        revalidatePath('/admin/blogs');
+
+        return { success: true, data: blog };
+    } catch (error) {
+        console.error('Error creating blog:', error);
+        return { success: false, error: 'Failed to create blog' };
     }
-    
-    // Operación de base de datos
-    const blog = await prisma.blog.create({
-      data: {
-        name,
-        content,
-        authorId: 'user-id', // Obtener del session
-        createdAt: new Date()
-      }
-    });
-    
-    // Revalidar cache
-    revalidatePath('/admin/blogs');
-    
-    return { success: true, data: blog };
-  } catch (error) {
-    console.error('Error creating blog:', error);
-    return { success: false, error: 'Failed to create blog' };
-  }
 }
 
 // ✅ CORRECTO - Tipo para el resultado
 interface ActionResult {
-  success: boolean;
-  data?: any;
-  error?: string;
+    success: boolean;
+    data?: any;
+    error?: string;
 }
 ```
 
 ### Formularios con Server Actions
+
 ```typescript
 // ✅ CORRECTO - Formulario optimizado
 'use client';
@@ -382,17 +393,17 @@ export default function BlogForm() {
     success: false,
     error: null
   });
-  
+
   return (
     <form action={formAction}>
-      <input 
-        name="name" 
+      <input
+        name="name"
         placeholder="Blog title"
         required
         disabled={isPending}
       />
-      <textarea 
-        name="content" 
+      <textarea
+        name="content"
         placeholder="Blog content"
         required
         disabled={isPending}
@@ -411,13 +422,14 @@ export default function BlogForm() {
 ## 7. ESTILOS Y UI PATTERNS
 
 ### Tailwind CSS Patterns
+
 ```typescript
 // ✅ CORRECTO - Clases ordenadas con rustywind
 import { cn } from '@/lib/utils';
 
 export default function BlogCard({ className, ...props }) {
   return (
-    <div 
+    <div
       className={cn(
         // Layout
         "flex flex-col",
@@ -441,6 +453,7 @@ export default function BlogCard({ className, ...props }) {
 ```
 
 ### shadcn/ui Components
+
 ```typescript
 // ✅ CORRECTO - Uso de componentes shadcn/ui
 import { Button } from '@/components/ui/button';
@@ -485,6 +498,7 @@ export default function BlogModal({ isOpen, onClose }) {
 ## 8. PERFORMANCE Y OPTIMIZACIONES
 
 ### React.memo y useCallback
+
 ```typescript
 // ✅ CORRECTO - Memoización estratégica
 import { memo, useCallback, useMemo } from 'react';
@@ -495,23 +509,23 @@ interface BlogItemProps {
   onDelete: (id: string) => void;
 }
 
-export const BlogItem = memo(function BlogItem({ 
-  blog, 
-  onEdit, 
-  onDelete 
+export const BlogItem = memo(function BlogItem({
+  blog,
+  onEdit,
+  onDelete
 }: BlogItemProps) {
   const handleEdit = useCallback(() => {
     onEdit(blog.id);
   }, [blog.id, onEdit]);
-  
+
   const handleDelete = useCallback(() => {
     onDelete(blog.id);
   }, [blog.id, onDelete]);
-  
+
   const formattedDate = useMemo(() => {
     return new Intl.DateTimeFormat('es-ES').format(new Date(blog.createdAt));
   }, [blog.createdAt]);
-  
+
   return (
     <article className="border rounded-lg p-4">
       <h3>{blog.name}</h3>
@@ -528,6 +542,7 @@ export const BlogItem = memo(function BlogItem({
 ```
 
 ### Lazy Loading y Suspense
+
 ```typescript
 // ✅ CORRECTO - Lazy loading
 import { lazy, Suspense } from 'react';
@@ -547,6 +562,7 @@ export default function BlogPage() {
 ```
 
 ### Next.js Image Optimization
+
 ```typescript
 // ✅ CORRECTO - Optimización de imágenes
 import Image from 'next/image';
@@ -575,6 +591,7 @@ export default function BlogCard({ blog }) {
 ## 9. ERROR HANDLING
 
 ### Error Boundaries
+
 ```typescript
 // ✅ CORRECTO - Error boundary
 'use client';
@@ -595,15 +612,15 @@ export class BlogErrorBoundary extends Component<Props, State> {
     super(props);
     this.state = { hasError: false };
   }
-  
+
   static getDerivedStateFromError(error: Error): State {
     return { hasError: true, error };
   }
-  
+
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     console.error('Blog error:', error, errorInfo);
   }
-  
+
   render() {
     if (this.state.hasError) {
       return (
@@ -623,20 +640,21 @@ export class BlogErrorBoundary extends Component<Props, State> {
         </div>
       );
     }
-    
+
     return this.props.children;
   }
 }
 ```
 
 ### Async Error Handling
+
 ```typescript
 // ✅ CORRECTO - Manejo de errores async
 export default function BlogPage() {
   const [blogs, setBlogs] = useState<BlogInterface[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  
+
   useEffect(() => {
     async function loadBlogs() {
       try {
@@ -651,13 +669,13 @@ export default function BlogPage() {
         setIsLoading(false);
       }
     }
-    
+
     loadBlogs();
   }, []);
-  
+
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
-  
+
   return (
     <div>
       {blogs.map(blog => (
@@ -677,6 +695,7 @@ export default function BlogPage() {
 ### ✅ CORRECCIONES PERMITIDAS - Errores Ortográficos Genuinos
 
 #### Español
+
 ```typescript
 // ✅ CORRECTO - Errores ortográficos en español
 "Línea" (no "Linea") - falta tilde
@@ -693,6 +712,7 @@ export default function BlogPage() {
 ```
 
 #### Inglés
+
 ```typescript
 // ✅ CORRECTO - Errores ortográficos en inglés
 "Description" (no "Descriptiom")
@@ -727,6 +747,7 @@ export default function BlogPage() {
 ### Patrones de Corrección por Contexto
 
 #### 1. Texto de UI/UX (Visible al Usuario)
+
 ```typescript
 // ✅ CORRECTO - Corregir errores ortográficos
 <h1>Próximos Eventos</h1> // (no "Proximos")
@@ -738,10 +759,11 @@ export default function BlogPage() {
 ```
 
 #### 2. Código y Variables
+
 ```typescript
 // ✅ CORRECTO - Nombres técnicos en inglés consistentes
 const userConfiguration = {}; // (no userConfiguracion)
-const eventDescription = ""; // (no eventDescripcion)
+const eventDescription = ''; // (no eventDescripcion)
 
 // ❌ NO CAMBIAR - Si el cliente usa Spanglish
 const homeSettings = {}; // Cliente decidió "home" en vez de "inicio"
@@ -749,14 +771,16 @@ const adminPanel = {}; // Cliente decidió "admin" en vez de "administrador"
 ```
 
 #### 3. Rutas y URLs
+
 ```typescript
 // ❌ NUNCA CAMBIAR - Pueden romper la funcionalidad
-href="/noticas" // Mantener aunque tenga error ortográfico
-href="/admin/configuracion" // Si existe, mantener
-href="/dashboard/settings" // Mantener el Spanglish del cliente
+href = '/noticas'; // Mantener aunque tenga error ortográfico
+href = '/admin/configuracion'; // Si existe, mantener
+href = '/dashboard/settings'; // Mantener el Spanglish del cliente
 ```
 
 #### 4. Comentarios en Código
+
 ```typescript
 // ✅ CORRECTO - Corregir errores en comentarios
 // Configuración principal del sistema (no "Configuracion")
@@ -770,55 +794,60 @@ href="/dashboard/settings" // Mantener el Spanglish del cliente
 ### Herramientas de Verificación
 
 #### Diccionario Español
+
 ```typescript
 // Palabras comunes con tildes
 const spanishWords = {
-  "accion": "acción",
-  "administracion": "administración",
-  "configuracion": "configuración",
-  "creacion": "creación",
-  "descripcion": "descripción",
-  "edicion": "edición",
-  "gestion": "gestión",
-  "informacion": "información",
-  "linea": "línea",
-  "proximos": "próximos"
+    accion: 'acción',
+    administracion: 'administración',
+    configuracion: 'configuración',
+    creacion: 'creación',
+    descripcion: 'descripción',
+    edicion: 'edición',
+    gestion: 'gestión',
+    informacion: 'información',
+    linea: 'línea',
+    proximos: 'próximos',
 };
 ```
 
 #### Diccionario Inglés
+
 ```typescript
 // Errores comunes en inglés
 const englishWords = {
-  "managment": "management",
-  "developement": "development",
-  "configuracion": "configuration", // cuando debe ser inglés
-  "administracion": "administration" // cuando debe ser inglés
+    managment: 'management',
+    developement: 'development',
+    configuracion: 'configuration', // cuando debe ser inglés
+    administracion: 'administration', // cuando debe ser inglés
 };
 ```
 
 ### Proceso de Corrección
 
 1. **Identificar el contexto**:
-   - ¿Es texto visible al usuario?
-   - ¿Es código/variable técnica?
-   - ¿Es una ruta/URL?
-   - ¿Es comentario?
+
+    - ¿Es texto visible al usuario?
+    - ¿Es código/variable técnica?
+    - ¿Es una ruta/URL?
+    - ¿Es comentario?
 
 2. **Determinar si es error o decisión**:
-   - Error ortográfico genuino → Corregir
-   - Spanglish intencional → Mantener
-   - Ruta funcional → NUNCA cambiar
+
+    - Error ortográfico genuino → Corregir
+    - Spanglish intencional → Mantener
+    - Ruta funcional → NUNCA cambiar
 
 3. **Aplicar corrección apropiada**:
-   - Tildes faltantes en español
-   - Ortografía inglesa correcta
-   - Concordancia verbal/nominal
+
+    - Tildes faltantes en español
+    - Ortografía inglesa correcta
+    - Concordancia verbal/nominal
 
 4. **Verificar funcionalidad**:
-   - Las rutas siguen funcionando
-   - Los imports no se rompen
-   - Las referencias se mantienen
+    - Las rutas siguen funcionando
+    - Los imports no se rompen
+    - Las referencias se mantienen
 
 ### Ejemplos Prácticos
 
@@ -849,6 +878,7 @@ export default function HomePage() {
 ## 11. COMANDOS DE VERIFICACIÓN
 
 ### Scripts de Formateo
+
 ```bash
 # Formatear con Prettier
 bun run bun:format-prettier
@@ -864,6 +894,7 @@ npx biome check .
 ```
 
 ### Checklist de Formateo
+
 - [ ] Imports ordenados correctamente
 - [ ] 'use client' solo cuando es necesario
 - [ ] TypeScript tipos explícitos donde corresponde

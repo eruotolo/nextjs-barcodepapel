@@ -11,10 +11,12 @@ export default function HeaderWeb() {
     const [menuOpen, setMenuOpen] = useState(false);
     const toggleMenu = () => setMenuOpen(!menuOpen);
     const [scrolled, setScrolled] = useState(false);
+    const [mounted, setMounted] = useState(false);
 
     const logo: string = '/logo-header.svg';
 
     useEffect(() => {
+        setMounted(true);
         const handleScroll = () => {
             setScrolled(window.scrollY > 768 && window.innerWidth >= 768);
         };
@@ -22,6 +24,25 @@ export default function HeaderWeb() {
         handleScroll();
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
+
+    if (!mounted) {
+        return (
+            <header className="z-50 flex">
+                <div className="w-full bg-transparent">
+                    <div className="mx-auto max-w-[1100px] px-4 sm:px-6">
+                        <nav className="flex h-[80px] items-center justify-between sm:h-[100px] md:h-[120px]">
+                            <div></div>
+                            <div>
+                                <div className="bg-negro border-blanco rounded-[50%] border-[1px] p-[4px] sm:p-[5px]">
+                                    <div className="h-7 w-7 bg-gray-400 animate-pulse rounded sm:h-8 sm:w-8 md:h-9 md:w-9"></div>
+                                </div>
+                            </div>
+                        </nav>
+                    </div>
+                </div>
+            </header>
+        );
+    }
 
     return (
         <>
@@ -31,8 +52,8 @@ export default function HeaderWeb() {
                         scrolled ? 'md:bg-negro z-10 md:fixed md:top-0' : 'bg-transparent'
                     }`}
                 >
-                    <div className="mx-auto max-w-[1100px]">
-                        <nav className="flex h-[120px] items-center justify-between">
+                    <div className="mx-auto max-w-[1100px] px-4 sm:px-6">
+                        <nav className="flex h-[80px] items-center justify-between sm:h-[100px] md:h-[120px]">
                             <div>
                                 <Link
                                     href="/"
@@ -55,7 +76,7 @@ export default function HeaderWeb() {
                                     type="button"
                                     onClick={toggleMenu}
                                     aria-label="Abrir menú"
-                                    className="bg-negro border-blanco hover:border-fucsia rounded-[50%] border-[1px] p-[5px] drop-shadow-md transition-colors duration-300"
+                                    className="bg-negro border-blanco hover:border-fucsia rounded-[50%] border-[1px] p-[4px] drop-shadow-md transition-colors duration-300 sm:p-[5px]"
                                 >
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
@@ -64,7 +85,7 @@ export default function HeaderWeb() {
                                         strokeWidth="1.5"
                                         stroke="currentColor"
                                         data-slot="icon"
-                                        className="group-hover:stroke-fucsia hover:stroke-fucsia h-9 w-9 cursor-pointer text-white transition-colors duration-300"
+                                        className="group-hover:stroke-fucsia hover:stroke-fucsia h-7 w-7 cursor-pointer text-white transition-colors duration-300 sm:h-8 sm:w-8 md:h-9 md:w-9"
                                     >
                                         <path
                                             strokeLinecap="round"
@@ -82,7 +103,7 @@ export default function HeaderWeb() {
                     className={
                         menuOpen
                             ? 'menu-mobile'
-                            : 'fixed top-0 left-[-100%] h-screen p-10 duration-500 ease-in-out'
+                            : 'fixed top-0 left-[-100%] h-screen p-6 duration-500 ease-in-out sm:p-8 md:p-10'
                     }
                 >
                     <div className="flex w-full items-center justify-end">
@@ -90,7 +111,7 @@ export default function HeaderWeb() {
                             type="button"
                             onClick={toggleMenu}
                             aria-label="Cerrar menú"
-                            className="bg-negro hover:border-fucsia rounded-[50%] border-[1px] border-white p-[5px] transition-colors duration-300"
+                            className="bg-negro hover:border-fucsia rounded-[50%] border-[1px] border-white p-[4px] transition-colors duration-300 sm:p-[5px]"
                         >
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -99,7 +120,7 @@ export default function HeaderWeb() {
                                 strokeWidth="1.5"
                                 stroke="white"
                                 data-slot="icon"
-                                className="group-hover:stroke-fucsia hover:stroke-fucsia h-8 w-8 cursor-pointer transition-colors duration-300"
+                                className="group-hover:stroke-fucsia hover:stroke-fucsia h-7 w-7 cursor-pointer transition-colors duration-300 sm:h-8 sm:w-8"
                             >
                                 <path
                                     strokeLinecap="round"
@@ -110,16 +131,16 @@ export default function HeaderWeb() {
                         </button>
                     </div>
 
-                    <div className="container mx-auto flex h-[85vh] max-w-[1100px] items-center justify-between">
-                        <div>
+                    <div className="container mx-auto flex h-[85vh] max-w-[1100px] flex-col items-center justify-center px-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+                        <div className="mb-8 sm:mb-0">
                             <ul>
                                 {items.map((item) => (
-                                    <li key={item.id} className="my-[18px]">
+                                    <li key={item.id} className="my-[14px] text-center sm:my-[18px] sm:text-left">
                                         <Link
                                             href={item.link}
                                             passHref
                                             onClick={() => setMenuOpen(false)}
-                                            className="font-basic-sans text-blanco hover:text-fucsia text-[20px] uppercase"
+                                            className="font-basic-sans text-blanco hover:text-fucsia text-[18px] uppercase transition-colors sm:text-[20px]"
                                         >
                                             {item.name}
                                         </Link>
@@ -127,37 +148,41 @@ export default function HeaderWeb() {
                                 ))}
                             </ul>
                         </div>
-                        <div className="flex flex-col items-end">
-                            <ul className="mb-[50px]">
+                        <div className="flex flex-col items-center sm:items-end">
+                            <ul className="mb-[30px] sm:mb-[50px]">
                                 {itemsAlter.map((item) => (
-                                    <li key={item.id} className="my-[18px] flex justify-end">
+                                    <li key={item.id} className="my-[14px] text-center sm:my-[18px] sm:flex sm:justify-end">
                                         <Link
                                             href={item.link}
                                             passHref
                                             onClick={() => setMenuOpen(false)}
-                                            className="font-basic-sans text-blanco hover:text-fucsia text-[20px] uppercase"
+                                            className="font-basic-sans text-blanco hover:text-fucsia text-[18px] uppercase transition-colors sm:text-[20px]"
                                         >
                                             {item.name}
                                         </Link>
                                     </li>
                                 ))}
                             </ul>
-                            <a
-                                href="mailto:catabilleke@gmail.com"
-                                className="text-fucsia font-basic-sans text-[20px]"
-                                target="_blank"
-                                rel="noreferrer"
-                            >
-                                catabilleke@gmail.com
-                            </a>
-                            <a
-                                href="mailto:joja@agenciavolcano.cl"
-                                className="text-fucsia font-basic-sans text-[20px]"
-                                target="_blank"
-                                rel="noreferrer"
-                            >
-                                joja@agenciavolcano.cl
-                            </a>
+                            <div className="mb-4 text-center sm:mb-0 sm:text-right">
+                                <a
+                                    href="mailto:catabilleke@gmail.com"
+                                    className="text-fucsia font-basic-sans text-[16px] transition-colors hover:opacity-80 sm:text-[18px] md:text-[20px]"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                >
+                                    catabilleke@gmail.com
+                                </a>
+                            </div>
+                            <div className="mb-4 text-center sm:mb-0 sm:text-right">
+                                <a
+                                    href="mailto:joja@agenciavolcano.cl"
+                                    className="text-fucsia font-basic-sans text-[16px] transition-colors hover:opacity-80 sm:text-[18px] md:text-[20px]"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                >
+                                    joja@agenciavolcano.cl
+                                </a>
+                            </div>
                             <HeaderRedes />
                         </div>
                     </div>

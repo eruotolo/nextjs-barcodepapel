@@ -12,7 +12,7 @@ Cuando el usuario escriba "git commands", mostrar este menú:
 1. 📁 Add + Commit
    └─ Agregar archivos y hacer commit (local)
 
-2. 🚀 Add + Commit + Push  
+2. 🚀 Add + Commit + Push
    └─ Flujo completo: agregar, commit y subir
 
 3. ⚡ Quick Deploy
@@ -33,6 +33,7 @@ Elige una opción (1-6):
 ## 📋 Implementación de Cada Comando
 
 ### Comando 1: Add + Commit
+
 ```bash
 # Verificar si hay cambios
 git status --porcelain
@@ -46,6 +47,7 @@ echo "✅ Commit creado exitosamente - Version: [VERSION]"
 ```
 
 ### Comando 2: Add + Commit + Push
+
 ```bash
 # Verificar cambios
 git status --porcelain
@@ -60,6 +62,7 @@ echo "✅ Cambios subidos exitosamente - Version: [VERSION]"
 ```
 
 ### Comando 3: Quick Deploy
+
 ```bash
 # Secuencia completa
 echo "🔨 Ejecutando build..."
@@ -81,6 +84,7 @@ echo "✅ Deploy completado - Version: [VERSION]"
 ```
 
 ### Comando 4: Status Check
+
 ```bash
 # Información del repositorio
 echo "📊 ESTADO DEL REPOSITORIO:"
@@ -104,11 +108,12 @@ git status -b --porcelain
 ```
 
 ### Comando 5: Branch Management
+
 ```bash
 # Submenú de branches
 echo "🌿 GESTIÓN DE BRANCHES:"
 echo "1. Crear nueva branch"
-echo "2. Cambiar a branch existente"  
+echo "2. Cambiar a branch existente"
 echo "3. Ver todas las branches"
 echo "4. Eliminar branch"
 
@@ -116,6 +121,7 @@ echo "4. Eliminar branch"
 ```
 
 ### Comando 6: Emergency Fix
+
 ```bash
 # Hotfix de emergencia
 echo "🚨 HOTFIX DE EMERGENCIA"
@@ -142,12 +148,14 @@ git branch -d hotfix/[DESCRIPCIÓN_CORTA]
 ## 🔧 Funciones Auxiliares
 
 ### Auto-Fecha
+
 ```bash
 # Generar fecha automática
 DATE=$(date '+%d-%m-%Y')
 ```
 
 ### Auto-Versión
+
 ```bash
 # Extraer última versión del commit más reciente
 LAST_COMMIT=$(git log -1 --pretty=format:"%s")
@@ -164,6 +172,7 @@ fi
 ```
 
 ### Verificar Cambios
+
 ```bash
 # Verificar si hay archivos para commit
 CHANGES=$(git status --porcelain)
@@ -174,6 +183,7 @@ fi
 ```
 
 ### Manejo de Errores
+
 ```bash
 # Verificar éxito del comando anterior
 if [ $? -ne 0 ]; then
@@ -186,12 +196,14 @@ fi
 ## 🎨 Variables de Plantilla
 
 ### Reemplazos Automáticos:
+
 - `[DESCRIPCIÓN_USUARIO]` → Input del usuario
 - `[FECHA_AUTO]` → Fecha actual en formato DD-MM-YYYY
 - `[VERSION_AUTO]` → Versión auto-incrementada
 - `[DESCRIPCIÓN_CORTA]` → Versión corta para nombres de branch
 
 ### Ejemplo de Sustitución:
+
 ```
 Input: "Creación de componente Header responsive"
 Output: "Task: Creación de componente Header responsive Date: 30-06-2025 Version: 2.14"
@@ -200,6 +212,7 @@ Output: "Task: Creación de componente Header responsive Date: 30-06-2025 Versio
 ## 🚀 Flujo de Interacción
 
 ### Ejemplo Completo:
+
 ```
 1. Usuario: "git commands"
 2. Claude: [Muestra menú 1-6]
@@ -211,6 +224,7 @@ Output: "Task: Creación de componente Header responsive Date: 30-06-2025 Versio
 ```
 
 ### Validaciones:
+
 - ✅ Verificar que hay cambios antes de commit
 - ✅ Verificar que el build pasa antes de push
 - ✅ Confirmar antes de ejecutar comandos destructivos

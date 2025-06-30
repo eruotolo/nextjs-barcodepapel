@@ -13,13 +13,13 @@ export async function subscribeToNewsletter(email: string): Promise<NewsletterSu
             return {
                 success: false,
                 message: 'Email invalido',
-                error: 'INVALID_EMAIL'
+                error: 'INVALID_EMAIL',
             };
         }
 
         // Importacion dinamica de Brevo
         const brevoModule = await import('@getbrevo/brevo');
-        
+
         // Configuracion de la API
         const apiKey = process.env.BREVO_API_KEY || '';
         if (!apiKey) {
@@ -27,7 +27,7 @@ export async function subscribeToNewsletter(email: string): Promise<NewsletterSu
             return {
                 success: false,
                 message: 'Error de configuracion del servidor',
-                error: 'MISSING_API_KEY'
+                error: 'MISSING_API_KEY',
             };
         }
 
@@ -39,11 +39,11 @@ export async function subscribeToNewsletter(email: string): Promise<NewsletterSu
         const sendSmtpEmail = new brevoModule.SendSmtpEmail();
         sendSmtpEmail.subject = 'Confirmacion de Suscripcion al Boletin';
         sendSmtpEmail.to = [{ email: email }];
-        sendSmtpEmail.sender = { 
-            name: 'Chubby Dashboard', 
-            email: 'crowadvancegx@gmail.com' 
+        sendSmtpEmail.sender = {
+            name: 'Chubby Dashboard',
+            email: 'crowadvancegx@gmail.com',
         };
-        
+
         // Contenido HTML del email
         sendSmtpEmail.htmlContent = `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
@@ -69,15 +69,14 @@ export async function subscribeToNewsletter(email: string): Promise<NewsletterSu
 
         return {
             success: true,
-            message: 'Suscripcion exitosa! Revisa tu email para confirmar.'
+            message: 'Suscripcion exitosa! Revisa tu email para confirmar.',
         };
-
     } catch (error) {
         console.error('Error al enviar email de suscripcion:', error);
         return {
             success: false,
             message: 'Error al procesar la suscripcion. Intentalo nuevamente.',
-            error: 'SEND_ERROR'
+            error: 'SEND_ERROR',
         };
     }
 }

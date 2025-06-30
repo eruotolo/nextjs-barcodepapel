@@ -9,14 +9,16 @@ export default function CarouselSponsors() {
     const [originalSponsors, setOriginalSponsors] = useState<SponsorsCarouselInterface[]>([]);
     const [displaySponsors, setDisplaySponsors] = useState<SponsorsCarouselInterface[]>([]);
     const [currentIndex, setCurrentIndex] = useState(0);
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
+    const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
+        setMounted(true);
         const checkMobile = () => {
             setIsMobile(window.innerWidth < 768);
         };
-        
+
         checkMobile();
         window.addEventListener('resize', checkMobile);
         return () => window.removeEventListener('resize', checkMobile);
@@ -28,7 +30,7 @@ export default function CarouselSponsors() {
                 const data = await getAllSponsorsForCarousel();
                 if (data && data.length > 0) {
                     setOriginalSponsors(data);
-                    
+
                     const minItems = isMobile ? 2 : 4;
                     if (data.length > minItems) {
                         setDisplaySponsors([...data, ...data, ...data]);
@@ -38,17 +40,17 @@ export default function CarouselSponsors() {
                 }
             } catch (error) {
                 console.error('Error loading sponsors:', error);
-            } finally {
-                setIsLoading(false);
             }
         };
 
-        fetchSponsors();
-    }, [isMobile]);
+        if (mounted) {
+            fetchSponsors();
+        }
+    }, [isMobile, mounted]);
 
     useEffect(() => {
         const minItems = isMobile ? 2 : 4;
-        
+
         if (originalSponsors.length === 0 || originalSponsors.length <= minItems) return;
 
         const interval = setInterval(() => {
@@ -65,15 +67,26 @@ export default function CarouselSponsors() {
         return () => clearInterval(interval);
     }, [originalSponsors.length, displaySponsors.length, isMobile]);
 
-    if (isLoading) {
+    if (!mounted) {
         return (
-            <div className="flex justify-center items-center py-16">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-fucsia"></div>
+            <div className="w-full overflow-hidden py-4 sm:py-6 md:py-8">
+                <div className="flex justify-center">
+                    <div className="w-full max-w-sm sm:max-w-xl md:max-w-2xl">
+                        <div className="flex justify-center">
+                            <div className="flex-shrink-0 px-2 w-1/2 sm:px-3 md:px-4">
+                                <div className="h-16 w-full bg-gray-200 animate-pulse rounded sm:h-20 md:h-24"></div>
+                            </div>
+                            <div className="flex-shrink-0 px-2 w-1/2 sm:px-3 md:px-4">
+                                <div className="h-16 w-full bg-gray-200 animate-pulse rounded sm:h-20 md:h-24"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         );
     }
 
-    if (originalSponsors.length === 0) {
+    if (originalSponsors.length === 0 && !isLoading) {
         return null;
     }
 
@@ -82,22 +95,30 @@ export default function CarouselSponsors() {
     const itemWidth = isMobile ? 50 : 25;
 
     return (
-        <div className="w-full overflow-hidden py-8">
+        <div className="w-full overflow-hidden py-4 sm:py-6 md:py-8">
             <div className="flex justify-center">
-                <div className={`w-full ${shouldAnimate ? 'max-w-4xl overflow-hidden' : 'max-w-2xl'}`}>
-                    <div 
+                <div
+                    className={`w-full ${shouldAnimate ? 'max-w-sm sm:max-w-2xl md:max-w-4xl overflow-hidden' : 'max-w-sm sm:max-w-xl md:max-w-2xl'}`}
+                >
+                    <div
                         className={`flex ${shouldAnimate ? 'transition-transform duration-1000 ease-in-out' : 'justify-center'}`}
-                        style={{ 
-                            transform: shouldAnimate ? `translateX(-${currentIndex * itemWidth}%)` : 'none'
+                        style={{
+                            transform: shouldAnimate
+                                ? `translateX(-${currentIndex * itemWidth}%)`
+                                : 'none',
                         }}
                     >
                         {displaySponsors.map((sponsor, index) => (
                             <div
                                 key={`${sponsor.id}-${index}`}
-                                className={`flex-shrink-0 px-4 ${
-                                    shouldAnimate 
-                                        ? (isMobile ? 'w-1/2' : 'w-1/4')
-                                        : (isMobile ? 'w-1/2' : 'w-1/4')
+                                className={`flex-shrink-0 px-2 sm:px-3 md:px-4 ${
+                                    shouldAnimate
+                                        ? isMobile
+                                            ? 'w-1/2'
+                                            : 'w-1/4'
+                                        : isMobile
+                                          ? 'w-1/2'
+                                          : 'w-1/4'
                                 }`}
                             >
                                 {sponsor.link ? (
@@ -105,7 +126,7 @@ export default function CarouselSponsors() {
                                         href={sponsor.link}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="block h-24 w-full"
+                                        className="block h-16 w-full sm:h-20 md:h-24"
                                     >
                                         {sponsor.image ? (
                                             <Image
@@ -117,14 +138,14 @@ export default function CarouselSponsors() {
                                             />
                                         ) : (
                                             <div className="flex h-full w-full items-center justify-center">
-                                                <span className="font-basic-sans text-sm text-gray-700">
+                                                <span className="font-basic-sans text-xs text-gray-700 sm:text-sm">
                                                     {sponsor.name}
                                                 </span>
                                             </div>
                                         )}
                                     </a>
                                 ) : (
-                                    <div className="h-24 w-full">
+                                    <div className="h-16 w-full sm:h-20 md:h-24">
                                         {sponsor.image ? (
                                             <Image
                                                 src={sponsor.image}
@@ -135,7 +156,7 @@ export default function CarouselSponsors() {
                                             />
                                         ) : (
                                             <div className="flex h-full w-full items-center justify-center">
-                                                <span className="font-basic-sans text-sm text-gray-700">
+                                                <span className="font-basic-sans text-xs text-gray-700 sm:text-sm">
                                                     {sponsor.name}
                                                 </span>
                                             </div>

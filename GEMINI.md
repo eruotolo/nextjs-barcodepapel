@@ -22,16 +22,18 @@ Este archivo sirve como la memoria a largo plazo y la hoja de referencia para el
 ### 1. Nomenclatura de Carpetas y Archivos
 
 - **Carpetas de Módulo:** Las carpetas que agrupan funcionalidades de un recurso se nombran en **plural**.
-  - *Ejemplo:* `src/components/Modal/Administration/Teams/`
-  - *Ejemplo:* `src/actions/Administration/Sponsors/`
+
+    - _Ejemplo:_ `src/components/Modal/Administration/Teams/`
+    - _Ejemplo:_ `src/actions/Administration/Sponsors/`
 
 - **Archivos de Componentes (Colecciones):** Los componentes que renderizan o gestionan una **colección** de ítems se nombran en **plural**.
-  - *Ejemplo:* `TeamsTable.tsx`
-  - *Ejemplo:* `SponsorsList.tsx`
+
+    - _Ejemplo:_ `TeamsTable.tsx`
+    - _Ejemplo:_ `SponsorsList.tsx`
 
 - **Archivos de Componentes (Ítem Único):** Los componentes que operan sobre **un solo ítem** se nombran en **singular**.
-  - *Ejemplo:* `EditTeamModal.tsx`
-  - *Ejemplo:* `NewSponsorModal.tsx`
+    - _Ejemplo:_ `EditTeamModal.tsx`
+    - _Ejemplo:_ `NewSponsorModal.tsx`
 
 ### 2. Manejo de Estado en Modales
 

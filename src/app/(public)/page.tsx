@@ -1,7 +1,7 @@
 // Next.js imports
 import Image from 'next/image';
 import Link from 'next/link';
-import CarouselSponsors from "@/components/Home/Carousel/Carousel";
+import CarouselSponsors from '@/components/Home/Carousel/Carousel';
 // Internal components
 import Cartelera from '@/components/Home/Cartelera/Cartelera';
 import NewsHome from '@/components/Home/NewsHome/NewsHome';
@@ -14,7 +14,7 @@ export default async function Home() {
 
     return (
         <main className="bg-web">
-            <section className="mt-[-120px] h-screen">
+            <section className="mt-[-120px] h-screen sm:mt-[-60px] sm:h-[60vh] md:mt-[-120px] md:h-screen">
                 <Image
                     src={imageSlider}
                     alt="Imagen Slider"
@@ -25,18 +25,18 @@ export default async function Home() {
                 />
             </section>
 
-            <section className="container mx-auto max-w-[1100px] md:py-[100px]">
-                <NewsHome/>
-                <div className="flex items-center justify-center md:mt-[100px]">
+            <section className="container mx-auto max-w-[1100px] px-4 py-[40px] sm:px-6 md:py-[100px]">
+                <NewsHome />
+                <div className="flex items-center justify-center mt-[40px] md:mt-[100px]">
                     <Link
                         href="/noticias"
-                        className="bg-fucsia text-negro hover:bg-negro hover:text-fucsia font-basic-sans rounded-[10px] px-[30px] py-[12px] text-[18px] leading-[18px] font-normal md:px-[30px] md:py-[12px] md:text-[18px] md:leading-[18px]"
+                        className="bg-fucsia text-negro hover:bg-negro hover:text-fucsia font-basic-sans rounded-[10px] px-[24px] py-[10px] text-[16px] leading-[16px] font-normal transition-colors sm:px-[30px] sm:py-[12px] sm:text-[18px] sm:leading-[18px]"
                     >
                         Cargar más
                     </Link>
                 </div>
-                <div className="mt-[70px]">
-                    <h1 className="text-azul font-basic-sans text-center text-[40px] font-bold tracking-[4px] md:leading-[44px]">
+                <div className="mt-[40px] md:mt-[70px]">
+                    <h1 className="text-azul font-basic-sans text-center text-[24px] font-bold tracking-[2px] leading-[28px] sm:text-[32px] sm:tracking-[3px] sm:leading-[36px] md:text-[40px] md:tracking-[4px] md:leading-[44px]">
                         LO QUE SE HEREDA, SE TRANSFORMA Y SE CREA EN ESTE TERRITORIO.
                     </h1>
                 </div>
@@ -52,35 +52,35 @@ export default async function Home() {
                 />
             </section>
 
-            <section className="container mx-auto max-w-[1100px] md:pt-[100px]">
-                <div className="md:mb-[70px]">
-                    <h2 className="font-basic-sans mb-4 text-center leading-[30px] font-bold md:text-[30px]">
+            <section className="container mx-auto max-w-[1100px] px-4 pt-[50px] sm:px-6 md:pt-[100px]">
+                <div className="mb-[40px] md:mb-[70px]">
+                    <h2 className="font-basic-sans mb-4 text-center text-[24px] leading-[28px] font-bold sm:text-[28px] sm:leading-[32px] md:text-[30px] md:leading-[34px]">
                         CARTELERA
                     </h2>
-                    <p className="text-fucsia font-basic-sans text-center font-light md:text-[24px]">
+                    <p className="text-fucsia font-basic-sans text-center text-[18px] font-light sm:text-[20px] md:text-[24px]">
                         Descubre los eventos programados para los próximos 30 días
                     </p>
                 </div>
-                <Cartelera/>
+                <Cartelera />
             </section>
 
-            <section className="container mx-auto max-w-[1100px] md:pt-[100px]">
+            <section className="container mx-auto max-w-[1100px] px-4 pt-[50px] sm:px-6 md:pt-[100px]">
                 <div>
-                    <h2 className="font-basic-sans mb-4 text-center leading-[30px] font-bold md:text-[30px]">
+                    <h2 className="font-basic-sans mb-4 text-center text-[24px] leading-[28px] font-bold sm:text-[28px] sm:leading-[32px] md:text-[30px] md:leading-[34px]">
                         ALIANZAS
                     </h2>
-                    <CarouselSponsors/>
+                    <CarouselSponsors />
                 </div>
             </section>
 
-            <section className="container mx-auto max-w-[1100px] md:pt-[100px]">
+            <section className="container mx-auto max-w-[1100px] px-4 pt-[50px] sm:px-6 md:pt-[100px]">
                 <div>
-                    <h1 className="text-azul font-basic-sans text-[40px] font-bold tracking-[4px] md:leading-[44px]">
+                    <h1 className="text-azul font-basic-sans text-[20px] font-bold tracking-[2px] leading-[24px] sm:text-[28px] sm:tracking-[3px] sm:leading-[32px] md:text-[40px] md:tracking-[4px] md:leading-[44px]">
                         ACOMPAÑAMOS LAS PREGUNTAS QUE NOS HACEMOS SOBRE EL LUGAR QUE HABITAMOS.
                     </h1>
                 </div>
-                <div className="md:mt-[40px]">
-                    <Suscribite/>
+                <div className="mt-[20px] md:mt-[40px]">
+                    <Suscribite />
                 </div>
             </section>
             <div className="md:mt-[-260px]">

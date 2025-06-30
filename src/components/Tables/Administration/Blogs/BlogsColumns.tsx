@@ -1,6 +1,5 @@
 'use client';
 
-
 import type { Column, ColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown, MoreHorizontal } from 'lucide-react';
 import dynamic from 'next/dynamic';

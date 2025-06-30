@@ -36,9 +36,9 @@ export default function Suscribite() {
     };
 
     return (
-        <div className="relative z-50 px-4 py-16 md:w-[650px]">
-            <div className="w-full max-w-md">
-                <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="relative z-50 w-full px-4 py-8 sm:py-12 md:py-16 flex justify-center">
+            <div className="w-full max-w-sm sm:max-w-md md:max-w-lg">
+                <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
                     <div>
                         <input
                             type="email"
@@ -47,14 +47,14 @@ export default function Suscribite() {
                             placeholder="correo electronico"
                             required
                             disabled={isSubmitting}
-                            className="border-azul text-azul placeholder-azul font-basic-sans focus:ring-fucsia w-full rounded-[10px] border bg-transparent px-4 py-[10px] text-center text-[18px] focus:border-transparent focus:ring-2 focus:outline-none"
+                            className="border-azul text-azul placeholder-azul font-basic-sans focus:ring-fucsia w-full rounded-[10px] border bg-transparent px-3 py-[8px] text-center text-[16px] focus:border-transparent focus:ring-2 focus:outline-none sm:px-4 sm:py-[10px] sm:text-[17px] md:text-[18px]"
                         />
                     </div>
 
                     <button
                         type="submit"
                         disabled={isSubmitting || !email}
-                        className="font-basic-sans text-azul w-full cursor-pointer border-none bg-transparent px-4 py-3 text-lg font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+                        className="font-basic-sans text-azul w-full cursor-pointer border-none bg-transparent px-3 py-2 text-[14px] font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50 sm:px-4 sm:py-3 sm:text-[16px] md:text-lg"
                     >
                         {isSubmitting ? 'ENVIANDO...' : 'SUSCRÍBETE A NUESTRO BOLETÍN MENSUAL'}
                     </button>
@@ -62,7 +62,7 @@ export default function Suscribite() {
 
                 {message && (
                     <div
-                        className={`mt-4 rounded-md p-3 text-center ${
+                        className={`mt-3 rounded-md p-2 text-center text-sm sm:mt-4 sm:p-3 sm:text-base ${
                             isSuccess
                                 ? 'border border-green-200 bg-green-100 text-green-700'
                                 : 'border border-red-200 bg-red-100 text-red-700'
