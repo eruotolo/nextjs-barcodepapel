@@ -73,11 +73,11 @@ export default function CarouselSponsors() {
                 <div className="flex justify-center">
                     <div className="w-full max-w-sm sm:max-w-xl md:max-w-2xl">
                         <div className="flex justify-center">
-                            <div className="flex-shrink-0 px-2 w-1/2 sm:px-3 md:px-4">
-                                <div className="h-16 w-full bg-gray-200 animate-pulse rounded sm:h-20 md:h-24"></div>
+                            <div className="w-1/2 flex-shrink-0 px-2 sm:px-3 md:px-4">
+                                <div className="h-16 w-full animate-pulse rounded bg-gray-200 sm:h-20 md:h-24"></div>
                             </div>
-                            <div className="flex-shrink-0 px-2 w-1/2 sm:px-3 md:px-4">
-                                <div className="h-16 w-full bg-gray-200 animate-pulse rounded sm:h-20 md:h-24"></div>
+                            <div className="w-1/2 flex-shrink-0 px-2 sm:px-3 md:px-4">
+                                <div className="h-16 w-full animate-pulse rounded bg-gray-200 sm:h-20 md:h-24"></div>
                             </div>
                         </div>
                     </div>
@@ -98,7 +98,7 @@ export default function CarouselSponsors() {
         <div className="w-full overflow-hidden py-4 sm:py-6 md:py-8">
             <div className="flex justify-center">
                 <div
-                    className={`w-full ${shouldAnimate ? 'max-w-sm sm:max-w-2xl md:max-w-4xl overflow-hidden' : 'max-w-sm sm:max-w-xl md:max-w-2xl'}`}
+                    className={`w-full ${shouldAnimate ? 'max-w-sm overflow-hidden sm:max-w-2xl md:max-w-4xl' : 'max-w-sm sm:max-w-xl md:max-w-2xl'}`}
                 >
                     <div
                         className={`flex ${shouldAnimate ? 'transition-transform duration-1000 ease-in-out' : 'justify-center'}`}

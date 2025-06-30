@@ -16,7 +16,7 @@ export default function AlterHeader() {
     return (
         <>
             <header className="z-50">
-                <div className="bg-negro w-full md:bg-negro">
+                <div className="bg-negro md:bg-negro w-full">
                     <div className="mx-auto max-w-[1100px] px-4 sm:px-6 md:max-w-[1100px]">
                         <nav className="flex h-[80px] items-center justify-between sm:h-[100px] md:h-[120px]">
                             <div>
@@ -95,7 +95,10 @@ export default function AlterHeader() {
                         <div className="mb-8 sm:mb-0">
                             <ul>
                                 {items.map((item) => (
-                                    <li key={item.id} className="my-[14px] text-center sm:my-[18px] sm:text-left">
+                                    <li
+                                        key={item.id}
+                                        className="my-[14px] text-center sm:my-[18px] sm:text-left"
+                                    >
                                         <Link
                                             href={item.link}
                                             passHref
@@ -111,7 +114,10 @@ export default function AlterHeader() {
                         <div className="flex flex-col items-center sm:items-end">
                             <ul className="mb-[30px] sm:mb-[50px]">
                                 {itemsAlter.map((item) => (
-                                    <li key={item.id} className="my-[14px] text-center sm:my-[18px] sm:flex sm:justify-end">
+                                    <li
+                                        key={item.id}
+                                        className="my-[14px] text-center sm:my-[18px] sm:flex sm:justify-end"
+                                    >
                                         <Link
                                             href={item.link}
                                             passHref

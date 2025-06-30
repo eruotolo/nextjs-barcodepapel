@@ -27,7 +27,7 @@ export default async function Home() {
 
             <section className="container mx-auto max-w-[1100px] px-4 py-[40px] sm:px-6 md:py-[100px]">
                 <NewsHome />
-                <div className="flex items-center justify-center mt-[40px] md:mt-[100px]">
+                <div className="mt-[40px] flex items-center justify-center md:mt-[100px]">
                     <Link
                         href="/noticias"
                         className="bg-fucsia text-negro hover:bg-negro hover:text-fucsia font-basic-sans rounded-[10px] px-[24px] py-[10px] text-[16px] leading-[16px] font-normal transition-colors sm:px-[30px] sm:py-[12px] sm:text-[18px] sm:leading-[18px]"
@@ -36,7 +36,7 @@ export default async function Home() {
                     </Link>
                 </div>
                 <div className="mt-[40px] md:mt-[70px]">
-                    <h1 className="text-azul font-basic-sans text-center text-[24px] font-bold tracking-[2px] leading-[28px] sm:text-[32px] sm:tracking-[3px] sm:leading-[36px] md:text-[40px] md:tracking-[4px] md:leading-[44px]">
+                    <h1 className="text-azul font-basic-sans text-center text-[24px] leading-[28px] font-bold tracking-[2px] sm:text-[32px] sm:leading-[36px] sm:tracking-[3px] md:text-[40px] md:leading-[44px] md:tracking-[4px]">
                         LO QUE SE HEREDA, SE TRANSFORMA Y SE CREA EN ESTE TERRITORIO.
                     </h1>
                 </div>
@@ -75,7 +75,7 @@ export default async function Home() {
 
             <section className="container mx-auto max-w-[1100px] px-4 pt-[50px] sm:px-6 md:pt-[100px]">
                 <div>
-                    <h1 className="text-azul font-basic-sans text-[20px] font-bold tracking-[2px] leading-[24px] sm:text-[28px] sm:tracking-[3px] sm:leading-[32px] md:text-[40px] md:tracking-[4px] md:leading-[44px]">
+                    <h1 className="text-azul font-basic-sans text-[20px] leading-[24px] font-bold tracking-[2px] sm:text-[28px] sm:leading-[32px] sm:tracking-[3px] md:text-[40px] md:leading-[44px] md:tracking-[4px]">
                         ACOMPAÑAMOS LAS PREGUNTAS QUE NOS HACEMOS SOBRE EL LUGAR QUE HABITAMOS.
                     </h1>
                 </div>

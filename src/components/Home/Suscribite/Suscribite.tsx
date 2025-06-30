@@ -36,7 +36,7 @@ export default function Suscribite() {
     };
 
     return (
-        <div className="relative z-50 w-full px-4 py-8 sm:py-12 md:py-16 flex justify-center">
+        <div className="relative z-50 flex w-full justify-center px-4 py-8 sm:py-12 md:py-16">
             <div className="w-full max-w-sm sm:max-w-md md:max-w-lg">
                 <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
                     <div>

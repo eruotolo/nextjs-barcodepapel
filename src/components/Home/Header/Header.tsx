@@ -34,7 +34,7 @@ export default function HeaderWeb() {
                             <div></div>
                             <div>
                                 <div className="bg-negro border-blanco rounded-[50%] border-[1px] p-[4px] sm:p-[5px]">
-                                    <div className="h-7 w-7 bg-gray-400 animate-pulse rounded sm:h-8 sm:w-8 md:h-9 md:w-9"></div>
+                                    <div className="h-7 w-7 animate-pulse rounded bg-gray-400 sm:h-8 sm:w-8 md:h-9 md:w-9"></div>
                                 </div>
                             </div>
                         </nav>
@@ -135,7 +135,10 @@ export default function HeaderWeb() {
                         <div className="mb-8 sm:mb-0">
                             <ul>
                                 {items.map((item) => (
-                                    <li key={item.id} className="my-[14px] text-center sm:my-[18px] sm:text-left">
+                                    <li
+                                        key={item.id}
+                                        className="my-[14px] text-center sm:my-[18px] sm:text-left"
+                                    >
                                         <Link
                                             href={item.link}
                                             passHref
@@ -151,7 +154,10 @@ export default function HeaderWeb() {
                         <div className="flex flex-col items-center sm:items-end">
                             <ul className="mb-[30px] sm:mb-[50px]">
                                 {itemsAlter.map((item) => (
-                                    <li key={item.id} className="my-[14px] text-center sm:my-[18px] sm:flex sm:justify-end">
+                                    <li
+                                        key={item.id}
+                                        className="my-[14px] text-center sm:my-[18px] sm:flex sm:justify-end"
+                                    >
                                         <Link
                                             href={item.link}
                                             passHref

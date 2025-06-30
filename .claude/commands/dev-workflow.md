@@ -153,7 +153,7 @@ Output: Format → Add → Commit (versión 2.15) → ✅ Listo para push manual
 
 ```
 Input: "dev workflow"
-Output: Menú de desarrollo  
+Output: Menú de desarrollo
 Input: "2"
 Output: Formatea código sin commit → ✅ Listo para revisar cambios
 ```
