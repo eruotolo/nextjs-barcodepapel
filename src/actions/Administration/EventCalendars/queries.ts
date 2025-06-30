@@ -152,9 +152,10 @@ export async function getEventMonth(): Promise<EventeCalendarInterface[]> {
     try {
         // Obtener desde hoy hasta los próximos 30 días
         const now = new Date();
-        const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
+        // Usar solo la fecha actual sin hora para incluir todos los eventos del día de hoy
+        const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
         const next30Days = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
-        next30Days.setHours(23, 59, 59, 999); // Incluir todo el día 30
+        next30Days.setHours(23, 59, 59, 999); // Incluir todos el día 30
 
         const response = await prisma.eventeCalendar.findMany({
             select: {
@@ -164,6 +165,7 @@ export async function getEventMonth(): Promise<EventeCalendarInterface[]> {
                 date: true,
                 venue: true,
                 showTime: true,
+                audienceType: true,
                 price: true,
                 linkUrl: true, // Nuevo campo
                 eventCategoryId: true, // Nuevo campo
@@ -193,12 +195,71 @@ export async function getEventMonth(): Promise<EventeCalendarInterface[]> {
             date: DATEOTHER_FORMATTER.format(event.date),
             venue: event.venue ?? '',
             showTime: event.showTime ?? 'Sin hora',
+            audienceType: event.audienceType ?? '',
             price: PRICE_FORMATTER(event.price),
             linkUrl: event.linkUrl ?? '',
             createdAt: DATE_FORMATTER.format(event.createdAt),
         }));
     } catch (error) {
         console.error('Error fetching events for next 30 days:', error);
+        throw error;
+    }
+}
+
+export async function getEventMonthLimited(limit: number = 3): Promise<EventeCalendarInterface[]> {
+    try {
+        // Obtener desde hoy hasta los próximos 30 días
+        const now = new Date();
+        // Usar solo la fecha actual sin hora para incluir todos los eventos del día de hoy
+        const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const next30Days = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
+        next30Days.setHours(23, 59, 59, 999); // Incluir todos el día 30
+
+        const response = await prisma.eventeCalendar.findMany({
+            select: {
+                id: true,
+                name: true,
+                image: true,
+                date: true,
+                venue: true,
+                showTime: true,
+                audienceType: true,
+                price: true,
+                linkUrl: true,
+                eventCategoryId: true,
+                eventCategory: {
+                    select: {
+                        id: true,
+                        name: true,
+                    },
+                },
+                createdAt: true,
+            },
+            where: {
+                date: {
+                    gte: startOfToday,
+                    lte: next30Days,
+                },
+            },
+            orderBy: {
+                date: 'asc',
+            },
+            take: limit, // Limitar el número de resultados
+        });
+
+        // Mapear y formatear las fechas usando el formateador reutilizable
+        return response.map((event) => ({
+            ...event,
+            date: DATEOTHER_FORMATTER.format(event.date),
+            venue: event.venue ?? '',
+            showTime: event.showTime ?? 'Sin hora',
+            audienceType: event.audienceType ?? '',
+            price: PRICE_FORMATTER(event.price),
+            linkUrl: event.linkUrl ?? '',
+            createdAt: DATE_FORMATTER.format(event.createdAt),
+        }));
+    } catch (error) {
+        console.error('Error fetching limited events for next 30 days:', error);
         throw error;
     }
 }

@@ -2,6 +2,7 @@
 
 import prisma from '@/lib/db/db';
 import type { SponsorsInterface } from '@/types/Administration/Sponsors/SponsorsInterface';
+import type { SponsorsCarouselInterface } from '@/types/Administration/Sponsors/SponsorsCarouselInterface';
 
 export async function getAllSponsors(): Promise<SponsorsInterface[]> {
     try {
@@ -17,6 +18,25 @@ export async function getAllSponsors(): Promise<SponsorsInterface[]> {
         });
     } catch (error) {
         console.error('Error fetching sponsors', error);
+        throw error;
+    }
+}
+
+export async function getAllSponsorsForCarousel(): Promise<SponsorsCarouselInterface[]> {
+    try {
+        return await prisma.sponsors.findMany({
+            select: {
+                id: true,
+                name: true,
+                image: true,
+                link: true,
+            },
+            orderBy: {
+                name: 'asc',
+            },
+        });
+    } catch (error) {
+        console.error('Error fetching sponsors for carousel', error);
         throw error;
     }
 }

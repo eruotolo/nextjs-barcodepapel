@@ -15,13 +15,8 @@ export default async function NewsHome() {
                     </div>
 
                     {post.image && (
-                        <div className="relative w-full md:h-[280px]">
-                            <Image
-                                src={post.image}
-                                alt={post.name}
-                                fill
-                                className="rounded-[10px] object-cover"
-                            />
+                        <div className="relative w-full overflow-hidden rounded-[10px] border-2 border-black md:h-[280px]">
+                            <Image src={post.image} alt={post.name} fill className="object-cover" />
                         </div>
                     )}
 

@@ -5,7 +5,7 @@ export interface EventeCalendarInterface {
     date: string;
     venue?: string; // Lugar
     showTime?: string; // Hora del espectáculo
-    audienceType?: string;
+    audienceType?: string; // Tipo de público
     price: string;
     linkUrl?: string; // Nuevo campo agregado
     eventCategoryId: string; // Nuevo campo requerido
