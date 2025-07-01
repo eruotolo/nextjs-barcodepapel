@@ -14,18 +14,20 @@ export default async function Teams() {
                             <Image src={team.image} alt={team.name} fill className="object-cover" />
                         ) : (
                             <div className="flex h-full w-full items-center justify-center bg-gray-100">
-                                <div className="text-[48px] text-gray-400 sm:text-[56px] md:text-[64px]">=d</div>
+                                <div className="text-[48px] text-gray-400 sm:text-[56px] md:text-[64px]">
+                                    =d
+                                </div>
                             </div>
                         )}
                     </div>
 
                     {/* Nombre */}
-                    <h2 className="font-basic-sans mb-2 text-[16px] leading-[20px] font-semibold uppercase text-negro sm:mb-3 sm:text-[18px] sm:leading-[22px] md:mb-4 md:text-[20px] md:leading-[24px]">
+                    <h2 className="font-basic-sans text-negro mb-2 text-[16px] leading-[20px] font-semibold uppercase sm:mb-3 sm:text-[18px] sm:leading-[22px] md:mb-4 md:text-[20px] md:leading-[24px]">
                         {team.name}
                     </h2>
 
                     {/* Descripción */}
-                    <p className="font-basic-sans text-[13px] leading-[16px] text-negro sm:text-[14px] sm:leading-[17px] md:text-[15px] md:leading-[18px]">
+                    <p className="font-basic-sans text-negro text-[13px] leading-[16px] sm:text-[14px] sm:leading-[17px] md:text-[15px] md:leading-[18px]">
                         {team.description}
                     </p>
                 </article>
