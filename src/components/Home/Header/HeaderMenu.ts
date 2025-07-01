@@ -13,7 +13,7 @@ export const items: HeaderMenu[] = [
     {
         id: 2,
         name: 'Revista Impresa',
-        link: '/impress',
+        link: '/impresos',
     },
     {
         id: 3,

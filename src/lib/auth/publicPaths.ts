@@ -1,5 +1,5 @@
 // Rutas públicas que no requieren autenticación
-export const publicPaths = ['/', '/login', '/recovery', '/manifiesto', '/somos'];
+export const publicPaths = ['/', '/login', '/recovery', '/manifiesto', '/somos', '/impresos'];
 
 // Rutas de API públicas (usar RegExp para patrones)
 export const publicApiPaths = [

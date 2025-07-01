@@ -41,3 +41,24 @@ export async function getMaterialById(id: string) {
         throw error;
     }
 }
+
+export async function getAllMaterialHome(): Promise<PrintedMaterialInterface[]> {
+    try {
+        return await prisma.printedMaterial.findMany({
+            select: {
+                id: true,
+                image: true,
+                name: true,
+                numberVersion: true,
+                description: true,
+                link: true,
+            },
+            orderBy: {
+                numberVersion: 'asc',
+            },
+        });
+    } catch (error) {
+        console.error('Error fetching material', error);
+        throw error;
+    }
+}
