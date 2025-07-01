@@ -16,20 +16,29 @@ Simplemente escribe: **"dev workflow"** para ver el menú de opciones disponible
 - Crea commit con template personalizado
 - Queda listo para push manual
 
-### 2. **Quick Format (Solo Git Staged)**
+### 2. **Format + Add + Commit + Push**
+
+- Aplica **next_best_practices** SOLO a archivos en staging
+- Formateo Next.js 15 + React 19 + corrección ortográfica bilingüe
+- Agrega todos los archivos modificados
+- Crea commit con template personalizado
+- Push automático a GitHub
+- Flujo completo automatizado
+
+### 3. **Quick Format (Solo Git Staged)**
 
 - Aplica formateo según **next_best_practices** SOLO a archivos en staging
-- Prettier + Tailwind + Biome lint + corrección ortográfica
+- Prettier + TypeScript + Biome lint + corrección ortográfica
 - Perfecto antes de revisar cambios específicos
 
-### 3. **Format Full Project**
+### 4. **Format Full Project**
 
 - Aplica **next_best_practices** a TODO el proyecto
 - Formateo completo Next.js 15 + React 19 + corrección ortográfica bilingüe
 - Perfecto para mantener consistencia global
 - Sin commit (solo formateo)
 
-### 4. **Build + Format + Commit**
+### 5. **Build + Format + Commit**
 
 - Ejecuta build del proyecto con verificación de tipos
 - Aplica **next_best_practices** SOLO a archivos en staging
@@ -37,13 +46,13 @@ Simplemente escribe: **"dev workflow"** para ver el menú de opciones disponible
 - Agrega archivos y hace commit
 - Listo para push manual
 
-### 6. **Simple Commit**
+### 7. **Simple Commit**
 
 - Solo agrega archivos y hace commit
 - Sin formateo ni build
 - Para commits rápidos
 
-### 7. **Status Check**
+### 8. **Status Check**
 
 - Muestra estado actual del repositorio local
 - Lista archivos modificados
@@ -51,7 +60,7 @@ Simplemente escribe: **"dev workflow"** para ver el menú de opciones disponible
 - Información de la rama actual
 - Sin verificación remota (push manual)
 
-### 8. **Stash Management**
+### 9. **Stash Management**
 
 - Guardar trabajo temporal
 - Aplicar stash guardado
@@ -71,7 +80,7 @@ Simplemente escribe: **"dev workflow"** para ver el menú de opciones disponible
 
 ```
 Usuario: "dev workflow"
-Claude: "¿Qué comando de desarrollo quieres ejecutar? (1-8)"
+Claude: "¿Qué comando de desarrollo quieres ejecutar? (1-9)"
 Usuario: "1"
 Claude: "¿Qué tarea realizaste?"
 Usuario: "Creación de componente Newsletter"
@@ -90,7 +99,18 @@ Este comando ejecuta la secuencia usando **next_best_practices** SOLO en archivo
 4. `git commit` - Con template personalizado
 5. ✅ **Listo para `git push` manual**
 
-### Quick Format (Opción 2)
+### Format + Add + Commit + Push (Opción 2)
+
+Este comando ejecuta la secuencia completa usando **next_best_practices** SOLO en archivos staged:
+
+1. `git add .` - Agrega archivos modificados al staging
+2. **Formateo selectivo** - Aplica next_best_practices solo a archivos en staging
+3. **Corrección ortográfica bilingüe** - Corrige errores respetando Spanglish del cliente
+4. `git commit` - Con template personalizado
+5. `git push origin main` - Push automático a GitHub
+6. ✅ **Flujo completo automatizado**
+
+### Quick Format (Opción 3)
 
 Solo formateo de archivos en staging usando **next_best_practices**:
 
@@ -98,17 +118,17 @@ Solo formateo de archivos en staging usando **next_best_practices**:
 2. **Corrección ortográfica bilingüe** - Aplica reglas de next_best_practices
 3. ✅ **Sin commit** - Solo formateo para revisar cambios
 
-### Format Full Project (Opción 3)
+### Format Full Project (Opción 4)
 
 Formateo completo del proyecto usando **next_best_practices**:
 
 1. `bun run bun:format-prettier` - Aplica formateo Prettier a TODO el proyecto
-2. `bun run sort-tw` - Ordena clases Tailwind en TODOS los archivos
+2. `npx tsc --noEmit` - Verificación de tipos TypeScript
 3. `npx biome check .` - Lint completo del proyecto
 4. **Corrección ortográfica bilingüe** - Aplica reglas a TODO el proyecto
 5. ✅ **Sin commit** - Solo formateo global
 
-### Build + Format + Commit (Opción 4)
+### Build + Format + Commit (Opción 5)
 
 Secuencia con verificación completa usando **next_best_practices** en staged files:
 
@@ -149,21 +169,32 @@ Input: "Fix responsive design en header"
 Output: Format → Add → Commit (versión 2.15) → ✅ Listo para push manual
 ```
 
-### Ejemplo 2: Solo Formateo
+### Ejemplo 2: Format + Commit + Push
 
 ```
 Input: "dev workflow"
 Output: Menú de desarrollo
 Input: "2"
-Output: Formatea código sin commit → ✅ Listo para revisar cambios
+Output: "¿Qué tarea realizaste?"
+Input: "Actualización de estilos responsive"
+Output: Format → Add → Commit → Push (versión 2.15) → ✅ Completado automáticamente
 ```
 
-### Ejemplo 3: Build + Format + Commit
+### Ejemplo 3: Solo Formateo
 
 ```
 Input: "dev workflow"
 Output: Menú de desarrollo
-Input: "4"
+Input: "3"
+Output: Formatea código sin commit → ✅ Listo para revisar cambios
+```
+
+### Ejemplo 4: Build + Format + Commit
+
+```
+Input: "dev workflow"
+Output: Menú de desarrollo
+Input: "5"
 Output: "¿Qué tarea realizaste?"
 Input: "Implementación completa del sistema de usuarios"
 Output: Clean → Build → Format → Add → Commit (versión 2.16) → ✅ Listo para push manual
