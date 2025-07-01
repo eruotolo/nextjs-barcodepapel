@@ -37,3 +37,22 @@ export async function getTeamById(id: string): Promise<TeamsInterface | null> {
         throw error;
     }
 }
+
+export async function getAllTeamsHome(): Promise<TeamsInterface[]> {
+    try {
+        return await prisma.teams.findMany({
+            select: {
+                id: true,
+                name: true,
+                image: true,
+                description: true,
+            },
+            orderBy: {
+                name: 'asc',
+            },
+        });
+    } catch (error) {
+        console.error('Error fetching teams', error);
+        throw error;
+    }
+}
