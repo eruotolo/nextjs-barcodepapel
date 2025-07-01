@@ -49,16 +49,16 @@ bun run bun:format-prettier        # Format code with Prettier
 #### Formato Estándar
 
 ```
-Task: [Descripción de la tarea realizada] Date: [DD-MM-YYYY] Version: [X.Y]
+Task: [Descripción de la tarea realizada] | Date: [DD-MM-YYYY] | Version: [X.Y]
 ```
 
 #### Ejemplos de Commits
 
 ```bash
 # ✅ Correcto
-Task: Creación de componente Carousel para sponsors Date: 30-06-2025 Version: 2.10
-Task: Fix responsive design en componente NewsHome Date: 30-06-2025 Version: 2.11
-Task: Integración de server actions en Cartelera Date: 30-06-2025 Version: 2.12
+Task: Creación de componente Carousel para sponsors | Date: 30-06-2025 | Version: 2.10
+Task: Fix responsive design en componente NewsHome | Date: 30-06-2025 | Version: 2.11
+Task: Integración de server actions en Cartelera | Date: 30-06-2025 | Version: 2.12
 
 # ❌ Evitar
 Add carousel component
@@ -96,7 +96,7 @@ git add src/components/
 git add .
 
 # Commit con template personalizado
-git commit -m "Task: [Descripción] Date: $(date '+%d-%m-%Y') Version: [X.Y]"
+git commit -m "Task: [Descripción] | Date: $(date '+%d-%m-%Y') | Version: [X.Y]"
 
 # Push al repositorio
 git push origin main
@@ -118,7 +118,7 @@ gitcommit() {
     local date=$(date '+%d-%m-%Y')
 
     git add .
-    git commit -m "Task: $task Date: $date Version: $version"
+    git commit -m "Task: $task | Date: $date | Version: $version"
     git push origin main
 }
 
@@ -161,7 +161,7 @@ git checkout main
 git merge feature/nombre-del-feature
 
 # Merge con mensaje personalizado
-git merge feature/nombre-del-feature -m "Task: Merge feature XYZ Date: $(date '+%d-%m-%Y') Version: 2.15"
+git merge feature/nombre-del-feature -m "Task: Merge feature XYZ | Date: $(date '+%d-%m-%Y') | Version: 2.15"
 ```
 
 ### GitHub CLI Setup
@@ -192,7 +192,7 @@ gh repo create nombre-proyecto --public
 gh repo view
 
 # Crear Pull Request
-gh pr create --title "Task: [Descripción] Date: $(date '+%d-%m-%Y') Version: [X.Y]" --body "Descripción detallada del cambio"
+gh pr create --title "Task: [Descripción] | Date: $(date '+%d-%m-%Y') | Version: [X.Y]" --body "Descripción detallada del cambio"
 
 # Ver PRs abiertos
 gh pr list
@@ -234,7 +234,7 @@ deploy() {
 
         echo "📦 Creando commit..."
         git add .
-        git commit -m "Task: $task Date: $date Version: $version"
+        git commit -m "Task: $task | Date: $date | Version: $version"
 
         echo "🚀 Subiendo cambios..."
         git push origin main
@@ -298,7 +298,7 @@ git reset --hard HEAD~1
 git checkout -b hotfix/descripcion-corta
 # ... hacer cambios ...
 git add .
-git commit -m "Task: Hotfix crítico - [descripción] Date: $(date '+%d-%m-%Y') Version: 2.$(date +%H)"
+git commit -m "Task: Hotfix crítico - [descripción] | Date: $(date '+%d-%m-%Y') | Version: 2.$(date +%H)"
 git checkout main
 git merge hotfix/descripcion-corta
 git push origin main

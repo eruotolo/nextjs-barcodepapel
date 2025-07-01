@@ -68,7 +68,7 @@ Simplemente escribe: **"dev workflow"** para ver el menú de opciones disponible
 
 ## 🔧 Template de Commit Automático
 
-**Formato**: `Task: [descripción] Date: [DD-MM-YYYY] Version: [X.Y]`
+**Formato**: `Task: [descripción] | Date: [DD-MM-YYYY] | Version: [X.Y]`
 
 ### Datos Automáticos:
 
@@ -167,6 +167,7 @@ Input: "1"
 Output: "¿Qué tarea realizaste?"
 Input: "Fix responsive design en header"
 Output: Format → Add → Commit (versión 2.15) → ✅ Listo para push manual
+Commit: "Task: Fix responsive design en header | Date: 01-07-2025 | Version: 2.15"
 ```
 
 ### Ejemplo 2: Format + Commit + Push
@@ -178,6 +179,7 @@ Input: "2"
 Output: "¿Qué tarea realizaste?"
 Input: "Actualización de estilos responsive"
 Output: Format → Add → Commit → Push (versión 2.15) → ✅ Completado automáticamente
+Commit: "Task: Actualización de estilos responsive | Date: 01-07-2025 | Version: 2.15"
 ```
 
 ### Ejemplo 3: Solo Formateo
@@ -198,6 +200,7 @@ Input: "5"
 Output: "¿Qué tarea realizaste?"
 Input: "Implementación completa del sistema de usuarios"
 Output: Clean → Build → Format → Add → Commit (versión 2.16) → ✅ Listo para push manual
+Commit: "Task: Implementación completa del sistema de usuarios | Date: 01-07-2025 | Version: 2.16"
 ```
 
 ## 🎨 Personalización
@@ -207,7 +210,7 @@ Output: Clean → Build → Format → Add → Commit (versión 2.16) → ✅ Li
 Para cambiar el formato del commit, edita la línea del template en el código:
 
 ```bash
-"Task: $task Date: $date Version: $version"
+"Task: $task | Date: $date | Version: $version"
 ```
 
 ### Agregar Comandos

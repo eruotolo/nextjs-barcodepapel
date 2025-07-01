@@ -40,7 +40,7 @@ git status --porcelain
 
 # Si hay cambios:
 git add .
-git commit -m "Task: [DESCRIPCIÓN_USUARIO] Date: [FECHA_AUTO] Version: [VERSION_AUTO]"
+git commit -m "Task: [DESCRIPCIÓN_USUARIO] | Date: [FECHA_AUTO] | Version: [VERSION_AUTO]"
 
 # Confirmación
 echo "✅ Commit creado exitosamente - Version: [VERSION]"
@@ -54,7 +54,7 @@ git status --porcelain
 
 # Si hay cambios:
 git add .
-git commit -m "Task: [DESCRIPCIÓN_USUARIO] Date: [FECHA_AUTO] Version: [VERSION_AUTO]"
+git commit -m "Task: [DESCRIPCIÓN_USUARIO] | Date: [FECHA_AUTO] | Version: [VERSION_AUTO]"
 git push origin main
 
 # Confirmación
@@ -75,7 +75,7 @@ bun run sort-tw
 
 echo "📦 Creando commit..."
 git add .
-git commit -m "Task: [DESCRIPCIÓN_USUARIO] Date: [FECHA_AUTO] Version: [VERSION_AUTO]"
+git commit -m "Task: [DESCRIPCIÓN_USUARIO] | Date: [FECHA_AUTO] | Version: [VERSION_AUTO]"
 
 echo "🚀 Subiendo cambios..."
 git push origin main
@@ -134,7 +134,7 @@ git checkout -b hotfix/[DESCRIPCIÓN_CORTA]
 
 # Después de hacer cambios:
 git add .
-git commit -m "Task: Hotfix - [DESCRIPCIÓN_USUARIO] Date: [FECHA_AUTO] Version: [VERSION_AUTO]"
+git commit -m "Task: Hotfix - [DESCRIPCIÓN_USUARIO] | Date: [FECHA_AUTO] | Version: [VERSION_AUTO]"
 
 # Merge a main
 git checkout main
@@ -206,7 +206,7 @@ fi
 
 ```
 Input: "Creación de componente Header responsive"
-Output: "Task: Creación de componente Header responsive Date: 30-06-2025 Version: 2.14"
+Output: "Task: Creación de componente Header responsive | Date: 30-06-2025 | Version: 2.14"
 ```
 
 ## 🚀 Flujo de Interacción
