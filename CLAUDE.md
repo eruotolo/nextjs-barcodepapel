@@ -38,9 +38,17 @@ bunx prisma generate                                # Generate Prisma client
 ### Code Quality
 
 ```bash
-bun run sort-tw                    # Sort Tailwind classes with rustywind
 bun run bun:format-prettier        # Format code with Prettier
+npx tsc --noEmit                   # Verificar tipos TypeScript
+npx biome check .                  # Lint con Biome
 ```
+
+**IMPORTANTE**: NO usar `rustywind` en este proyecto. El formateo de código usa:
+
+1. **Prettier** para formateo general (`bun run bun:format-prettier`)
+2. **next_best_practices.md** para corrección ortográfica bilingüe y patterns específicos
+3. **Biome** para linting adicional
+4. **TypeScript** para verificación de tipos
 
 ## Git y GitHub Workflow
 
@@ -516,3 +524,190 @@ Este proyecto maneja "Spanglish" intencionalmente donde los clientes mezclan esp
 ```
 
 Para más detalles, consultar `next_best_practices.md` sección 10.
+
+## Configuración MCP (Model Context Protocol)
+
+### ¿Qué es MCP?
+
+MCP (Model Context Protocol) permite que Claude Code se conecte con herramientas y servicios externos para extender sus capacidades de desarrollo. Es una extensión de Claude Code que mejora la asistencia de IA, **no afecta tu aplicación Next.js**.
+
+### Servidores MCP Configurados
+
+#### 1. Servidor Prisma Local
+
+- **Funcionalidad**: Consultas directas a PostgreSQL, gestión de migraciones, Prisma Studio
+- **Herramientas incluidas**:
+    - `migrate-status`: Verificar estado de migraciones
+    - `migrate-dev`: Crear y ejecutar migraciones
+    - `migrate-reset`: Resetear base de datos
+    - `Prisma-Studio`: Abrir Prisma Studio
+    - `Prisma-Login`: Autenticación con Prisma
+
+#### 2. Servidor GitHub Oficial
+
+- **Funcionalidad**: Gestión completa de repositorios, issues, PRs y workflows
+- **Herramientas incluidas**:
+    - Gestión de Issues y Pull Requests
+    - Ejecución y monitoreo de GitHub Actions
+    - Gestión de repositorios y organizaciones
+    - Integración con template de commits personalizado
+
+#### 3. Servidor File System
+
+- **Funcionalidad**: Navegación optimizada y gestión avanzada de archivos
+- **Herramientas incluidas**:
+    - `read_file`: Lectura completa de archivos
+    - `list_directory`: Listado de directorios
+    - `search_files`: Búsqueda recursiva de archivos
+    - `write_file`: Creación y modificación de archivos
+
+### Archivo de Configuración (.mcp.json)
+
+```json
+{
+    "mcpServers": {
+        "prisma-local": {
+            "command": "npx",
+            "args": ["prisma", "mcp"],
+            "env": {
+                "DATABASE_URL": "postgresql://[USERNAME]:[PASSWORD]@localhost:5432/[DATABASE_NAME]?schema=public"
+            }
+        },
+        "github": {
+            "command": "docker",
+            "args": [
+                "run",
+                "-i",
+                "--rm",
+                "-e",
+                "GITHUB_PERSONAL_ACCESS_TOKEN",
+                "ghcr.io/github/github-mcp-server"
+            ],
+            "env": {
+                "GITHUB_PERSONAL_ACCESS_TOKEN": "gho_[TU_TOKEN_AQUI]"
+            }
+        },
+        "filesystem": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "@modelcontextprotocol/server-filesystem",
+                "/Users/edgardoruotolo/Sites/nextjs_proyects/nextjs-barcodepapel"
+            ]
+        }
+    }
+}
+```
+
+### Comandos MCP
+
+#### Gestión de Servidores
+
+```bash
+# Listar servidores configurados
+claude mcp list
+
+# Agregar servidor manualmente
+claude mcp add <nombre> <comando>
+
+# Ver detalles de servidor
+claude mcp get <servidor>
+```
+
+#### Verificación de Estado
+
+```bash
+# Verificar Docker para GitHub MCP
+docker images | grep github-mcp-server
+
+# Verificar Prisma MCP
+npx prisma --version
+
+# Verificar File System MCP
+npx @modelcontextprotocol/server-filesystem
+```
+
+### Beneficios para tu Stack Next.js + Prisma + PostgreSQL
+
+1. **Debugging más rápido**: Consultas directas a la base de datos
+2. **Gestión automatizada**: Commits con template personalizado via GitHub MCP
+3. **Navegación optimizada**: Búsqueda avanzada en el codebase
+4. **Migraciones asistidas**: Gestión de schema Prisma automática
+5. **Integración completa**: Workflow unificado de desarrollo
+
+### Aplicación en Otros Proyectos
+
+Esta configuración MCP es **reutilizable** para todos tus proyectos con el mismo stack:
+
+1. Copia el archivo `.mcp.json` al nuevo proyecto
+2. Actualiza la `DATABASE_URL` en la configuración de Prisma
+3. Modifica la ruta del filesystem al directorio del nuevo proyecto
+4. El token de GitHub funciona globalmente
+
+### Seguridad
+
+- **Credenciales**: Almacenadas localmente, no se suben al repositorio
+- **Permisos limitados**: GitHub MCP usa tu token existente con permisos específicos
+- **Acceso controlado**: File System MCP solo accede al directorio del proyecto
+- **Base de datos**: Conexión local segura a PostgreSQL
+
+### Notas Importantes
+
+- MCP **NO tiene costo adicional** - es parte de Claude Code
+- **NO afecta el deployment** - es solo para desarrollo local
+- **Compatible con Vercel** - no interfiere con el build de producción
+- **Reinicio requerido**: Reinicia Claude Code después de cambios en `.mcp.json`
+
+## Sistema de Formateo Personalizado
+
+### Herramientas de Formateo Configuradas
+
+Este proyecto NO usa `rustywind` para ordenar clases de Tailwind. En su lugar utiliza:
+
+1. **Prettier** (`bun run bun:format-prettier`) - Formateo general de código
+2. **Biome** (`npx biome check .`) - Linting y verificación de estilo
+3. **TypeScript** (`npx tsc --noEmit`) - Verificación de tipos
+4. **next_best_practices.md** - Corrección ortográfica bilingüe y patterns específicos
+
+### Comandos de Formateo Correctos
+
+```bash
+# Formateo completo del proyecto
+bun run bun:format-prettier        # Prettier para todo el código
+npx biome check .                  # Verificación de linting
+npx tsc --noEmit                   # Verificación de tipos TypeScript
+
+# NO ejecutar estos comandos (sin rustywind instalado):
+# bun run sort-tw                  # ❌ NO FUNCIONA
+# bun run bun:sort-tw             # ❌ NO FUNCIONA
+```
+
+### Formateo de Clases Tailwind
+
+Las clases de Tailwind se organizan **manualmente** por categorías según `next_best_practices.md`:
+
+```typescript
+// ✅ Orden correcto de clases Tailwind
+className={cn(
+  // Layout
+  "flex flex-col",
+  // Spacing
+  "p-4 gap-3",
+  // Appearance
+  "bg-white rounded-lg shadow-sm",
+  // Responsive
+  "sm:p-6 md:gap-4",
+  // State
+  "hover:shadow-md transition-shadow",
+  // Custom
+  className
+)}
+```
+
+### Integración con Dev Workflow
+
+El sistema `dev-workflow` automáticamente usa estos comandos de formateo sin requerir rustywind. Todas las opciones del menú de desarrollo funcionan correctamente con esta configuración.
+
+### Corrección Ortográfica Bilingüe
+
+El formateo incluye corrección automática de errores ortográficos respetando el Spanglish intencional del cliente, según las reglas definidas en `next_best_practices.md` sección 10.

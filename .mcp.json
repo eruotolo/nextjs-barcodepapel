@@ -1,0 +1,33 @@
+{
+    "mcpServers": {
+        "prisma-local": {
+            "command": "npx",
+            "args": ["prisma", "mcp"],
+            "env": {
+                "DATABASE_URL": "postgresql://[USERNAME]:[PASSWORD]@localhost:5432/[DATABASE_NAME]?schema=public"
+            }
+        },
+        "github": {
+            "command": "docker",
+            "args": [
+                "run",
+                "-i",
+                "--rm",
+                "-e",
+                "GITHUB_PERSONAL_ACCESS_TOKEN",
+                "ghcr.io/github/github-mcp-server"
+            ],
+            "env": {
+                "GITHUB_PERSONAL_ACCESS_TOKEN": "gho_[TU_TOKEN_AQUI]"
+            }
+        },
+        "filesystem": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "@modelcontextprotocol/server-filesystem",
+                "/Users/edgardoruotolo/Sites/nextjs_proyects/nextjs-barcodepapel"
+            ]
+        }
+    }
+}

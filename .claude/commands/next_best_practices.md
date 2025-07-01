@@ -424,7 +424,7 @@ export default function BlogForm() {
 ### Tailwind CSS Patterns
 
 ```typescript
-// ✅ CORRECTO - Clases ordenadas con rustywind
+// ✅ CORRECTO - Clases ordenadas por categoría
 import { cn } from '@/lib/utils';
 
 export default function BlogCard({ className, ...props }) {
@@ -883,8 +883,8 @@ export default function HomePage() {
 # Formatear con Prettier
 bun run bun:format-prettier
 
-# Ordenar clases de Tailwind
-bun run sort-tw
+# Verificar linting con Biome
+npx biome check .
 
 # Verificar tipos
 npx tsc --noEmit
@@ -901,7 +901,7 @@ npx biome check .
 - [ ] Componentes memorizados apropiadamente
 - [ ] Error handling implementado
 - [ ] Nombres siguiendo convenciones
-- [ ] Clases de Tailwind ordenadas
+- [ ] Clases de Tailwind organizadas por categoría
 - [ ] Server Actions tipadas correctamente
 - [ ] Cleanup en useEffect
 - [ ] Accesibilidad básica (alt, labels, etc.)

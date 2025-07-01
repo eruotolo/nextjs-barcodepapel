@@ -71,7 +71,7 @@ bun run build
 # Si build exitoso:
 echo "📝 Formateando código..."
 bun run bun:format-prettier
-bun run sort-tw
+npx biome check .
 
 echo "📦 Creando commit..."
 git add .
