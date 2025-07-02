@@ -14,7 +14,7 @@
         "clean": "rm -rf .next && npm run build",
         "delete": "rm -rf .next",
         "preview": "next build && next start",
-        "postinstall": "prisma generate && prisma migrate deploy",
+        "postinstall": "npx prisma generate && npx prisma migrate deploy",
         "bun:dev": "bun --bun next dev --turbopack",
         "bun:devop": "rm -rf .next && bun --bun next dev --turbopack",
         "bun:build": "NODE_NO_WARNINGS=1 bun --bun next build",
@@ -22,7 +22,7 @@
         "bun:sort-tw": "bun run rustywind --write .",
         "bun:clean": "rm -rf .next && bun run build",
         "bun:preview": "bun run build && bun run start",
-        "bun:postinstall": "bun prisma generate",
+        "bun:postinstall": "bun prisma generate && bunx prisma migrate deploy",
         "bun:format-prettier": "bun prettier --write ."
     },
     "dependencies": {
