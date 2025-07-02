@@ -41,7 +41,6 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
                 email: data.email,
                 password: data.password,
                 redirect: false,
-                //redirect: true,
                 callbackUrl: '/admin/dashboard',
             });
 
@@ -54,14 +53,13 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
                               ? 'Contraseña incorrecta'
                               : 'Ha ocurrido un error durante el inicio de sesión',
                 });
-            } else {
-                await new Promise((resolve) => setTimeout(resolve, 800));
-
+            } else if (res?.ok) {
                 toast.success('Inicio de sesión exitoso', {
                     description: 'Has iniciado sesión correctamente.',
                 });
 
-                router.push('/admin/dashboard');
+                // Forzar recarga de la página para asegurar la actualización de estado de autenticación
+                window.location.href = '/admin/dashboard';
             }
         } catch (error) {
             console.error('Error inesperado en LoginForm:', error);
