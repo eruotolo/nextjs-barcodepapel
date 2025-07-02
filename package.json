@@ -14,7 +14,7 @@
         "clean": "rm -rf .next && npm run build",
         "delete": "rm -rf .next",
         "preview": "next build && next start",
-        "postinstall": "prisma generate",
+        "postinstall": "prisma generate && prisma migrate deploy",
         "bun:dev": "bun --bun next dev --turbopack",
         "bun:devop": "rm -rf .next && bun --bun next dev --turbopack",
         "bun:build": "NODE_NO_WARNINGS=1 bun --bun next build",
