@@ -8,7 +8,7 @@ import { useFormStatus } from 'react-dom';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { getTicketById, updateTicket } from '@/actions/Settings/Tickets';
-import TicketComments from '@/components/Modal/Setting/Tickets/TicketComments';
+import TicketComments from '@/components/Home/Modal/Setting/Tickets/TicketComments';
 import RichTextDisplay from '@/components/RichTextDisplay/RichTextDisplay';
 import { Button } from '@/components/ui/button';
 import {

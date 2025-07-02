@@ -25,12 +25,12 @@ import {
 import useAuthStore from '@/store/authStore';
 
 const DynamicEditUserModal = dynamic(
-    () => import('@/components/Modal/Setting/Users/EditUserModal'),
+    () => import('@/components/Home/Modal/Setting/Users/EditUserModal'),
     { ssr: false },
 );
 
 const DynamicChangeUserPassModal = dynamic(
-    () => import('@/components/Modal/Setting/Users/ChangeUserPasswordModal'),
+    () => import('@/components/Home/Modal/Setting/Users/ChangeUserPasswordModal'),
     { ssr: false },
 );
 

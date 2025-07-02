@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Link from 'next/link';
 import { getPostFromHome } from '@/actions/Administration/Blogs/queries';
 
 export default async function NewsHome() {
@@ -21,8 +22,8 @@ export default async function NewsHome() {
                     )}
 
                     <div className="px-[4px] py-[12px] sm:px-[5px] sm:py-[14px] md:px-[6px] md:py-[16px]">
-                        <h2 className="font-basic-sans text-negro text-[18px] leading-[22px] font-normal sm:text-[19px] sm:leading-[23px] md:text-[20px] md:leading-[24px]">
-                            {post.name}
+                        <h2 className="font-basic-sans text-negro text-[18px] leading-[22px] font-normal transition-colors duration-200 hover:text-[#f50a86] sm:text-[19px] sm:leading-[23px] md:text-[20px] md:leading-[24px]">
+                            <Link href={`/blogs/${post.slug}`}>{post.name}</Link>
                         </h2>
 
                         <div className="flex flex-row py-[10px] sm:py-[12px] md:py-[15px]">

@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import { getAllTeams } from '@/actions/Administration/Teams';
-import NewTeamModal from '@/components/Modal/Administration/Teams/NewTeamModal';
+import NewTeamModal from '@/components/Home/Modal/Administration/Teams/NewTeamModal';
 import { TeamsColumns } from '@/components/Tables/Administration/Teams/TeamsColumns';
 import { DataTable } from '@/components/ui/data-table/data-table';
 import type { TeamsInterface } from '@/types/Administration/Teams/TeamsInterface';

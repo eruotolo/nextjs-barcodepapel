@@ -8,6 +8,44 @@ import { authOptions } from '@/lib/auth/authOptions';
 import { deleteFile, uploadFile } from '@/lib/blob/uploadFile';
 import prisma from '@/lib/db/db';
 
+function createSlug(name: string): string {
+    return name
+        .toLowerCase()
+        .replace(/á/g, 'a')
+        .replace(/é/g, 'e')
+        .replace(/í/g, 'i')
+        .replace(/ó/g, 'o')
+        .replace(/ú/g, 'u')
+        .replace(/ñ/g, 'n')
+        .replace(/[^a-z0-9\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-')
+        .trim()
+        .replace(/^-+|-+$/g, '');
+}
+
+async function generateUniqueSlug(name: string, blogId?: string): Promise<string> {
+    let baseSlug = createSlug(name);
+    let slug = baseSlug;
+    let counter = 1;
+
+    while (true) {
+        const existingBlog = await prisma.blog.findFirst({
+            where: {
+                slug,
+                id: blogId ? { not: blogId } : undefined,
+            },
+        });
+
+        if (!existingBlog) break;
+
+        slug = `${baseSlug}-${counter}`;
+        counter++;
+    }
+
+    return slug;
+}
+
 export async function createPost(formData: FormData) {
     try {
         const name = formData.get('name') as string;
@@ -35,9 +73,12 @@ export async function createPost(formData: FormData) {
             }
         }
 
+        const slug = await generateUniqueSlug(name);
+
         const response = await prisma.blog.create({
             data: {
                 name,
+                slug,
                 primaryCategoryId,
                 author,
                 description,
@@ -148,11 +189,17 @@ export async function updatePost(id: string, formData: FormData) {
 
         const updateData: {
             name: string;
+            slug?: string;
             primaryCategoryId: string;
             author: string;
             description: string;
             image?: string | null;
         } = { name, primaryCategoryId, author, description };
+
+        // Si el nombre cambió, generar nuevo slug
+        if (name !== currentPost.name) {
+            updateData.slug = await generateUniqueSlug(name, id);
+        }
 
         let newImageUrl: string | null = null;
         // Manejar la subida de imagen si existe

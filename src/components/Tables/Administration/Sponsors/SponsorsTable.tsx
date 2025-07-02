@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import { getAllSponsors } from '@/actions/Administration/Sponsors';
-import NewSponsorModal from '@/components/Modal/Administration/Sponsors/NewSponsorModal';
+import NewSponsorModal from '@/components/Home/Modal/Administration/Sponsors/NewSponsorModal';
 import { SponsorsColumns } from '@/components/Tables/Administration/Sponsors/SponsorsColumns';
 import { DataTable } from '@/components/ui/data-table/data-table';
 import type { SponsorsInterface } from '@/types/Administration/Sponsors/SponsorsInterface';

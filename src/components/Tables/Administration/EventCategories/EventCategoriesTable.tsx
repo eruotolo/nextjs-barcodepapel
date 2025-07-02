@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import { getAllEventCategories } from '@/actions/Administration/EventCategories';
-import NewEventCategoryModal from '@/components/Modal/Administration/EventCategories/NewEventCategoryModal';
+import NewEventCategoryModal from '@/components/Home/Modal/Administration/EventCategories/NewEventCategoryModal';
 import { EventCategoriesColumns } from '@/components/Tables/Administration/EventCategories/EventCategoriesColumns';
 import { DataTable } from '@/components/ui/data-table/data-table';
 import type { EventCategoryInterface } from '@/types/Administration/EventCategories/EventCategoriesInterface';

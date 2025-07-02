@@ -25,7 +25,7 @@ interface ActionCellProps {
 }
 
 const DynamicEditEventCategoryModal = dynamic(
-    () => import('@/components/Modal/Administration/EventCategories/EditEventCategoryModal'),
+    () => import('@/components/Home/Modal/Administration/EventCategories/EditEventCategoryModal'),
     { ssr: false },
 );
 

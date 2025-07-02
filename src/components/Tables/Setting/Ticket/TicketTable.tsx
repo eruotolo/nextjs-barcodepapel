@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import { getAllTickets } from '@/actions/Settings/Tickets';
-import NewTicketsModal from '@/components/Modal/Setting/Tickets/NewTicketsModal';
+import NewTicketsModal from '@/components/Home/Modal/Setting/Tickets/NewTicketsModal';
 import { TicketColumns } from '@/components/Tables/Setting/Ticket/TicketColumns';
 import { DataTable } from '@/components/ui/data-table/data-table';
 import type { SimpleTicketQuery } from '@/types/settings/Tickets/TicketInterface';

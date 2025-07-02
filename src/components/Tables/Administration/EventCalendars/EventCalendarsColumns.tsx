@@ -25,7 +25,7 @@ interface ActionCellProps {
 }
 
 const DynamicEditEventCalendarModal = dynamic(
-    () => import('@/components/Modal/Administration/EventCalendars/EditEventCalendarModal'),
+    () => import('@/components/Home/Modal/Administration/EventCalendars/EditEventCalendarModal'),
     { ssr: false },
 );
 

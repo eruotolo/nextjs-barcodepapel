@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import { getAllCategories } from '@/actions/Administration/Categories';
-import NewCategoryModal from '@/components/Modal/Administration/Categories/NewCategoryModal';
+import NewCategoryModal from '@/components/Home/Modal/Administration/Categories/NewCategoryModal';
 import { CategoriesColumns } from '@/components/Tables/Administration/Categories/CategoriesColumns';
 import { DataTable } from '@/components/ui/data-table/data-table';
 import type { CategoryInterface } from '@/types/Administration/Blogs/CategoryInterface';

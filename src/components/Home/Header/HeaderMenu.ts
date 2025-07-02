@@ -18,27 +18,27 @@ export const items: HeaderMenu[] = [
     {
         id: 3,
         name: 'Entrevistas',
-        link: '/entrevistas',
+        link: '/blogs?category=entrevistas',
     },
     {
         id: 4,
         name: 'Articulos',
-        link: '/articulos',
+        link: '/blogs?category=articulos',
     },
     {
         id: 5,
         name: 'Sonidos Local',
-        link: '/sonidos',
+        link: '/blogs?category=sonidolocal',
     },
     {
         id: 6,
         name: 'Bitácora Visual',
-        link: '/',
+        link: '/blogs?category=bitacoravisual',
     },
     {
         id: 7,
         name: 'Cartelera',
-        link: '/',
+        link: `${process.env.NEXT_PUBLIC_NEXTAUTH_URL || ''}/#cartelera`,
     },
 ];
 

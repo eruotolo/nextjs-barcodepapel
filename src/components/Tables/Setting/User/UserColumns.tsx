@@ -24,22 +24,22 @@ import {
 import type { UserInterface } from '@/types/settings/Users/UsersInterface';
 
 const DynamicChangeUserPassModal = dynamic(
-    () => import('@/components/Modal/Setting/Users/ChangeUserPasswordModal'),
+    () => import('@/components/Home/Modal/Setting/Users/ChangeUserPasswordModal'),
     { ssr: false },
 );
 
 const DynamicAssignRoleUserModal = dynamic(
-    () => import('@/components/Modal/Setting/Users/AssignRoleUserModal'),
+    () => import('@/components/Home/Modal/Setting/Users/AssignRoleUserModal'),
     { ssr: false },
 );
 
 const DynamicEditUserModal = dynamic(
-    () => import('@/components/Modal/Setting/Users/EditUserModal'),
+    () => import('@/components/Home/Modal/Setting/Users/EditUserModal'),
     { ssr: false },
 );
 
 const DynamicPreviewUserModal = dynamic(
-    () => import('@/components/Modal/Setting/Users/ViewUserModal'),
+    () => import('@/components/Home/Modal/Setting/Users/ViewUserModal'),
     { ssr: false },
 );
 

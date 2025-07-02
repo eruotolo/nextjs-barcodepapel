@@ -29,7 +29,7 @@ export default async function Home() {
                 <NewsHome />
                 <div className="mt-[40px] flex items-center justify-center md:mt-[100px]">
                     <Link
-                        href="/noticias"
+                        href="/blogs"
                         className="bg-fucsia text-negro hover:bg-negro hover:text-fucsia font-basic-sans rounded-[10px] px-[24px] py-[10px] text-[16px] leading-[16px] font-normal transition-colors sm:px-[30px] sm:py-[12px] sm:text-[18px] sm:leading-[18px]"
                     >
                         Cargar más
@@ -52,7 +52,10 @@ export default async function Home() {
                 />
             </section>
 
-            <section className="container mx-auto max-w-[1100px] px-4 pt-[50px] sm:px-6 md:pt-[100px]">
+            <section
+                className="container mx-auto max-w-[1100px] px-4 pt-[50px] sm:px-6 md:pt-[100px]"
+                id="cartelera"
+            >
                 <div className="mb-[40px] md:mb-[70px]">
                     <h2 className="font-basic-sans mb-4 text-center text-[24px] leading-[28px] font-bold sm:text-[28px] sm:leading-[32px] md:text-[30px] md:leading-[34px]">
                         CARTELERA

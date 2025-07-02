@@ -14,7 +14,7 @@ import {
     type VisibilityState,
 } from '@tanstack/react-table';
 import * as React from 'react';
-import Loading from '@/components/Loading/Loading';
+import Loading from '@/components/Home/Loading/Loading';
 import {
     Table,
     TableBody,
