@@ -1,14 +1,14 @@
 'use client';
 
-import { useState, useTransition, useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useState, useTransition } from 'react';
 import { getBlogsWithFilter, getTotalBlogsCount } from '@/actions/Administration/Blogs/queries';
 import { getCategoryBySlug } from '@/actions/Administration/Categories/queries';
-import { generateCategorySlug } from '@/lib/utils/categoryUtils';
 import CategoryFilter from '@/components/Home/CategoryFilter/CategoryFilter';
 import Paginator from '@/components/Home/Paginator/Paginator';
+import { generateCategorySlug } from '@/lib/utils/categoryUtils';
 import type { BlogInterface } from '@/types/Administration/Blogs/BlogInterface';
 import type { CategoryInterface } from '@/types/Administration/Blogs/CategoryInterface';
 
@@ -44,7 +44,7 @@ export default function BlogsClient({
         const categoryParam = searchParams.get('category');
         const pageParam = searchParams.get('page');
 
-        const newCurrentPage = parseInt(pageParam || '1');
+        const newCurrentPage = Number.parseInt(pageParam || '1');
 
         // Convertir slug de categoría a ID si existe
         const loadCategoryData = async () => {

@@ -17,7 +17,7 @@ export default async function BlogsPage({ searchParams }: BlogsPageProps) {
     // Obtener parámetros de búsqueda
     const params = await searchParams;
     const categorySlug = params.category || null;
-    const currentPage = parseInt(params.page || '1');
+    const currentPage = Number.parseInt(params.page || '1');
     const limit = 12;
     const offset = (currentPage - 1) * limit;
 

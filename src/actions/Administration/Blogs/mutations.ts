@@ -25,7 +25,7 @@ function createSlug(name: string): string {
 }
 
 async function generateUniqueSlug(name: string, blogId?: string): Promise<string> {
-    let baseSlug = createSlug(name);
+    const baseSlug = createSlug(name);
     let slug = baseSlug;
     let counter = 1;
 

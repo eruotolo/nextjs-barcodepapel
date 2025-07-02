@@ -1,8 +1,8 @@
 'use server';
 
 import prisma from '@/lib/db/db';
-import type { SponsorsInterface } from '@/types/Administration/Sponsors/SponsorsInterface';
 import type { SponsorsCarouselInterface } from '@/types/Administration/Sponsors/SponsorsCarouselInterface';
+import type { SponsorsInterface } from '@/types/Administration/Sponsors/SponsorsInterface';
 
 export async function getAllSponsors(): Promise<SponsorsInterface[]> {
     try {

@@ -206,7 +206,7 @@ export async function getEventMonth(): Promise<EventeCalendarInterface[]> {
     }
 }
 
-export async function getEventMonthLimited(limit: number = 3): Promise<EventeCalendarInterface[]> {
+export async function getEventMonthLimited(limit = 3): Promise<EventeCalendarInterface[]> {
     try {
         // Obtener desde hoy hasta los próximos 30 días
         const now = new Date();

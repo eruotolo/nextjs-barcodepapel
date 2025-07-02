@@ -1,8 +1,8 @@
 'use client';
 
 import Image from 'next/image';
-import { getAllSponsorsForCarousel } from '@/actions/Administration/Sponsors/queries';
 import { useEffect, useState } from 'react';
+import { getAllSponsorsForCarousel } from '@/actions/Administration/Sponsors/queries';
 import type { SponsorsCarouselInterface } from '@/types/Administration/Sponsors/SponsorsCarouselInterface';
 
 export default function CarouselSponsors() {
