@@ -45,7 +45,7 @@ export default function HeaderWeb() {
     }
 
     return (
-        <header className="z-50 flex">
+        <header className="z-60 flex">
             <div
                 className={`w-full transition-all duration-700 ease-in-out ${
                     scrolled ? 'md:bg-negro z-10 md:fixed md:top-0' : 'bg-transparent'

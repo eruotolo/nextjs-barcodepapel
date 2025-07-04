@@ -144,7 +144,7 @@
     }
 
     .menu-mobile {
-        @apply bg-negro fixed top-0 left-0 z-20 h-screen w-[100%] p-10 backdrop-blur-2xl duration-500 ease-in-out;
+        @apply bg-negro fixed top-0 left-0 z-60 h-screen w-[100%] p-10 backdrop-blur-2xl duration-500 ease-in-out;
     }
 }
 

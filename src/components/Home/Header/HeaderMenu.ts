@@ -22,7 +22,7 @@ export const items: HeaderMenu[] = [
     },
     {
         id: 4,
-        name: 'Articulos',
+        name: 'Artículos',
         link: '/blogs?category=articulos',
     },
     {
@@ -50,7 +50,7 @@ export const itemsAlter: HeaderMenu[] = [
     },
     {
         id: 2,
-        name: 'Quienes Somos',
+        name: 'Quiénes Somos',
         link: '/somos',
     },
 ];

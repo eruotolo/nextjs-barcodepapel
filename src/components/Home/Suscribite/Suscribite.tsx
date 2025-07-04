@@ -44,7 +44,7 @@ export default function Suscribite() {
                             type="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            placeholder="correo electronico"
+                            placeholder="correo electrónico"
                             required
                             disabled={isSubmitting}
                             className="border-azul text-azul placeholder-azul font-basic-sans focus:ring-fucsia w-full rounded-[10px] border bg-transparent px-3 py-[8px] text-center text-[16px] focus:border-transparent focus:ring-2 focus:outline-none sm:px-4 sm:py-[10px] sm:text-[17px] md:text-[18px]"

@@ -23,12 +23,12 @@ export default function SomosPage() {
                 </h1>
                 <div className="mt-8 sm:mt-10 md:mt-[60px]">
                     <p className="font-basic-sans py-[15px] text-[16px] leading-[22px] font-normal sm:text-[17px] sm:leading-[24px] md:text-[18px] md:leading-[26px]">
-                        Somos Catalina Billeke Brancoli, MarÌa JosÈ (Joja) Hess Paz, periodistas y
+                        Somos Catalina Billeke Brancoli, Mar√≠a Jos√© (Joja) Hess Paz, periodistas y
                         editoras, y Julieta Torres Etcheberry, publicista y directora creativa,
                         creadoras de este barco de papel, una plataforma para potenciar las
-                        pr·cticas y expresiones culturales, patrimoniales y artÌsticas de la regiÛn
-                        de Los Lagos, a travÈs de una mirada profunda, reflexiva y con cobertura
-                        amplia que pueda ampliar los m·rgenes del pluralismo de voces y miradas y
+                        pr√°cticas y expresiones culturales, patrimoniales y art√≠sticas de la regi√≥n
+                        de Los Lagos, a trav√©s de una mirada profunda, reflexiva y con cobertura
+                        amplia que pueda ampliar los m√°rgenes del pluralismo de voces y miradas y
                         aporten al fortalecimiento de la identidad territorial y sentido de
                         colectividad.
                     </p>

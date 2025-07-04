@@ -14,7 +14,7 @@ export default function AlterHeader() {
     const logo: string = '/logo-header.svg';
 
     return (
-        <header className="z-50">
+        <header className="z-60">
             <div className="bg-negro md:bg-negro w-full">
                 <div className="mx-auto max-w-[1100px] px-4 sm:px-6 md:max-w-[1100px]">
                     <nav className="flex h-[80px] items-center justify-between sm:h-[100px] md:h-[120px]">

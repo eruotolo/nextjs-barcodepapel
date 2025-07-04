@@ -7,6 +7,9 @@ import Cartelera from '@/components/Home/Cartelera/Cartelera';
 import NewsHome from '@/components/Home/NewsHome/NewsHome';
 import Suscribite from '@/components/Home/Suscribite/Suscribite';
 
+// Forzar generación dinámica para resolver problemas de noticias en producción
+export const dynamic = 'force-dynamic';
+
 export default async function Home() {
     const imageSlider = '/image-home-01.png';
     const azulMedio = '/azul-medio-alt.png';
