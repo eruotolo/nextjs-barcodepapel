@@ -97,7 +97,7 @@ export async function getPostById(id: string): Promise<BlogUniqueInterface | nul
 export async function getPostFromHome(offset = 0, limit = 6): Promise<BlogInterface[]> {
     try {
         console.log('🔍 Fetching blog posts for home - offset:', offset, 'limit:', limit);
-        
+
         const response = await prisma.blog.findMany({
             select: {
                 id: true,
@@ -135,7 +135,7 @@ export async function getPostFromHome(offset = 0, limit = 6): Promise<BlogInterf
         });
 
         console.log('📰 Blog posts found:', response.length);
-        
+
         // Validar que hay resultados
         if (!response || response.length === 0) {
             console.log('⚠️ No blog posts found in database');
@@ -156,7 +156,7 @@ export async function getPostFromHome(offset = 0, limit = 6): Promise<BlogInterf
             message: error instanceof Error ? error.message : 'Unknown error',
             stack: error instanceof Error ? error.stack : undefined,
         });
-        
+
         // Retornar array vacío en lugar de throw para evitar crashes en producción
         return [];
     }

@@ -34,7 +34,12 @@ export default async function NewsHome() {
 
                         {post.image && (
                             <div className="relative h-[200px] w-full overflow-hidden rounded-[10px] border-2 border-black sm:h-[240px] md:h-[280px]">
-                                <Image src={post.image} alt={post.name} fill className="object-cover" />
+                                <Image
+                                    src={post.image}
+                                    alt={post.name}
+                                    fill
+                                    className="object-cover"
+                                />
                             </div>
                         )}
 
@@ -63,7 +68,7 @@ export default async function NewsHome() {
         );
     } catch (error) {
         console.error('Error al cargar noticias en NewsHome:', error);
-        
+
         // Fallback UI en caso de error
         return (
             <div className="mb-8 flex min-h-[200px] items-center justify-center md:mb-12">
