@@ -156,7 +156,7 @@ export default function EditEventCalendarModal({
         const dateValue = new Date(`${data.date}T12:00:00`);
         formData.append('date', dateValue.toISOString());
 
-        formData.append('eventCategoryId', data.eventCategoryId); // Nuevo campo requerido
+        formData.append('eventCategoryId', data.eventCategoryId);
 
         if (data.venue) {
             formData.append('venue', data.venue);
@@ -171,8 +171,15 @@ export default function EditEventCalendarModal({
             formData.append('price', data.price);
         }
         if (data.linkUrl) {
-            formData.append('linkUrl', data.linkUrl); // Nuevo campo opcional
+            formData.append('linkUrl', data.linkUrl);
         }
+
+        // Agregar imagen actual como campo hidden para preservarla
+        if (eventData?.image) {
+            formData.append('currentImage', eventData.image);
+        }
+
+        // SOLO enviar nueva imagen si el usuario seleccionó una
         if (selectedImage) {
             formData.append('image', selectedImage);
         }

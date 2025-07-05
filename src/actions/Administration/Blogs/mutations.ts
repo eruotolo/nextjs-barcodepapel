@@ -186,6 +186,7 @@ export async function updatePost(id: string, formData: FormData) {
         const author = (formData.get('author') as string) || currentPost.author;
         const description = (formData.get('description') as string) || currentPost.description;
         const imageFile = formData.get('image') as File | null;
+        const currentImage = formData.get('currentImage') as string | null;
 
         const updateData: {
             name: string;
@@ -201,28 +202,32 @@ export async function updatePost(id: string, formData: FormData) {
             updateData.slug = await generateUniqueSlug(name, id);
         }
 
-        let newImageUrl: string | null = null;
-        // Manejar la subida de imagen si existe
+        // Solo procesar nueva imagen si se proporciona un archivo
         if (imageFile && imageFile.size > 0) {
             try {
-                // Primero subimos la nueva imagen
-                newImageUrl = await uploadFile({
+                const newImageUrl = await uploadFile({
                     file: imageFile,
                     folder: 'blog',
                     prefix: 'post-',
                 });
 
-                // Si la subida fue exitosa y existe una imagen anterior, la eliminamos
-                if (newImageUrl && currentPost.image) {
-                    await deleteFile(currentPost.image);
-                }
+                // Si la subida fue exitosa, usar la nueva imagen
+                if (newImageUrl) {
+                    updateData.image = newImageUrl;
 
-                updateData.image = newImageUrl;
+                    // Eliminar imagen anterior si existe y es diferente
+                    if (currentPost.image && currentPost.image !== newImageUrl) {
+                        await deleteFile(currentPost.image);
+                    }
+                }
             } catch (error) {
                 if (error instanceof Error) {
                     return { error: error.message };
                 }
             }
+        } else if (currentImage) {
+            // Si no hay archivo nuevo pero hay currentImage, usarla
+            updateData.image = currentImage;
         }
 
         const response = await prisma.blog.update({
@@ -259,7 +264,7 @@ export async function updatePost(id: string, formData: FormData) {
                         name !== currentPost.name
                             ? { from: currentPost.name, to: name }
                             : undefined,
-                    image: newImageUrl ? { from: currentPost.image, to: newImageUrl } : undefined,
+                    image: currentImage ? { from: currentPost.image, to: currentImage } : undefined,
                     primaryCategoryId:
                         primaryCategoryId !== currentPost.primaryCategoryId
                             ? { from: currentPost.primaryCategoryId, to: primaryCategoryId }

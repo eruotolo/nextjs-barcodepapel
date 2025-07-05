@@ -25,7 +25,7 @@ interface ActionCellProps {
 }
 
 const DynamicEditTeamModal = dynamic(
-    () => import('@/components/Home/Modal/Administration/Teams/EditTeamModal'),
+    () => import('@/components/Modal/Administration/Teams/EditTeamModal'),
     { ssr: false },
 );
 

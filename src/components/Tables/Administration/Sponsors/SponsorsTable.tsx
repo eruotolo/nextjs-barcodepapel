@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import { getAllSponsors } from '@/actions/Administration/Sponsors';
-import NewSponsorModal from '@/components/Home/Modal/Administration/Sponsors/NewSponsorModal';
+import NewSponsorModal from '@/components/Modal/Administration/Sponsors/NewSponsorModal';
 import { SponsorsColumns } from '@/components/Tables/Administration/Sponsors/SponsorsColumns';
 import { DataTable } from '@/components/ui/data-table/data-table';
 import type { SponsorsInterface } from '@/types/Administration/Sponsors/SponsorsInterface';
@@ -46,7 +46,7 @@ export default function SponsorsTable() {
             <div className="flex h-auto w-full justify-between">
                 <div>
                     <h5 className="mb-[5px] text-[20px] leading-none font-medium tracking-tight">
-                        Sponsors
+                        Patrocinadores
                     </h5>
                     <p className="text-muted-foreground text-[13px]">Crear, Editar y Eliminar</p>
                 </div>

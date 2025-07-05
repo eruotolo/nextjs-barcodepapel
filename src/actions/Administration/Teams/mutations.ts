@@ -129,33 +129,39 @@ export async function updateTeam(id: string, formData: FormData) {
         const name = (formData.get('name') as string) || currentTeam.name;
         const description = (formData.get('description') as string) || currentTeam.description;
         const imageFile = formData.get('image') as File | null;
+        const currentImage = formData.get('currentImage') as string | null;
 
         const updateData: { name: string; description: string; image?: string | null } = {
             name,
             description,
         };
 
-        let newImageUrl: string | null = null;
+        // Solo procesar nueva imagen si se proporciona un archivo
         if (imageFile && imageFile.size > 0) {
             try {
-                // Primero subimos la nueva imagen
-                newImageUrl = await uploadFile({
+                const newImageUrl = await uploadFile({
                     file: imageFile,
                     folder: 'teams',
                     prefix: 'team-',
                 });
 
-                // Si la subida fue exitosa y existe una imagen anterior, la eliminamos
-                if (newImageUrl && currentTeam.image) {
-                    await deleteFile(currentTeam.image);
-                }
+                // Si la subida fue exitosa, usar la nueva imagen
+                if (newImageUrl) {
+                    updateData.image = newImageUrl;
 
-                updateData.image = newImageUrl;
+                    // Eliminar imagen anterior si existe y es diferente
+                    if (currentTeam.image && currentTeam.image !== newImageUrl) {
+                        await deleteFile(currentTeam.image);
+                    }
+                }
             } catch (error) {
                 if (error instanceof Error) {
                     return { error: error.message };
                 }
             }
+        } else if (currentImage) {
+            // Si no hay archivo nuevo pero hay currentImage, usarla
+            updateData.image = currentImage;
         }
 
         const response = await prisma.teams.update({

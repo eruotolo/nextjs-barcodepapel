@@ -28,8 +28,7 @@ interface ActionCellProps {
 }
 
 const DynamicEditMaterialModal = dynamic(
-    () =>
-        import('@/components/Home/Modal/Administration/PrintedMaterials/EditPrintedMaterialModal'),
+    () => import('@/components/Modal/Administration/PrintedMaterials/EditPrintedMaterialModal'),
     { ssr: false },
 );
 

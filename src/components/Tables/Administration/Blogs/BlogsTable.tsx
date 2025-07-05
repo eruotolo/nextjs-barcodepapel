@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import { getAllPost } from '@/actions/Administration/Blogs';
-import NewBlogModal from '@/components/Home/Modal/Administration/Blogs/NewBlogModal';
+import NewBlogModal from '@/components/Modal/Administration/Blogs/NewBlogModal';
 import { BlogsColumns } from '@/components/Tables/Administration/Blogs/BlogsColumns';
 import { DataTable } from '@/components/ui/data-table/data-table';
 import type { BlogInterface } from '@/types/Administration/Blogs/BlogInterface';

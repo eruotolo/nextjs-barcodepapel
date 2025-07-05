@@ -192,8 +192,8 @@ export async function updateEvent(id: string, formData: FormData) {
             showTime: string | null;
             audienceType: string | null;
             price: number;
-            linkUrl: string | null; // Nuevo campo
-            eventCategoryId: string; // Nuevo campo
+            linkUrl: string | null;
+            eventCategoryId: string;
         } = {
             name,
             date: dateValue,
@@ -201,30 +201,38 @@ export async function updateEvent(id: string, formData: FormData) {
             showTime,
             audienceType,
             price: priceValue,
-            linkUrl, // Nuevo campo
-            eventCategoryId, // Nuevo campo
+            linkUrl,
+            eventCategoryId,
         };
 
-        let newImageUrl: string | null = null;
+        // Solo procesar nueva imagen si se proporciona un archivo
         if (imageFile && imageFile.size > 0) {
             try {
-                // Primero subimos la nueva imagen
-                newImageUrl = await uploadFile({
+                const newImageUrl = await uploadFile({
                     file: imageFile,
                     folder: 'events',
                     prefix: 'event-',
                 });
 
-                // Si la subida fue exitosa y existe una imagen anterior, la eliminamos
-                if (newImageUrl && currentEvent.image) {
-                    await deleteFile(currentEvent.image);
-                }
+                // Si la subida fue exitosa, usar la nueva imagen
+                if (newImageUrl) {
+                    updateData.image = newImageUrl;
 
-                updateData.image = newImageUrl;
+                    // Eliminar imagen anterior si existe y es diferente
+                    if (currentEvent.image && currentEvent.image !== newImageUrl) {
+                        await deleteFile(currentEvent.image);
+                    }
+                }
             } catch (error) {
                 if (error instanceof Error) {
                     return { error: error.message };
                 }
+            }
+        } else {
+            // Obtener currentImage del formData si existe
+            const currentImage = formData.get('currentImage') as string | null;
+            if (currentImage) {
+                updateData.image = currentImage;
             }
         }
 

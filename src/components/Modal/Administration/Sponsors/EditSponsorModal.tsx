@@ -38,19 +38,21 @@ export default function EditSponsorModal({
     } = useForm<SponsorsInterface>({ mode: 'onChange' });
 
     const [error, setError] = useState('');
-    const [imagePreview, setImagePreview] = useState('/default.png');
+    const [originalImage, setOriginalImage] = useState<string>('/default.png');
+    const [imagePreview, setImagePreview] = useState<string>('/default.png');
     const [sponsorData, setSponsorData] = useState<SponsorsInterface | null>(null);
     const [selectedImage, setSelectedImage] = useState<File | null>(null);
 
     useEffect(() => {
         if (!open) {
             reset();
-            setImagePreview('/default.png');
             setError('');
-            setSponsorData(null);
             setSelectedImage(null);
+            // Restaurar imagen original en lugar de por defecto
+            setImagePreview(originalImage);
+            // NO resetear originalImage ni sponsorData para preservar datos
         }
-    }, [open, reset]);
+    }, [open, reset, originalImage]);
 
     const handleCloseModal = () => {
         onCloseAction(false);
@@ -66,7 +68,11 @@ export default function EditSponsorModal({
                         setValue('name', sponsor.name);
                         setValue('link', sponsor.link || '');
                         if (sponsor.image) {
+                            setOriginalImage(sponsor.image);
                             setImagePreview(sponsor.image);
+                        } else {
+                            setOriginalImage('/default.png');
+                            setImagePreview('/default.png');
                         }
                     }
                 } catch (error) {
@@ -85,10 +91,21 @@ export default function EditSponsorModal({
         const maxSizeInBytes = 4194304; // 4MB
 
         if (file) {
+            // Validación para archivos SVG
+            if (file.name.toLowerCase().endsWith('.svg') || file.type === 'image/svg+xml') {
+                setError(
+                    'No se permiten archivos SVG. Por favor, carga una imagen en formato JPG, PNG o similar.',
+                );
+                e.target.value = '';
+                setImagePreview(originalImage);
+                setSelectedImage(null);
+                return;
+            }
+
             if (file.size > maxSizeInBytes) {
                 setError('La imagen no puede superar 4MB.');
                 e.target.value = '';
-                setImagePreview(sponsorData?.image || '/default.png');
+                setImagePreview(originalImage);
                 setSelectedImage(null);
                 return;
             }
@@ -105,6 +122,13 @@ export default function EditSponsorModal({
         if (data.link) {
             formData.append('link', data.link);
         }
+
+        // Agregar imagen actual como campo hidden para preservarla
+        if (originalImage && originalImage !== '/default.png') {
+            formData.append('currentImage', originalImage);
+        }
+
+        // SOLO enviar nueva imagen si el usuario seleccionó una
         if (selectedImage) {
             formData.append('image', selectedImage);
         }

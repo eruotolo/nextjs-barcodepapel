@@ -122,44 +122,55 @@ export async function updateMaterial(id: string, formData: FormData) {
             return { error: 'Material ID is required' };
         }
 
-        const currentTeam = await prisma.printedMaterial.findUnique({
+        const currentMaterial = await prisma.printedMaterial.findUnique({
             where: { id },
         });
 
-        if (!currentTeam) {
+        if (!currentMaterial) {
             return { error: 'Material does not exist' };
         }
 
         const imageFile = formData.get('image') as File | null;
+        const currentImage = formData.get('currentImage') as string | null;
         const numberVersion = Number(formData.get('numberVersion'));
         const name = formData.get('name') as string;
         const description = formData.get('description') as string;
         const link = formData.get('link') as string;
 
-        let newImageUrl: string | null = null;
+        let imageToUpdate = currentMaterial.image; // Mantener imagen actual por defecto
+
+        // Solo procesar nueva imagen si se proporciona un archivo
         if (imageFile && imageFile.size > 0) {
             try {
-                newImageUrl = await uploadFile({
+                const newImageUrl = await uploadFile({
                     file: imageFile,
                     folder: 'material',
                     prefix: 'material-',
                 });
 
-                // Si la subida fue exitosa y existe una imagen anterior, la eliminamos
-                if (newImageUrl && currentTeam.image) {
-                    await deleteFile(currentTeam.image);
+                // Si la subida fue exitosa, usar la nueva imagen
+                if (newImageUrl) {
+                    imageToUpdate = newImageUrl;
+
+                    // Eliminar imagen anterior si existe y es diferente
+                    if (currentMaterial.image && currentMaterial.image !== newImageUrl) {
+                        await deleteFile(currentMaterial.image);
+                    }
                 }
             } catch (error) {
                 if (error instanceof Error) {
                     return { error: error.message };
                 }
             }
+        } else if (currentImage) {
+            // Si no hay archivo nuevo pero hay currentImage, usarla
+            imageToUpdate = currentImage;
         }
 
         const response = await prisma.printedMaterial.update({
             where: { id },
             data: {
-                image: newImageUrl,
+                image: imageToUpdate, // Usar la imagen calculada
                 numberVersion,
                 name,
                 description,

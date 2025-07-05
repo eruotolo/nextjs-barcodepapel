@@ -31,12 +31,12 @@ interface ActionCellProps {
 }
 
 const DynamicEditBlogModal = dynamic(
-    () => import('@/components/Home/Modal/Administration/Blogs/EditBlogModal'),
+    () => import('@/components/Modal/Administration/Blogs/EditBlogModal'),
     { ssr: false },
 );
 
 const DynamicAssignCategoriesModal = dynamic(
-    () => import('@/components/Home/Modal/Administration/Blogs/AssignCategoriesModal'),
+    () => import('@/components/Modal/Administration/Blogs/AssignCategoriesModal'),
     { ssr: false },
 );
 

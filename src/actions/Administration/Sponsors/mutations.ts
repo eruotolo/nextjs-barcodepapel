@@ -127,33 +127,44 @@ export async function updateSponsor(id: string, formData: FormData) {
 
         const name = formData.get('name') as string;
         const imageFile = formData.get('image') as File | null;
+        const currentImage = formData.get('currentImage') as string | null;
         const link = formData.get('link') as string;
 
-        let newImageUrl: string | null = null;
+        let imageToUpdate = currentSponsor.image; // Mantener imagen actual por defecto
+
+        // Solo procesar nueva imagen si se proporciona un archivo
         if (imageFile && imageFile.size > 0) {
             try {
-                newImageUrl = await uploadFile({
+                const newImageUrl = await uploadFile({
                     file: imageFile,
                     folder: 'sponsors',
                     prefix: 'sponsor-',
                 });
 
-                // Si la subida fue exitosa y existe una imagen anterior, la eliminamos
-                if (newImageUrl && currentSponsor.image) {
-                    await deleteFile(currentSponsor.image);
+                // Si la subida fue exitosa, usar la nueva imagen
+                if (newImageUrl) {
+                    imageToUpdate = newImageUrl;
+
+                    // Eliminar imagen anterior si existe y es diferente
+                    if (currentSponsor.image && currentSponsor.image !== newImageUrl) {
+                        await deleteFile(currentSponsor.image);
+                    }
                 }
             } catch (error) {
                 if (error instanceof Error) {
                     return { error: error.message };
                 }
             }
+        } else if (currentImage) {
+            // Si no hay archivo nuevo pero hay currentImage, usarla
+            imageToUpdate = currentImage;
         }
 
         const response = await prisma.sponsors.update({
             where: { id },
             data: {
                 name,
-                image: newImageUrl,
+                image: imageToUpdate, // Usar la imagen calculada
                 link,
             },
         });

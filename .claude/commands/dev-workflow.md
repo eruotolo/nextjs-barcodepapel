@@ -12,7 +12,7 @@ Simplemente escribe: **"dev workflow"** para ver el menú de opciones disponible
 
 - Aplica **next_best_practices** SOLO a archivos en staging
 - Formateo Next.js 15 + React 19 + corrección ortográfica bilingüe
-- Agrega todos los archivos modificados
+- Agrega todos los cambios (nuevos, modificados, eliminados)
 - Crea commit con template personalizado
 - Queda listo para push manual
 
@@ -20,7 +20,7 @@ Simplemente escribe: **"dev workflow"** para ver el menú de opciones disponible
 
 - Aplica **next_best_practices** SOLO a archivos en staging
 - Formateo Next.js 15 + React 19 + corrección ortográfica bilingüe
-- Agrega todos los archivos modificados
+- Agrega todos los cambios (nuevos, modificados, eliminados)
 - Crea commit con template personalizado
 - Push automático a GitHub
 - Flujo completo automatizado
@@ -43,14 +43,20 @@ Simplemente escribe: **"dev workflow"** para ver el menú de opciones disponible
 - Ejecuta build del proyecto con verificación de tipos
 - Aplica **next_best_practices** SOLO a archivos en staging
 - Formateo Next.js 15 + React 19 + corrección ortográfica bilingüe
-- Agrega archivos y hace commit
+- Agrega todos los cambios y hace commit
 - Listo para push manual
+
+### 6. **Add + Commit + Push**
+
+- Solo agrega archivos, hace commit y push
+- Sin formateo ni build
+- Para commits rápidos con push automático
 
 ### 7. **Simple Commit**
 
 - Solo agrega archivos y hace commit
 - Sin formateo ni build
-- Para commits rápidos
+- Para commits rápidos (sin push)
 
 ### 8. **Status Check**
 
@@ -93,7 +99,7 @@ Claude: Ejecuta -> Format + Add + Commit (listo para push manual)
 
 Este comando ejecuta la secuencia usando **next_best_practices** SOLO en archivos staged:
 
-1. `git add .` - Agrega archivos modificados al staging
+1. `git add -A` - Agrega todos los cambios (nuevos, modificados, eliminados)
 2. **Formateo selectivo** - Aplica next_best_practices solo a archivos en staging
 3. **Corrección ortográfica bilingüe** - Corrige errores respetando Spanglish del cliente
 4. `git commit` - Con template personalizado
@@ -103,7 +109,7 @@ Este comando ejecuta la secuencia usando **next_best_practices** SOLO en archivo
 
 Este comando ejecuta la secuencia completa usando **next_best_practices** SOLO en archivos staged:
 
-1. `git add .` - Agrega archivos modificados al staging
+1. `git add -A` - Agrega todos los cambios (nuevos, modificados, eliminados)
 2. **Formateo selectivo** - Aplica next_best_practices solo a archivos en staging
 3. **Corrección ortográfica bilingüe** - Corrige errores respetando Spanglish del cliente
 4. `git commit` - Con template personalizado
@@ -135,11 +141,20 @@ Secuencia con verificación completa usando **next_best_practices** en staged fi
 1. `rm -rf .next` - Limpia build anterior
 2. `bun run build` - Build limpio desde cero
 3. `npx tsc --noEmit` - Verificación de tipos TypeScript
-4. `git add .` - Agrega archivos modificados
+4. `git add -A` - Agrega todos los cambios
 5. **Formateo selectivo** - Aplica next_best_practices solo a archivos staged
 6. **Corrección ortográfica bilingüe** - Aplica reglas de next_best_practices
 7. `git commit` - Con template personalizado
 8. ✅ **Listo para `git push` manual**
+
+### Add + Commit + Push (Opción 6)
+
+Comando rápido sin formateo ni verificaciones:
+
+1. `git add -A` - Agrega todos los cambios (nuevos, modificados, eliminados)
+2. `git commit` - Con template personalizado
+3. `git push origin main` - Push automático a GitHub
+4. ✅ **Flujo básico completado**
 
 ### Version Auto-Increment
 
@@ -201,6 +216,18 @@ Output: "¿Qué tarea realizaste?"
 Input: "Implementación completa del sistema de usuarios"
 Output: Clean → Build → Format → Add → Commit (versión 2.16) → ✅ Listo para push manual
 Commit: "Task: Implementación completa del sistema de usuarios | Date: 01-07-2025 | Version: 2.16"
+```
+
+### Ejemplo 5: Add + Commit + Push (Nuevo)
+
+```
+Input: "dev workflow"
+Output: Menú de desarrollo
+Input: "6"
+Output: "¿Qué tarea realizaste?"
+Input: "Corrección rápida de typos"
+Output: Add → Commit → Push (versión 2.17) → ✅ Completado automáticamente
+Commit: "Task: Corrección rápida de typos | Date: 01-07-2025 | Version: 2.17"
 ```
 
 ## 🎨 Personalización

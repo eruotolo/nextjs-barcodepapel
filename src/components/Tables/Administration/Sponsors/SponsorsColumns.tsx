@@ -25,7 +25,7 @@ interface ActionCellProps {
 }
 
 const DynamicEditSponsorModal = dynamic(
-    () => import('@/components/Home/Modal/Administration/Sponsors/EditSponsorModal'),
+    () => import('@/components/Modal/Administration/Sponsors/EditSponsorModal'),
     { ssr: false },
 );
 

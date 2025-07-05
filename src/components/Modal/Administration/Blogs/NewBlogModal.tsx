@@ -2,11 +2,12 @@
 
 import { FilePenLine } from 'lucide-react';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
-import { getPostById, updatePost } from '@/actions/Administration/Blogs';
+import { createPost } from '@/actions/Administration/Blogs';
 import { getAllCategories } from '@/actions/Administration/Categories';
+import BtnActionNew from '@/components/BtnActionNew/BtnActionNew';
 import BtnSubmit from '@/components/BtnSubmit/BtnSubmit';
 import { Button } from '@/components/ui/button';
 import {
@@ -30,55 +31,38 @@ import {
 } from '@/components/ui/select';
 import type { BlogUniqueInterface } from '@/types/Administration/Blogs/BlogInterface';
 import type { CategoryInterface } from '@/types/Administration/Blogs/CategoryInterface';
-import type { EditModalPropsAlt } from '@/types/settings/Generic/InterfaceGeneric';
+import type { UpdateData } from '@/types/settings/Generic/InterfaceGeneric';
 
-export default function EditBlogModal({
-    id,
-    refreshAction,
-    open,
-    onCloseAction,
-}: EditModalPropsAlt) {
+export default function NewBlogModal({ refreshAction }: UpdateData) {
     const {
         register,
         reset,
-        setValue,
         handleSubmit,
+        setValue,
         watch,
+        trigger,
         formState: { errors },
     } = useForm<BlogUniqueInterface>({
         mode: 'onChange',
+        reValidateMode: 'onChange',
         defaultValues: {
             primaryCategoryId: '',
             description: '',
         },
     });
 
-    const [error, setError] = useState('');
+    const [isOpen, setIsOpen] = useState(false);
+    const [serverError, setServerError] = useState('');
     const [imagePreview, setImagePreview] = useState('/default.png');
-    const [blogData, setBlogData] = useState<BlogUniqueInterface | null>(null);
     const [selectedImage, setSelectedImage] = useState<File | null>(null);
     const [categories, setCategories] = useState<CategoryInterface[]>([]);
     const [isLoadingCategories, setIsLoadingCategories] = useState(true);
     const [description, setDescription] = useState('');
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     const selectedCategoryId = watch('primaryCategoryId');
 
-    useEffect(() => {
-        if (!open) {
-            reset();
-            setImagePreview('/default.png');
-            setError('');
-            setBlogData(null);
-            setSelectedImage(null);
-            setDescription('');
-        }
-    }, [open, reset]);
-
-    const handleCloseModal = () => {
-        onCloseAction(false);
-    };
-
-    // Cargar categorías
+    // Cargar categorías al montar el componente
     useEffect(() => {
         const loadCategories = async () => {
             try {
@@ -96,46 +80,44 @@ export default function EditBlogModal({
         loadCategories();
     }, []);
 
-    // Cargar datos del blog
-    useEffect(() => {
-        const loadBlogData = async () => {
-            if (open && id) {
-                try {
-                    const blog = await getPostById(id);
-                    if (blog) {
-                        setBlogData(blog);
-                        setValue('name', blog.name);
-                        setValue('author', blog.author);
-                        setDescription(blog.description);
-                        setValue('primaryCategoryId', blog.primaryCategoryId);
-                        if (blog.image) {
-                            setImagePreview(blog.image);
-                        }
-                    }
-                } catch (error) {
-                    console.error('Error al cargar los datos del blog:', error);
-                    toast.error('Error', {
-                        description: 'No se pudieron cargar los datos del blog',
-                    });
-                }
+    const handleOpenChange = (open: boolean) => {
+        setIsOpen(open);
+        if (!open) {
+            reset();
+            setImagePreview('/default.png');
+            setSelectedImage(null);
+            setServerError('');
+            setDescription('');
+            if (fileInputRef.current) {
+                fileInputRef.current.value = '';
             }
-        };
-        loadBlogData();
-    }, [open, id, setValue]);
+        }
+    };
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         const maxSizeInBytes = 4194304; // 4MB
 
         if (file) {
-            if (file.size > maxSizeInBytes) {
-                setError('La imagen no puede superar 4MB.');
+            // Validación para archivos SVG
+            if (file.name.toLowerCase().endsWith('.svg') || file.type === 'image/svg+xml') {
+                setServerError(
+                    'No se permiten archivos SVG. Por favor, carga una imagen en formato JPG, PNG o similar.',
+                );
                 e.target.value = '';
-                setImagePreview(blogData?.image || '/default.png');
+                setImagePreview('/default.png');
                 setSelectedImage(null);
                 return;
             }
-            setError('');
+
+            if (file.size > maxSizeInBytes) {
+                setServerError('La imagen no puede superar 4MB.');
+                e.target.value = '';
+                setImagePreview('/default.png');
+                setSelectedImage(null);
+                return;
+            }
+            setServerError('');
             const previewUrl = URL.createObjectURL(file);
             setImagePreview(previewUrl);
             setSelectedImage(file);
@@ -146,6 +128,10 @@ export default function EditBlogModal({
         setValue('primaryCategoryId', value, {
             shouldValidate: true,
         });
+        // Trigger validación manual para asegurar que se ejecute
+        setTimeout(() => {
+            trigger('primaryCategoryId');
+        }, 100);
     };
 
     // Registrar campos que no tienen register para validaciones
@@ -155,6 +141,11 @@ export default function EditBlogModal({
         });
         register('description', {
             required: 'La descripción es obligatoria',
+            validate: (value) => {
+                // Validar que el contenido no esté vacío (solo HTML sin texto)
+                const textContent = value.replace(/<[^>]*>/g, '').trim();
+                return textContent.length > 0 || 'La descripción no puede estar vacía';
+            },
         });
     }, [register]);
 
@@ -170,36 +161,39 @@ export default function EditBlogModal({
         }
 
         try {
-            const response = await updatePost(id as string, formData);
+            const response = await createPost(formData);
 
             if ('error' in response) {
-                setError(response.error);
+                setServerError(response.error);
                 return;
             }
 
-            toast.success('Blog Editado Correctamente', {
-                description: 'El blog se ha editado correctamente.',
+            refreshAction();
+            handleOpenChange(false);
+            toast.success('Nuevo Blog Creado', {
+                description: 'El blog se ha creado correctamente.',
             });
-            refreshAction?.();
-            handleCloseModal();
         } catch (error) {
-            toast.error('Error al Editar Blog', {
-                description: 'Error al intentar editar el blog',
+            reset();
+            toast.error('Error al Crear Blog', {
+                description: 'Error al intentar crear el blog',
             });
-            setError('Error al editar el blog. Inténtalo de nuevo.');
+            setImagePreview('/default.png');
+            setDescription('');
+            setServerError('Error al crear el blog. Inténtalo de nuevo.');
             console.error(error);
         }
     };
 
     return (
-        <Dialog open={open} onOpenChange={handleCloseModal}>
+        <Dialog open={isOpen} onOpenChange={handleOpenChange}>
+            <BtnActionNew label="Nuevo" permission={['Crear']} />
             <DialogContent className="max-h-[90vh] overflow-hidden sm:max-w-[900px]">
                 <DialogHeader>
-                    <DialogTitle>Editar Blog</DialogTitle>
+                    <DialogTitle>Crear Nuevo Blog</DialogTitle>
                     <DialogDescription>
-                        Modifica los datos del blog. Puedes cambiar el título, autor, categoría,
-                        descripción e imagen. Asegúrate de que toda la información esté correcta
-                        antes de guardar los cambios.
+                        Introduce los datos del nuevo blog. Asegúrate de que toda la información
+                        esté correcta antes de proceder.
                     </DialogDescription>
                 </DialogHeader>
                 <form
@@ -216,9 +210,7 @@ export default function EditBlogModal({
                                     placeholder="Título del blog"
                                     className="w-full"
                                     autoComplete="off"
-                                    {...register('name', {
-                                        required: 'El título es obligatorio',
-                                    })}
+                                    {...register('name', { required: 'El título es obligatorio' })}
                                 />
                                 {errors.name && (
                                     <p className="custom-form-error">{errors.name.message}</p>
@@ -232,9 +224,7 @@ export default function EditBlogModal({
                                     placeholder="Nombre del autor"
                                     className="w-full"
                                     autoComplete="off"
-                                    {...register('author', {
-                                        required: 'El autor es obligatorio',
-                                    })}
+                                    {...register('author', { required: 'El autor es obligatorio' })}
                                 />
                                 {errors.author && (
                                     <p className="custom-form-error">{errors.author.message}</p>
@@ -273,6 +263,10 @@ export default function EditBlogModal({
                                         setValue('description', content, {
                                             shouldValidate: true,
                                         });
+                                        // Trigger validación manual para asegurar que se ejecute
+                                        setTimeout(() => {
+                                            trigger('description');
+                                        }, 100);
                                     }}
                                     imageFolder="blog-images"
                                 />
@@ -289,32 +283,33 @@ export default function EditBlogModal({
                                 width={220}
                                 height={220}
                                 alt="Vista previa de la imagen"
-                                className="h-[200px] w-[200px] rounded-[3%] object-cover"
+                                className="h-[220px] w-[220px] rounded-[3%] object-cover"
                             />
                             <label
-                                htmlFor="file-upload"
+                                htmlFor="file-upload-blog"
                                 className="mt-[34px] flex w-full cursor-pointer items-center justify-center rounded-md bg-gray-600 px-4 py-2 text-[13px] font-medium text-white hover:bg-gray-400 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none"
                             >
                                 <FilePenLine className="mr-2 h-5 w-5" />
-                                Cambiar foto
+                                Imagen Blog
                             </label>
                             <Input
-                                id="file-upload"
+                                id="file-upload-blog"
                                 type="file"
                                 accept="image/*"
                                 className="hidden"
                                 onChange={handleImageChange}
+                                ref={fileInputRef}
                             />
                         </div>
                     </div>
-                    {error && <p className="text-sm text-red-500">{error}</p>}
+                    {serverError && <p className="text-sm text-red-500">{serverError}</p>}
                     <DialogFooter className="items-end">
                         <DialogClose asChild>
-                            <Button type="button" variant="outline" onClick={handleCloseModal}>
+                            <Button type="button" variant="outline">
                                 Cancelar
                             </Button>
                         </DialogClose>
-                        <BtnSubmit label="Actualizar" />
+                        <BtnSubmit label="Crear" />
                     </DialogFooter>
                 </form>
             </DialogContent>

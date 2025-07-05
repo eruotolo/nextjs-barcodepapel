@@ -13,7 +13,7 @@ import {
 export const navData = {
     navMain: [
         {
-            title: 'Dashboard',
+            title: 'Escritorio',
             url: '/admin/dashboard',
             icon: LayoutDashboard,
             roles: [],
@@ -37,7 +37,7 @@ export const navData = {
             roles: [],
         },
         {
-            title: 'Sponsors',
+            title: 'Patrocinadores',
             url: '/admin/administration/sponsors',
             icon: Medal,
             roles: [],

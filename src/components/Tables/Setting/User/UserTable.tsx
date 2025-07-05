@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
-import UserNewModal from '@/components/Home/Modal/Setting/Users/UserNewModal';
+import UserNewModal from '@/components/Modal/Setting/Users/UserNewModal';
 import { UserColumns } from '@/components/Tables/Setting/User/UserColumns';
 import { DataTable } from '@/components/ui/data-table/data-table';
 import { useUserRoleStore } from '@/store/userroleStore';

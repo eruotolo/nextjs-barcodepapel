@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import { getAllEvents } from '@/actions/Administration/EventCalendars';
-import NewEventCalendarModal from '@/components/Home/Modal/Administration/EventCalendars/NewEventCalendarModal';
+import NewEventCalendarModal from '@/components/Modal/Administration/EventCalendars/NewEventCalendarModal';
 import { EventCalendarsColumns } from '@/components/Tables/Administration/EventCalendars/EventCalendarsColumns';
 import { DataTable } from '@/components/ui/data-table/data-table';
 import type { EventeCalendarInterface } from '@/types/Administration/EventCalendars/EventeCalendarInterface';

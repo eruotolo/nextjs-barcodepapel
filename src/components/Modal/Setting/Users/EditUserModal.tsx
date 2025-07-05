@@ -63,6 +63,26 @@ export default function EditUserModal({
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
+            // Validación para archivos SVG
+            if (file.name.toLowerCase().endsWith('.svg') || file.type === 'image/svg+xml') {
+                setError(
+                    'No se permiten archivos SVG. Por favor, carga una imagen en formato JPG, PNG o similar.',
+                );
+                e.target.value = '';
+                setImagePreview(userData?.image || '/shadcn.jpg');
+                return;
+            }
+
+            // Validación de tamaño (4MB)
+            const maxSizeInBytes = 4194304;
+            if (file.size > maxSizeInBytes) {
+                setError('La imagen no puede superar 4MB.');
+                e.target.value = '';
+                setImagePreview(userData?.image || '/shadcn.jpg');
+                return;
+            }
+
+            setError('');
             const reader = new FileReader();
             reader.onloadend = () => {
                 setImagePreview(reader.result as string);
@@ -95,6 +115,10 @@ export default function EditUserModal({
                     <DialogDescription>Editar usuario</DialogDescription>
                 </DialogHeader>
                 <Form action={handleSubmit}>
+                    {/* Campo hidden para preservar imagen actual */}
+                    {userData?.image && (
+                        <input type="hidden" name="currentImage" value={userData.image} />
+                    )}
                     <div className="grid grid-cols-3 gap-4">
                         <div className="col-span-2">
                             <div className="mb-[15px] flex gap-2">

@@ -23,14 +23,14 @@ import { useUserRoleStore } from '@/store/userroleStore';
 import type { RolePermissionInterface } from '@/types/settings/Roles/RolesInterface';
 
 const DynamicEditRoleModal = dynamic(
-    () => import('@/components/Home/Modal/Setting/Roles/EditRoleModal'),
+    () => import('@/components/Modal/Setting/Roles/EditRoleModal'),
     {
         ssr: false,
     },
 );
 
 const DynamicAssignPermissionModal = dynamic(
-    () => import('@/components/Home/Modal/Setting/Roles/AssignPermissionRoleModal'),
+    () => import('@/components/Modal/Setting/Roles/AssignPermissionRoleModal'),
     {
         ssr: false,
     },

@@ -18,7 +18,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 
 const DynamicEditTicketModal = dynamic(
-    () => import('@/components/Home/Modal/Setting/Tickets/EditTicketsModal'),
+    () => import('@/components/Modal/Setting/Tickets/EditTicketsModal'),
     {
         ssr: false,
     },

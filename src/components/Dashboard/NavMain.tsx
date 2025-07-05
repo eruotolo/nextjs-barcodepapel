@@ -33,7 +33,7 @@ export default function NavMain({ items }: { items: ItemsNavPrincipal[] }) {
 
     return (
         <SidebarGroup>
-            <SidebarGroupLabel>Dashboard</SidebarGroupLabel>
+            <SidebarGroupLabel>Tablero Principal</SidebarGroupLabel>
             <SidebarMenu>
                 {filteredItems.map((item) => {
                     // Filtrar subitems según roles
