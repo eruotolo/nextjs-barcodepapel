@@ -27,7 +27,7 @@ export default function HeaderWeb() {
 
     if (!mounted) {
         return (
-            <header className="z-50 flex">
+            <header className="relative z-60 flex">
                 <div className="w-full bg-transparent">
                     <div className="mx-auto max-w-[1100px] px-4 sm:px-6">
                         <nav className="flex h-[80px] items-center justify-between sm:h-[100px] md:h-[120px]">
@@ -45,10 +45,10 @@ export default function HeaderWeb() {
     }
 
     return (
-        <header className="z-60 flex">
+        <header className="relative z-60 flex">
             <div
                 className={`w-full transition-all duration-700 ease-in-out ${
-                    scrolled ? 'md:bg-negro z-10 md:fixed md:top-0' : 'bg-transparent'
+                    scrolled ? 'md:bg-negro z-60 md:fixed md:top-0' : 'bg-transparent'
                 }`}
             >
                 <div className="mx-auto max-w-[1100px] px-4 sm:px-6">

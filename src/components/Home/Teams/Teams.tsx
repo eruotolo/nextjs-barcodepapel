@@ -3,6 +3,24 @@ import { getAllTeamsHome } from '@/actions/Administration/Teams/queries';
 
 export default async function Teams() {
     const teams = await getAllTeamsHome();
+    
+    // Logging temporal para debug en producción
+    console.log('🔍 Teams component - Data loaded:', {
+        count: teams?.length || 0,
+        teams: teams?.map(t => ({ id: t.id, name: t.name, hasImage: !!t.image })) || []
+    });
+
+    // Manejo de caso cuando no hay datos
+    if (!teams || teams.length === 0) {
+        console.log('⚠️ No teams data found');
+        return (
+            <div className="flex items-center justify-center py-12">
+                <p className="text-gray-500 text-center">
+                    No hay miembros del equipo disponibles en este momento.
+                </p>
+            </div>
+        );
+    }
 
     return (
         <div className="mb-8 grid grid-cols-1 gap-6 sm:grid-cols-2 md:mb-12 md:gap-8 lg:grid-cols-3">

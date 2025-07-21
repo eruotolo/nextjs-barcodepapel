@@ -29,10 +29,10 @@ bun run start
 bun run clean
 ```
 
-### Ordenar clases Tailwind en los archivos
+### Formatear código con Prettier
 
 ```
-bun run sort-tw
+bun run bun:format-prettier
 ```
 
 ## 🟣 Prisma (ORM)

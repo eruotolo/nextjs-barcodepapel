@@ -2,6 +2,9 @@ import Image from 'next/image';
 import CarouselSponsors from '@/components/Home/Carousel/Carousel';
 import Teams from '@/components/Home/Teams/Teams';
 
+// Forzar renderizado dinámico para evitar cache en producción
+export const dynamic = 'force-dynamic';
+
 export default function SomosPage() {
     const imageHeader = '/image-header-page.png';
 

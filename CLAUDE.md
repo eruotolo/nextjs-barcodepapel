@@ -238,7 +238,6 @@ deploy() {
         echo "✅ Build exitoso"
         echo "📝 Formateando código..."
         bun run bun:format-prettier
-        bun run sort-tw
 
         echo "📦 Creando commit..."
         git add .
@@ -476,12 +475,26 @@ No formal testing setup exists - consider adding testing infrastructure for new 
 - Environment variables for NextAuth, database, and email (Brevo)
 - Spanish locale support (es-ES)
 
+### Email Configuration Variables
+
+```bash
+# Brevo API Configuration
+BREVO_API_KEY="tu-api-key-aqui"
+EMAIL_FROM="noreply@sistema.cl"
+
+# Ticket Notifications
+ADMIN_NOTIFICATION_EMAIL="tu-email@ejemplo.com"  # Email que recibe notificaciones de tickets
+
+# Newsletter Admin Notifications
+NEWSLETTER_ADMIN_EMAIL="tu-email@ejemplo.com"    # Email que recibe notificaciones de nuevas suscripciones
+```
+
 ## Code Quality
 
 - TypeScript strict mode enabled
 - Biome for linting (configured in `biome.json`)
 - Path aliases configured (`@/` points to `src/`)
-- Tailwind class sorting with rustywind
+- Tailwind CSS v4 con organización manual de clases
 
 ### Codificación de Archivos
 
@@ -662,7 +675,7 @@ Esta configuración MCP es **reutilizable** para todos tus proyectos con el mism
 
 ### Herramientas de Formateo Configuradas
 
-Este proyecto NO usa `rustywind` para ordenar clases de Tailwind. En su lugar utiliza:
+Este proyecto usa Tailwind CSS v4 con organización manual de clases. Las herramientas de formateo son:
 
 1. **Prettier** (`bun run bun:format-prettier`) - Formateo general de código
 2. **Biome** (`npx biome check .`) - Linting y verificación de estilo
@@ -677,9 +690,9 @@ bun run bun:format-prettier        # Prettier para todo el código
 npx biome check .                  # Verificación de linting
 npx tsc --noEmit                   # Verificación de tipos TypeScript
 
-# NO ejecutar estos comandos (sin rustywind instalado):
-# bun run sort-tw                  # ❌ NO FUNCIONA
-# bun run bun:sort-tw             # ❌ NO FUNCIONA
+# Comandos disponibles para formateo:
+bun run bun:format-prettier       # ✅ Prettier
+npx biome check .                 # ✅ Biome linting
 ```
 
 ### Formateo de Clases Tailwind
@@ -706,7 +719,7 @@ className={cn(
 
 ### Integración con Dev Workflow
 
-El sistema `dev-workflow` automáticamente usa estos comandos de formateo sin requerir rustywind. Todas las opciones del menú de desarrollo funcionan correctamente con esta configuración.
+El sistema de desarrollo usa únicamente Prettier y Biome para formateo. Todas las opciones del menú de desarrollo funcionan correctamente con esta configuración.
 
 ### Corrección Ortográfica Bilingüe
 
