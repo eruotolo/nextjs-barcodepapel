@@ -19,7 +19,9 @@ const DATE_FORMATTER = new Intl.DateTimeFormat('es-ES', {
     timeZone: 'UTC', // Force UTC to avoid timezone conversion
 });
 const PRICE_FORMATTER = (price: Prisma.Decimal | null) =>
-    price !== null && !Number.isNaN(price.toNumber()) ? price.toNumber().toFixed(2) : '';
+    price !== null && !Number.isNaN(price.toNumber()) 
+        ? Math.round(price.toNumber()).toLocaleString('es-ES')
+        : '';
 
 export async function getAllEvents(): Promise<EventeCalendarInterface[]> {
     try {
@@ -150,12 +152,12 @@ export async function getEventByIdForEdit(
 
 export async function getEventMonth(): Promise<EventeCalendarInterface[]> {
     try {
-        // Obtener desde hoy hasta los próximos 30 días
+        // Obtener desde hoy hasta los próximos 60 días
         const now = new Date();
         // Usar solo la fecha actual sin hora para incluir todos los eventos del día de hoy
         const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-        const next30Days = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
-        next30Days.setHours(23, 59, 59, 999); // Incluir todos el día 30
+        const next30Days = new Date(now.getTime() + 60 * 24 * 60 * 60 * 1000);
+        next30Days.setHours(23, 59, 59, 999); // Incluir todos el día 60
 
         const response = await prisma.eventeCalendar.findMany({
             select: {
@@ -201,19 +203,19 @@ export async function getEventMonth(): Promise<EventeCalendarInterface[]> {
             createdAt: DATE_FORMATTER.format(event.createdAt),
         }));
     } catch (error) {
-        console.error('Error fetching events for next 30 days:', error);
+        console.error('Error fetching events for next 60 days:', error);
         throw error;
     }
 }
 
 export async function getEventMonthLimited(limit = 3): Promise<EventeCalendarInterface[]> {
     try {
-        // Obtener desde hoy hasta los próximos 30 días
+        // Obtener desde hoy hasta los próximos 60 días
         const now = new Date();
         // Usar solo la fecha actual sin hora para incluir todos los eventos del día de hoy
         const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-        const next30Days = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
-        next30Days.setHours(23, 59, 59, 999); // Incluir todos el día 30
+        const next30Days = new Date(now.getTime() + 60 * 24 * 60 * 60 * 1000);
+        next30Days.setHours(23, 59, 59, 999); // Incluir todos el día 60
 
         const response = await prisma.eventeCalendar.findMany({
             select: {
@@ -259,7 +261,7 @@ export async function getEventMonthLimited(limit = 3): Promise<EventeCalendarInt
             createdAt: DATE_FORMATTER.format(event.createdAt),
         }));
     } catch (error) {
-        console.error('Error fetching limited events for next 30 days:', error);
+        console.error('Error fetching limited events for next 60 days:', error);
         throw error;
     }
 }

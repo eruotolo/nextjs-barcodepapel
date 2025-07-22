@@ -39,7 +39,7 @@ export default function Cartelera() {
     useEffect(() => {
         const loadEvents = async () => {
             try {
-                const limited = await getEventMonthLimited(3);
+                const limited = await getEventMonthLimited(6);
                 setLimitedEvents(limited);
             } catch (error) {
                 console.error('Error cargando eventos:', error);
@@ -65,7 +65,7 @@ export default function Cartelera() {
     };
 
     const eventsToShow = showAllEvents ? allEvents : limitedEvents;
-    const hasMoreEvents = limitedEvents.length >= 3;
+    const hasMoreEvents = limitedEvents.length >= 6;
 
     return (
         <>
