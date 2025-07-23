@@ -41,6 +41,8 @@ bunx prisma generate                                # Generate Prisma client
 bun run bun:format-prettier        # Format code with Prettier
 npx tsc --noEmit                   # Verificar tipos TypeScript
 npx biome check .                  # Lint con Biome
+bun run verify-analytics           # Verificar configuración Google Analytics
+bun run test-analytics             # Test básico conexión Analytics
 ```
 
 **IMPORTANTE**: NO usar `rustywind` en este proyecto. El formateo de código usa:

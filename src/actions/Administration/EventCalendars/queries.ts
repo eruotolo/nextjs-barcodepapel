@@ -19,7 +19,7 @@ const DATE_FORMATTER = new Intl.DateTimeFormat('es-ES', {
     timeZone: 'UTC', // Force UTC to avoid timezone conversion
 });
 const PRICE_FORMATTER = (price: Prisma.Decimal | null) =>
-    price !== null && !Number.isNaN(price.toNumber()) 
+    price !== null && !Number.isNaN(price.toNumber())
         ? Math.round(price.toNumber()).toLocaleString('es-ES')
         : '';
 
